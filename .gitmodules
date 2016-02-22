@@ -1,0 +1,3 @@
+[submodule "MATLAB/robotics-toolbox-matlab"]
+	path = MATLAB/robotics-toolbox-matlab
+	url = git@github.com:leemagnusson/robotics-toolbox-matlab.git

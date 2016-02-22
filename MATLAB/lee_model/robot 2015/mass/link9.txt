@@ -1,0 +1,34 @@
+Mass properties of arm1_tool_rotate_link
+     Configuration: Default
+     Coordinate system: Coordinate System1
+
+Density = 0.01 grams per cubic millimeter
+
+Mass (user-overridden) = 120.00 grams
+
+Volume = 16513.64 cubic millimeters
+
+Surface area = 8434.56  square millimeters
+
+Center of mass: ( millimeters )
+	X = 0.00
+	Y = 0.00
+	Z = -147.12
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.00,  0.00, -1.00)   	Px = 956.64
+	 Iy = (-1.00,  0.00,  0.00)   	Py = 1080350.00
+	 Iz = ( 0.00,  1.00,  0.00)   	Pz = 1080352.00
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 1080350.00	Lxy = 0.00	Lxz = 0.02
+	Lyx = 0.00	Lyy = 1080352.00	Lyz = 0.03
+	Lzx = 0.02	Lzy = 0.03	Lzz = 956.64
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 3677721.58	Ixy = 0.00	Ixz = 0.00
+	Iyx = 0.00	Iyy = 3677723.57	Iyz = 0.00
+	Izx = 0.00	Izy = 0.00	Izz = 956.64

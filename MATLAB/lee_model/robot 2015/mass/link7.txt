@@ -1,0 +1,32 @@
+Mass properties of arm1_pitch_c_link
+     Configuration: Default
+     Coordinate system: Coordinate System2
+
+Mass (user-overridden) = 600.0000 grams
+
+Volume = 937614.9306 cubic millimeters
+
+Surface area = 92554.8224  square millimeters
+
+Center of mass: ( millimeters )
+	X = -19.8610
+	Y = -0.3039
+	Z = 252.3577
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.0327,  0.0057,  0.9994)   	Px = 381419.2605
+	 Iy = (-0.9995, -0.0030,  0.0327)   	Py = 4595427.0277
+	 Iz = ( 0.0032, -1.0000,  0.0056)   	Pz = 4750879.2829
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 4590914.5613	Lxy = 1275.3931	Lxz = 137841.7438
+	Lyx = 1275.3931	Lyy = 4750736.4515	Lyz = 24832.7273
+	Lzx = 137841.7438	Lzy = 24832.7273	Lzz = 386074.5583
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 42801618.9631	Ixy = 4896.8582	Ixz = -2869410.8523
+	Iyx = 4896.8582	Iyy = 43198062.0843	Iyz = -21182.2072
+	Izx = -2869410.8523	Izy = -21182.2072	Izz = 622806.6157

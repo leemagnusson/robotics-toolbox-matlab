@@ -1,0 +1,32 @@
+Mass properties of J5_forearm block
+     Configuration: Default
+     Coordinate system: COORD - J5 forearm
+
+Mass (user-overridden) = 942.000000 grams
+
+Volume = 371650.628487 cubic millimeters
+
+Surface area = 130034.362322  square millimeters
+
+Center of mass: ( millimeters )
+	X = -21.307927
+	Y = -74.056783
+	Z = -1.192424
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.037917,  0.997987, -0.050837)   	Px = 1009714.959122
+	 Iy = (-0.990772,  0.044170,  0.128137)   	Py = 8594499.138578
+	 Iz = ( 0.130125,  0.045510,  0.990453)   	Pz = 8991715.635381
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 8590320.558068	Lxy = 284658.663201	Lxz = -65814.633109
+	Lyx = 284658.663201	Lyy = 1041044.508937	Lyz = -402718.857334
+	Lzx = -65814.633109	Lzy = -402718.857334	Lzz = 8964564.666075
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 13757971.463094	Ixy = 1771131.385235	Ixz = -41880.220359
+	Iyx = 1771131.385235	Iyy = 1470078.054941	Iyz = -319533.589299
+	Izx = -41880.220359	Izy = -319533.589299	Izz = 14558570.305028

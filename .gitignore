@@ -14,3 +14,11 @@
 
 # Simulink Code Generation
 slprj/
+
+
+% Stuff for Lee
+MATLAB/lee_model/movie/
+desktop.ini
+~*
+MATLAB/lee_model/*.log
+MATLAB/lee_model/**/*.log

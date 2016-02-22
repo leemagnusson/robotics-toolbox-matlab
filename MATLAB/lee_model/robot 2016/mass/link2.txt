@@ -1,0 +1,34 @@
+Mass properties of J3_upper arm block
+     Configuration: Default
+     Coordinate system: COORD - J3 upper arm
+
+Density = 0.00 grams per cubic millimeter
+
+Mass (user-overridden) = 1182.00 grams
+
+Volume = 754761.69 cubic millimeters
+
+Surface area = 55132.19  square millimeters
+
+Center of mass: ( millimeters )
+	X = -3.47
+	Y = 46.64
+	Z = 0.00
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.03,  1.00,  0.00)   	Px = 937200.87
+	 Iy = ( 0.00,  0.00, -1.00)   	Py = 3660390.04
+	 Iz = (-1.00, -0.03,  0.00)   	Pz = 3806298.64
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 3803921.42	Lxy = -82551.98	Lxz = 0.01
+	Lyx = -82551.98	Lyy = 939578.10	Lyz = -0.55
+	Lzx = 0.01	Lzy = -0.55	Lzz = 3660390.04
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 6375213.47	Ixy = -273813.63	Ixz = 0.09
+	Iyx = -273813.63	Iyy = 953804.80	Iyz = -1.70
+	Izx = 0.09	Izy = -1.70	Izz = 6245908.80

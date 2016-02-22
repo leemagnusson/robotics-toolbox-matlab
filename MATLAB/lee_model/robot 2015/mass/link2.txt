@@ -1,0 +1,32 @@
+Mass properties of arm1_shoulder_roll_link
+     Configuration: Default
+     Coordinate system: Coordinate System2
+
+Mass (user-overridden) = 1182.00 grams
+
+Volume = 611550.86 cubic millimeters
+
+Surface area = 54386.95  square millimeters
+
+Center of mass: ( millimeters )
+	X = -15.51
+	Y = 73.14
+	Z = -2.54
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.14, -0.99, -0.05)   	Px = 727355.26
+	 Iy = (-0.98, -0.15,  0.16)   	Py = 7669013.85
+	 Iz = (-0.16,  0.02, -0.99)   	Pz = 7819387.35
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 7534285.75	Lxy = -969699.75	Lxz = -70698.07
+	Lyx = -969699.75	Lyy = 881783.40	Lyz = 329302.41
+	Lzx = -70698.07	Lzy = 329302.41	Lzz = 7799687.31
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 13865400.62	Ixy = -2310650.64	Ixz = -24086.91
+	Iyx = -2310650.64	Iyy = 1173784.65	Iyz = 109499.79
+	Izx = -24086.91	Izy = 109499.79	Izz = 14407522.86

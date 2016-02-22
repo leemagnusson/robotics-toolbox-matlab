@@ -1,0 +1,32 @@
+Mass properties of arm1_forearm_roll_link
+     Configuration: Default
+     Coordinate system: Coordinate System1
+
+Mass (user-overridden) = 942.00 grams
+
+Volume = 543392.78 cubic millimeters
+
+Surface area = 58274.87  square millimeters
+
+Center of mass: ( millimeters )
+	X = -6.38
+	Y = 152.22
+	Z = 0.00
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.01, -1.00,  0.00)   	Px = 396494.40
+	 Iy = ( 0.00,  0.00, -1.00)   	Py = 10561147.41
+	 Iz = ( 1.00, -0.01,  0.00)   	Pz = 10625805.31
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 10625156.99	Lxy = 81433.56	Lxz = 0.40
+	Lyx = 81433.56	Lyy = 397142.71	Lyz = 103.23
+	Lzx = 0.40	Lzy = 103.23	Lzz = 10561147.41
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 32452218.44	Ixy = -833570.58	Ixz = -13.07
+	Iyx = -833570.58	Iyy = 435500.27	Iyz = 424.36
+	Izx = -13.07	Izy = 424.36	Izz = 32426566.40

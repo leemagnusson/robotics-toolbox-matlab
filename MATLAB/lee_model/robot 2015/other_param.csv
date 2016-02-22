@@ -1,0 +1,10 @@
+link,name1,name2,transmission,motor_constant
+1,j1,shoulder_pitch,CSD25_100,0.255
+2,j2,shoulder_roll,CSD20_100,0.177
+3,j3,elbow_pitch,CSD20_100,0.177
+4,j4,forearm_roll,CSD20_100,0.177
+5,j5,spherical_base,CSD14_100,0.121
+6,j6,spherical_roll,CSD14_100,0.121
+7,j7,spherical_pitch,CSD14_100,0.121
+8,j8,translate,CSD14_100,0.121
+9,j9,rotate,CSD14_100,0.121
