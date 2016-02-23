@@ -1,1 +1,2 @@
-All MATLAB folders will live here. Create subfolders as needed.
+# arm-analysis
+This repository hosts all the code for arm analysis

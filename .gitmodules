@@ -1,3 +1,6 @@
 [submodule "MATLAB/3rdparty/robotics-toolbox-matlab"]
 	path = MATLAB/3rdparty/robotics-toolbox-matlab
 	url = git@github.com:leemagnusson/robotics-toolbox-matlab.git
+[submodule "MATLAB/3rdparty/toolbox-common-matlab"]
+	path = MATLAB/3rdparty/toolbox-common-matlab
+	url = git@github.com:petercorke/toolbox-common-matlab.git
