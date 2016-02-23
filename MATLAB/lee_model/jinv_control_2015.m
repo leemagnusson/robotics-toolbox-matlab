@@ -6,13 +6,13 @@
 function [t,q,Tj] = jinv_control_2015
 
 tmax = 1;
-t = linspace(0,tmax,tmax*100);
+t = linspace(0,tmax,tmax*10);
 dt = t(2)-t(1);
 
 global q0 r other_param
 
 movie = false 
-plot3d = false 
+plot3d = true
 
 q00 = q0 + [-1,0,1,0,0,0,0,0,0];%+[-.5,0,0,.1,-.5,0,0];
 q00 = q0 + [-2.5,0,1.25,0,-1,0,0,0,0];  % folded config
