@@ -165,7 +165,7 @@ function teach(robot, varargin)
             q = info.q;
         end
     else
-    robot.plot(q);
+    robot.plot(q,,varargin{2:end});
     end
     handles.q = q;
     T6 = robot.fkine(q);

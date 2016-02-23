@@ -89,7 +89,7 @@ function animate(robot, qq)
                             % scale the box representing the prismatic joint
                             % it is based at the origin and extends in z-direction
                             if q(L) > 0
-                                set(h.pjoint(L), 'Matrix', diag([1 1 q(L) 1]));
+                                set(h.link(L), 'Matrix', diag([1 1 q(L) 1]));
                             else
                                 % if length is zero the matrix is singular and MATLAB complains
                                 %error('Prismatic length must be > 0');
