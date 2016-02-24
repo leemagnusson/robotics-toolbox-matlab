@@ -11,8 +11,8 @@ function ARM = NecessityNewtonEuler(ARM,n,g,f_next,m_next)
         R_offset = RotationMatrix_rad(ARM.joints_orientations(i,1),[1;0;0])*...
                    RotationMatrix_rad(ARM.joints_orientations(i,2),[0;1;0])*...
                    RotationMatrix_rad(ARM.joints_orientations(i,3),[0;0;1]);
-        R01 = R_offset*vrrotvec2mat([ARM.joints_axes(i,:),ARM.q(i)]);
-        R = R0*R_offset*vrrotvec2mat([ARM.joints_axes(i,:),ARM.q(i)]);
+        R01 = R_offset*angvec2r(ARM.q(i),ARM.joints_axes(i,:)/norm(ARM.joints_axes(i,:)));
+        R = R0*R_offset*angvec2r(ARM.q(i),ARM.joints_axes(i,:)/norm(ARM.joints_axes(i,:)));
         p = p0 + R0*ARM.joints_positions(i,:)';
 %         p_m = p + R*ARM.links_centers_of_mass(i,:)';
         w  =     R01'*w0 +  ARM.qd(i)*ARM.joints_axes(i,:)';
@@ -42,7 +42,7 @@ function ARM = NecessityNewtonEuler(ARM,n,g,f_next,m_next)
               + cross(ARM.w{i},ARM.links_inertia_tensors{i}*ARM.w{i});
         ARM.f{i} = f;
         ARM.m{i} = m;
-        ARM.u(i) = m'*ARM.joints_axes(i,:)'+2.5*ARM.qd(i);
+        ARM.u(i) = m'*ARM.joints_axes(i,:)'+0*ARM.qd(i);
         f_next = f;
         m_next = m;
     end

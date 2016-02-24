@@ -14,7 +14,7 @@ function NecessityDrawRobot(ARM)
         R_offset = RotationMatrix_rad(ARM.joints_orientations(i,1),[1;0;0])*...
                    RotationMatrix_rad(ARM.joints_orientations(i,2),[0;1;0])*...
                    RotationMatrix_rad(ARM.joints_orientations(i,3),[0;0;1]);
-        R = R0*R_offset*vrrotvec2mat([ARM.joints_axes(i,:),ARM.q(i)]);
+        R = R0*R_offset*angvec2r(ARM.q(i),ARM.joints_axes(i,:)/norm(ARM.joints_axes(i,:)));
         p = p0 + R0*ARM.joints_positions(i,:)';
         ARM.p{i} = p;
         ARM.R{i} = R;
