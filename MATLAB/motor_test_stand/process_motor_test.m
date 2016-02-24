@@ -4,7 +4,8 @@
 [rpm,brakeV,iqA,TmeasuredNm,busiA,busvVatdrive] = import_motor_test('test_data/motor test test data - 70-10.csv',4,42);
 
 r = .47*3/4+.16; 
-
+L = 470e-6;
+kt_est = .1213;
 
 npoles = 10;
 n = length(rpm);
@@ -16,7 +17,15 @@ current_filter = 20000;      % guess, Hz
 tau = 1/current_filter/2/pi;
 filter_mag = 1./(1+tau^2*(v*npoles*2*pi).^2);
 
-iqA = iqA./filter_mag;
+% current decrease due to time shift di = V/L*dt
+% calculation in line-line
+current_shift_dt = 5e-6;
+Vq_est = kt_est*v;
+current_shift = (Vq_est)/L*current_shift_dt;
+current_shift = current_shift*2/sqrt(3); % convert convention to park
+
+iqA = (iqA+current_shift)./filter_mag;
+
 
 Pin = busiA.*busvVatdrive;
 Pout_mech = v.*TmeasuredNm;
@@ -48,10 +57,10 @@ b3 = TmeasuredNm;
 % fit both power and torque
 % Ploss = v*(Tf + b*v) + i^2*r + ks*V*i + Pdrive
 % Tm = kt -b*v - Tf
-
+% coeffs x->[km, Tf, b, r, ks*V, Pdrive]
 W = diag([max(b3)*ones(n,1);max(b2)*ones(n,1)]);
-A = [zeros(n,1),A2;
-     A3,zeros(n,3)];
+A = [zeros(n,size(A3,2)-2),A2;
+     A3,zeros(n,size(A2,2)-2)];
 b = [b2;b3];
 x = (W*A)\(W*b);
 
@@ -93,3 +102,9 @@ surf(vgr,iqgr,Ploss_motor_gr);
 % convert line-line calc phase amplitude
 Vmotor = x(1)*2/sqrt(3)*v+iqA*2/sqrt(3)*x(4);
 
+%plot strange iq behavior
+figure(7);
+plot(v,TmeasuredNm./iqA,'.');
+grid on;
+xlabel('v (rad/s)')
+ylabel('km (Nm/A)');
