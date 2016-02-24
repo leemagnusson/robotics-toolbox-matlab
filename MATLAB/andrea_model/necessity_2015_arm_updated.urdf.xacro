@@ -1,0 +1,845 @@
+<?xml version="1.0"?>
+
+<!-- XML namespaces -->
+<robot
+  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="common_robot_frame">
+    <link name="common_robot_frame" />
+  </xacro:macro>
+
+  <xacro:macro
+    name="whole_arm"
+    params="arm_number">
+    <link name="arm${arm_number}_base_link">
+      <inertial>
+        <origin
+          xyz="-2.1808E-08 -0.013581 -0.0075208"
+          rpy="0 0 0" />
+        <mass value="0.64401" />
+        <inertia
+          ixx="0.0010973"
+          ixy="3.0246E-10"
+          ixz="8.5325E-10"
+          iyy="0.00086191"
+          iyz="0.00017823"
+          izz="0.00087728" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/base_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/base_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link name="arm${arm_number}_shoulder_pitch_link">
+      <inertial>
+        <origin
+          xyz="0.00022 -0.00256 0.088868"
+          rpy="0 0 0" />
+        <mass value="1.195931" />
+        <inertia
+          ixx="0.001769"
+          ixy="4E-06"
+          ixz="4E-06"
+          iyy="0.002114"
+          iyz="4.7E-05"
+          izz="0.001228" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/shoulder_pitch_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.6 0.72549 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/shoulder_pitch_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_shoulder_pitch_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="-0.26404 0 0" />
+      <parent link="arm${arm_number}_base_link" />
+      <child link="arm${arm_number}_shoulder_pitch_link" />
+      <axis xyz="1 0 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_shoulder_roll_link">
+      <inertial>
+        <origin
+          xyz="-0.002512 -0.014696 -0.024644"
+          rpy="0 0 0" />
+        <mass value="1.182949" />
+        <inertia
+          ixx="0.004023"
+          ixy="3.7E-05"
+          ixz="-0.000166"
+          iyy="0.003976"
+          iyz="-0.000493"
+          izz="0.000886" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/shoulder_roll_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 0.75686 0.38431 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/shoulder_roll_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_shoulder_roll_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.32485"
+        rpy="1.6653E-16 -1.301E-18 0.011548" />
+      <parent link="arm${arm_number}_shoulder_pitch_link" />
+      <child link="arm${arm_number}_shoulder_roll_link" />
+      <axis xyz="0 0 1" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_elbow_link">
+      <inertial>
+        <origin
+          xyz="0.002254 -0.080008 0.02387"
+          rpy="0 0 0" />
+        <mass value="1.289545" />
+        <inertia
+          ixx="0.002682"
+          ixy="0.000168"
+          ixz="-5.8E-05"
+          iyy="0.00157"
+          iyz="-0.0004"
+          izz="0.003057" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/elbow_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.61569 1 0.55294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/elbow_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_elbow_joint"
+      type="revolute">
+      <origin
+        xyz="-0.0211 -0.02 0"
+        rpy="-4.4409E-16 6.9305E-16 -0.011548" />
+      <parent link="arm${arm_number}_shoulder_roll_link" />
+      <child link="arm${arm_number}_elbow_link" />
+      <axis xyz="0.99993 0.011547 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_forearm_link">
+      <inertial>
+        <origin
+          xyz="0.005609 0.088453 0.012336"
+          rpy="0 0 0" />
+        <mass value="0.942606" />
+        <inertia
+          ixx="0.0108"
+          ixy="-0.000266"
+          ixz="-3.8E-05"
+          iyy="0.000713"
+          iyz="0.000641"
+          izz="0.010701" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/forearm_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.76471 0.64706 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/forearm_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_forearm_joint"
+      type="revolute">
+      <origin
+        xyz="0.0047922 -0.41497 0.03"
+        rpy="1.1104E-16 0.015247 0.011548" />
+      <parent link="arm${arm_number}_elbow_link" />
+      <child link="arm${arm_number}_forearm_link" />
+      <axis xyz="0 1 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_spherical_base_link">
+      <inertial>
+        <origin
+          xyz="-0.006424 -0.08206 0.00017"
+          rpy="0 0 0" />
+        <mass value="0.707477" />
+        <inertia
+          ixx="0.000766"
+          ixy="-0.000181"
+          ixz="-1E-06"
+          iyy="0.000302"
+          iyz="-2E-06"
+          izz="0.00084" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/spherical_base_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/spherical_base_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_spherical_base_joint"
+      type="revolute">
+      <origin
+        xyz="0.0049825 0 0"
+        rpy="0.4345 -5.0219E-14 4.1807E-16" />
+      <parent link="arm${arm_number}_forearm_link" />
+      <child link="arm${arm_number}_spherical_base_link" />
+      <axis xyz="1 0 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+      >
+    </joint>
+    <link name="arm${arm_number}_spherical_roll_link">
+      <inertial>
+        <origin
+          xyz="0.0125 0.013397 -0.024328"
+          rpy="0 0 0" />
+        <mass value="0.93555" />
+        <inertia
+          ixx="0.002617"
+          ixy="-0.000395"
+          ixz="-0.000411"
+          iyy="0.001919"
+          iyz="0.001026"
+          izz="0.00151" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/spherical_roll_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/spherical_roll_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_spherical_roll_joint"
+      type="revolute">
+      <origin
+        xyz="0 -0.19382 0"
+        rpy="-0.0018637 0.39775 -0.0048115" />
+      <parent link="arm${arm_number}_spherical_base_link" />
+      <child link="arm${arm_number}_spherical_roll_link" />
+      <axis xyz="-0.0044359 0.99999 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_pitch_A_link">
+      <inertial>
+        <origin
+          xyz="0.004593 0.000004 0.054125"
+          rpy="0 0 0" />
+        <mass value="0.22428" />
+        <inertia
+          ixx="0.000435"
+          ixy="0.0"
+          ixz="0.0"
+          iyy=".0004"
+          iyz="0.000014"
+          izz="0.000053" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/pitch_A_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/pitch_A_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_pitch_A_joint"
+      type="revolute">
+      <origin
+        xyz="0.060165 -0.022084 -0.047529"
+        rpy="-0.24624 8.3267E-17 -0.35179" />
+      <parent link="arm${arm_number}_spherical_roll_link" />
+      <child link="arm${arm_number}_pitch_A_link" />
+      <axis xyz="-1 0 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_pitch_B_link">
+      <inertial>
+        <origin
+          xyz="0.02577 -3E-05 0.129289"
+          rpy="0 0 0" />
+        <mass value="0.430816" />
+        <inertia
+          ixx="0.002947"
+          ixy="0"
+          ixz="-1.6E-05"
+          iyy="0.002881"
+          iyz="-1E-06"
+          izz="9.7E-05" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/pitch_B_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/pitch_B_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_pitch_B_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.1143"
+        rpy="1.6104 8.3267E-17 -5.5511E-17" />
+      <parent link="arm${arm_number}_pitch_A_link" />
+      <child link="arm${arm_number}_pitch_B_link" />
+      <axis xyz="-1 0 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+      <mimic
+        joint="arm${arm_number}_pitch_A_joint"
+        multiplier="-1.0"
+        offset="0" />
+    </joint>
+    <link name="arm${arm_number}_pitch_C_link">
+      <inertial>
+        <origin
+          xyz="-0.014978 0.084668 -0.009127"
+          rpy="0 0 0" />
+        <mass value="1.186265" />
+        <inertia
+          ixx="0.013065"
+          ixy="-0.00217"
+          ixz="0.000201"
+          iyy="0.001309"
+          iyz="-0.002044"
+          izz="0.012943" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/pitch_C_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/pitch_C_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_pitch_C_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.2286"
+        rpy="0.30058 -1.6653E-16 6.245E-17" />
+      <parent link="arm${arm_number}_pitch_B_link" />
+      <child link="arm${arm_number}_pitch_C_link" />
+      <axis xyz="1 0 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+      <mimic
+        joint="arm${arm_number}_pitch_A_joint"
+        multiplier="-1.0"
+        offset="0" />
+    </joint>
+    <link name="arm${arm_number}_tool_translate_link">
+      <inertial>
+        <origin
+          xyz="-0.00022 -0.016708 -0.270043"
+          rpy="0 0 0" />
+        <mass value="0.517407" />
+        <inertia
+          ixx="0.000581"
+          ixy="0"
+          ixz="3E-06"
+          iyy="0.000547"
+          iyz="-3.8E-05"
+          izz="0.000201" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/tool_translate_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 0.50196 0.50196 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/tool_translate_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_tool_translate_joint"
+      type="prismatic">
+      <origin
+        xyz="0 0 0.03738"
+        rpy="1.5708 6.6613E-16 0.17453" />
+      <parent link="arm${arm_number}_pitch_C_link" />
+      <child link="arm${arm_number}_tool_translate_link" />
+      <axis xyz="0 0 -1" />
+      <limit
+        effort="30"
+        lower="-0.20"
+        upper="0.0"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_tool_rotate_link">
+      <inertial>
+        <origin
+          xyz="4.3E-05 2.2E-05 -0.171839"
+          rpy="0 0 0" />
+        <mass value="0.038769" />
+        <inertia
+          ixx="0.000518"
+          ixy="0"
+          ixz="0"
+          iyy="0.000518"
+          iyz="0"
+          izz="1E-06" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/tool_rotate_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/tool_rotate_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_tool_rotate_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="-2.7756E-17 2.7756E-17 0" />
+      <parent link="arm${arm_number}_tool_translate_link" />
+      <child link="arm${arm_number}_tool_rotate_link" />
+      <axis xyz="0 0 1" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_proximal_wrist_link">
+      <inertial>
+        <origin
+          xyz="0 0 0.005544"
+          rpy="0 0 0" />
+        <mass value="0.000523" />
+        <inertia
+          ixx="0"
+          ixy="0"
+          ixz="0"
+          iyy="0"
+          iyz="0"
+          izz="0" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/proximal_wrist_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0 1 0 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/proximal_wrist_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_proximal_wrist_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.12885"
+        rpy="-1.9429E-16 0.0027027 0.070859" />
+      <parent link="arm${arm_number}_tool_rotate_link" />
+      <child link="arm${arm_number}_proximal_wrist_link" />
+      <axis xyz="0 -1 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_distal_wrist_link">
+      <inertial>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <mass value="1E-05" />
+        <inertia
+          ixx="0"
+          ixy="0"
+          ixz="0"
+          iyy="0"
+          iyz="0"
+          izz="0" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/distal_wrist_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/distal_wrist_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_distal_wrist_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0.012333"
+        rpy="1.5708 -1.5681 -3.1416" />
+      <parent link="arm${arm_number}_proximal_wrist_link" />
+      <child link="arm${arm_number}_distal_wrist_link" />
+      <axis xyz="0 1 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_jaw_a_link">
+      <inertial>
+        <origin
+          xyz="0.006788 -0.001583 0.000409"
+          rpy="0 0 0" />
+        <mass value="0.000222" />
+        <inertia
+          ixx="0"
+          ixy="0"
+          ixz="0"
+          iyy="0"
+          iyz="0"
+          izz="0" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/jaw_a_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/jaw_a_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_jaw_a_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="5.5511E-17 -2.7756E-17 0" />
+      <parent link="arm${arm_number}_distal_wrist_link" />
+      <child link="arm${arm_number}_jaw_a_link" />
+      <axis xyz="0 1 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+    <link name="arm${arm_number}_jaw_b_link">
+      <inertial>
+        <origin
+          xyz="0.006788 0.001583 -0.000409"
+          rpy="0 0 0" />
+        <mass value="0.000222" />
+        <inertia
+          ixx="0"
+          ixy="0"
+          ixz="0"
+          iyy="0"
+          iyz="0"
+          izz="0" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/jaw_b_link_updated.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://necessity_2015_description/meshes/jaw_b_link_updated.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <joint
+      name="arm${arm_number}_jaw_b_joint"
+      type="revolute">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 1.3878E-17" />
+      <parent link="arm${arm_number}_distal_wrist_link" />
+      <child link="arm${arm_number}_jaw_b_link" />
+      <axis xyz="0 1 0" />
+      <limit
+        effort="30"
+        lower="-1.571"
+        upper="1.571"
+        velocity="1.0" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro
+    name="whole_multi_arm"
+    params="arm_number posy">
+    <xacro:whole_arm arm_number="${arm_number}" />
+
+    <joint
+      name="arm${arm_number}_world_joint"
+      type="floating">
+      <child link="arm${arm_number}_base_link" />
+      <parent link="common_robot_frame" />
+      <origin
+        xyz="0.3 ${posy} 1.2"
+        rpy="-0.9 0.0 1.57" />
+    </joint>
+
+  </xacro:macro>
+</robot>
