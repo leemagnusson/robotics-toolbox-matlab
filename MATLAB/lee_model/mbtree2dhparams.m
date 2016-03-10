@@ -1,6 +1,14 @@
-function dh_params = mbtree2dhparams(mbtree)
+function dh_params = mbtree2dhparams(mbtree,varargin)
 % MBTREE2DHPARAMS Generates a DH parameter table from a mbtree struct.
+% options 'modified' for modified dh
+
+modified = false;
+if any(strcmp('modified',varargin))
+    modified = true;
+end
+
 dh_params = [];
+
 % Create sorted list of the links in parent/child descending order
 root_index = 0;
 for c=1:length(mbtree.rigidbodies)
@@ -56,11 +64,13 @@ for b=body_list(2:end) % No need to find DH params for root body
     transform(1:3,4) = body.origin;
     for d=body.dofs
         dof = mbtree.transforms(d);
+        transform;
         transform = transform * dof.transform;
         if ~dof.locked
             if isAxisZ(dof.axis)
-                if isDhCompliantTransform(transform)
-                    dh = extractDhParameters(transform);
+                if isDhCompliantTransform(transform,modified)
+                    dh = extractDhParameters(transform,modified);
+                    transform_new = transform;
                     transform = eye(4);
                 else
                     warning([
@@ -68,17 +78,27 @@ for b=body_list(2:end) % No need to find DH params for root body
                     'with DH convention. Attempting to correct: ', ...
                     dof.name]);
                     % Attempt to correct a non-compliant transform
-                    rotz = zRotation(solveForDhCorrection(transform));
-                    if ~isDhCompliantTransform(transform * rotz)
+                    zangle = solveForDhCorrection(transform,modified);
+                    rottz = zRotation(zangle);
+                    transform_old = transform;
+                    if (modified)
+                        transform_new = inv(rottz)*transform;
+                    else
+                        transform_new = transform*rottz;
+                    end
+                    if ~isDhCompliantTransform(transform_new,modified)
                         error([
                             'Unable to correct non-compliant ', ...
                             'transform: ', dof.name]);
                     end
-                    dh = extractDhParameters(transform * rotz);
+                    dh = extractDhParameters(transform_new,modified);
                     % Rotate the frame back to pre-correction so as to not
                     % disturb the meaning of the following frames.
-                    transform = rotz';
+                    transform = rottz';
+                    
                 end
+                tr_check = calculateTransform(dh,modified);
+                transform_new-tr_check
                 if isempty(dh_params)
                     dh_params = dh;
                 else
@@ -94,11 +114,16 @@ for b=body_list(2:end) % No need to find DH params for root body
     end
 end
 
-function angle = solveForDhCorrection(transform)
-% cos(t)*T31+sin(t)*T32 = 0
-% cos(t)*T31 = -sin(t)*T32
-% sin(t) / cos(t) = -T31 / T32
-angle = atan2(-transform(3,1), transform(3,2));
+function angle = solveForDhCorrection(transform,modified)
+if (modified)
+    % cos(t)*T13+sin(t)*T23 = 0
+    angle = atan2(-transform(1,3),transform(2,3));
+else
+    % cos(t)*T31+sin(t)*T32 = 0
+    % cos(t)*T31 = -sin(t)*T32
+    % sin(t) / cos(t) = -T31 / T32
+    angle = atan2(-transform(3,1), transform(3,2));
+end
 
 function transform = zRotation(angle)
 cz = cos(angle);
@@ -116,16 +141,62 @@ tf = ...
     (abs(axis(2)) < eps) && ...
     ((1-abs(axis(3))) < eps);
 
-function tf = isDhCompliantTransform(transform)
-tf = abs(transform(3,1)) < 1e-5;
 
-function dh = extractDhParameters(transform)
+
+function tf = isDhCompliantTransform(transform,modified)
+if (modified)
+    tf = abs(transform(1,3)) < 1e-5;
+else
+    tf = abs(transform(3,1)) < 1e-5;
+end
+
+
+
+function dh = extractDhParameters(transform,modified)
+if (modified == true)
+    dh = extractModDhParameters(transform);
+else
+    dh = extractStandardDhParameters(transform);
+end
+
+function dh = extractStandardDhParameters(transform)
 % base_T_tip =
 %              [ cos(th), -sin(th)*cos(a),  sin(th)*sin(a),  r*cos(th) ]
 %              [ sin(th),  cos(th)*cos(a), -cos(th)*sin(a),  r*sin(th) ]
 %              [       0,          sin(a),          cos(a),          d ]
 %              [       0,               0,               0,          1 ]
 dh.d = transform(3,4);
-dh.th = atan2(transform(1,2), transform(1,1));
+dh.th = atan2(transform(2,1), transform(1,1));
 dh.a = atan2(transform(3,2), transform(3,3));
 dh.r = sqrt(transform(1,4)^2 + transform(2,4)^2);
+dh.r = sign(transform(1,4)/cos(dh.th))*dh.r;
+
+function dh = extractModDhParameters(transform)
+% base_T_tip =
+%              [ cos(th),          -sin(th),           0,          r ]
+%              [ sin(th)*cos(alp),  cos(th)*cos(alp), -sin(alp),  -d*sin(alp) ]
+%              [ sin(th)*sin(alp),  cos(th)*sin(alp),  cos(alp),   d*cos(alp) ]
+%              [       0,               0,               0,          1 ]
+dh.r = transform(1,4);
+dh.th = atan2(-transform(1,2), transform(1,1));
+dh.a = atan2(-transform(2,3), transform(3,3));
+dh.d = sqrt(transform(2,4)^2 + transform(3,4)^2);
+
+% for double checking work
+function tr = calculateTransform(dh, modified) 
+th = dh.th;
+r = dh.r;
+alp = dh.a;
+d = dh.d;
+if (modified)
+    tr =  [ cos(th),          -sin(th),           0,          r ;
+            sin(th)*cos(alp),  cos(th)*cos(alp), -sin(alp),  -d*sin(alp) ;
+            sin(th)*sin(alp),  cos(th)*sin(alp),  cos(alp),   d*cos(alp) ;
+                 0,               0,               0,          1 ];
+else
+    tr = [ cos(th), -sin(th)*cos(alp),  sin(th)*sin(alp),  r*cos(th) ;
+           sin(th),  cos(th)*cos(alp), -cos(th)*sin(alp),  r*sin(th) ;
+                 0,          sin(alp),          cos(alp),          d ;
+                 0,                 0,                 0,          1 ];
+end
+
