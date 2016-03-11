@@ -11,8 +11,10 @@ dt = t(2)-t(1);
 
 global q0 r other_param
 
+r.tool(3,4) = .05;  % virtual center offset
+
 movie = false 
-plot3d = true
+plot3d = false
 
 q00 = q0 + [-1,0,1,0,0,0,0,0,0];%+[-.5,0,0,.1,-.5,0,0];
 q00 = q0 + [-2.5,0,1.25,0,-1,0,0,0,0];  % folded config
@@ -70,7 +72,12 @@ q_dot = zeros(length(t),length(q00));
 q = zeros(length(t),length(q00));
 q(1,:) = q00;
 for i = 1:length(t)-1
+    % complete feed forward
     x_dot(i,:) = tr2delta(tc(:,:,i),tc(:,:,i+1))/dt;
+    
+    % update from current position
+    x_dot(i,:) = tr2delta(r.fkine(q(i,:)),tc(:,:,i+1))/dt;
+    
     J = r.jacob0(q(i,:));
     
     % direct psuedo inverse
@@ -135,15 +142,19 @@ rc = t2r(tc);
 r0 = t2r(T0);
 rr = zeros(size(rc));
 zyxpath = zeros(size(rc,3),3);
+zyxdesired = zeros(size(rc,3),3);
+tpath = r.fkine(q);
 
-for i = 1:size(rr,3)
+for i = 1:size(rr,3)-1
     rr = r0'*rc(:,:,i);
-    zyxpath(i,:) = tr2rpy(rr,'zyx');
+    zyxdesired(i,:) = tr2rpy(rr,'zyx');
+    zyxpath(i,:) = tr2rpy(r0'*t2r(tpath(:,:,i)),'zyx');
 end
 
 figure(7); clf; hold on;
 plot(zyx(:,1),zyx(:,2),'*');
-plot(zyxpath(:,2),zyxpath(:,3));
+plot(zyxdesired(:,2),zyxdesired(:,3),'^');
+plot(zyxpath(:,2),zyxpath(:,3),'.');
 
 
 axis equal
