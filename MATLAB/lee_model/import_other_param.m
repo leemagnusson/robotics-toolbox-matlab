@@ -26,8 +26,10 @@ end
 %   column3: text (%s)
 %	column4: text (%s)
 %   column5: double (%f)
+%   column6: double (%f)
+%   column7: double (%f)
 % For more information, see the TEXTSCAN documentation.
-formatSpec = '%f%s%s%s%f%[^\n\r]';
+formatSpec = '%f%s%s%s%f%f%f%[^\n\r]';
 
 %% Open the text file.
 fileID = fopen(filename,'r');
@@ -55,5 +57,5 @@ fclose(fileID);
 % script.
 
 %% Create output variable
-otherparam = table(dataArray{1:end-1}, 'VariableNames', {'link','name1','name2','transmission','motor_constant'});
+otherparam = table(dataArray{1:end-1}, 'VariableNames', {'link','name1','name2','transmission','motor_constant','rated_joint_torque','mot_peak_torque'});
 
