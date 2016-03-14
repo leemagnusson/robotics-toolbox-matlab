@@ -5,39 +5,22 @@
     %for lognum = 1:length(varargin)
         %logname = varargin{lognum}
 
-        data = import_log(logname);
-
-
+        %%
+        lowpass_cut = 10;
+        dt = 1/3000;
+        % Import joint positions from logfile:
+        [t, q, eef, ws] = import_logfile(logname, 'interp_dt', dt, 'spline', 'smooth', lowpass_cut);
+        
         %%
         
-        % Get joint position data from log file (where is this
-        % documented?)
-        qm = data(:,[129,134,89,94,139,144,119,154,149]);
-
-        % Freq to filter q (in Hz)
-        lowpass_cut = 10;
-        tm = data(:,2)-data(1,2);
-        dt = 1/3000;
-        t = 0:dt:max(tm);
-        q = interp1(tm,qm,t,'spline');
-
-        %qs = idealfilt(t,q,1000,'lowpass',2);
-        %qs = idealfilter(timeseries(q,t),[0,1000],'pass')
-        %q = qs.Data
-        Wn = lowpass_cut/((1/dt)/2)
-        [b,a] = butter(4, Wn, 'low');
-        %freqz(b,a,1000000,3000)
-        
-        qs = filtfilt(b, a, q);
-        
-        figure(lognum);
+        fig = figure('units', 'normalized', 'outerposition',[0 0 1 1]);
       
         subplot(2, 3, 1);
-        plot(t,qs);
+        plot(t,q);
         title([logname, ' q filtered']);
         
-        qd = [zeros(1,size(qs,2));diff(qs,1,1)]/dt;
-        qdd = [zeros(1,size(qs,2));diff(qs,2,1);zeros(1,size(qs,2))]/dt^2;
+        qd = [zeros(1,size(q,2));diff(q,1,1)]/dt;
+        qdd = [zeros(1,size(q,2));diff(q,2,1);zeros(1,size(q,2))]/dt^2;
         
         subplot(2, 3, 2);
         plot(t, qd);
@@ -61,12 +44,13 @@
 
         %% Inverse dynamics 
 
-        T = r.rne(qs,qd,qdd);
+        T = r.rne(q,qd,qdd);
 
         subplot(2, 3, 4);
         plot(t,T);
         grid on;
-        legend(other_param.name1,'location','best');
+        leg = legend(other_param.name1,'location','best');
+        set(leg, 'visible', 'off');
         accel = max(abs(T),[],1) - abs(mean(T))
         title(strcat(logname, ' joint torque'));
 
@@ -77,7 +61,8 @@
         Pm_sum = sum(Pm,2);
         subplot(2, 3, 5); hold on;
         plot(t,Pm_sum,'c-.', t,Pm);
-        legend(['Power sum', other_param.name1'], 'location','best');
+        leg = legend(['Power sum', other_param.name1'], 'location','best');
+        set(leg, 'visible', 'off');
         title(strcat(logname, ' motor power'));
         
         subplot(2, 3, 6);
@@ -86,6 +71,9 @@
         title('Mot power histogram (log scale)');
         
         Pm_return(:,lognum) = [max(Pm_sum), sqrt(mean(Pm_sum.^2))];
-
+        
+        %%
+        
+        saveas(fig.Number,outfile,'pdf');
     %end
 %end
