@@ -3,6 +3,14 @@ function [ t, q, eef, ws ] = import_logfile( logname , varargin)
 %   preparsed to only include new data points
 %   q, cmd of [should_p, should_r, elbow, forearm, spher_b, spher_r,
 %   pit_a+pit_b+pit_c, transl, rotate]
+%
+%   Options:
+%       'selective' - Only use points where trajectory changed
+%       'interp_dt' <dt> - Specify the dt to use for interpolation
+%                           (otherwise uses 1kHz default)
+%       'spline' - Do spine interpolation between points
+%       'smooth' <cutoff> - Smooth q with a lowpass filter with <cutoff>
+%                           cutoff frequency in Hz
 
 
 data = import_log(logname);
@@ -46,15 +54,29 @@ end
 eef = data(good_inds,eef_cols);
 t = data(good_inds,2)-data(1,2);
 
+ti = 0:interp_dt:max(t);
+
 if any(strcmp('spline',varargin))
-    ti = 0:interp_dt:max(t);
     eef = interp1(t,eef,ti,'spline');
     q = interp1(t,q,ti,'spline');
-    t = ti;
+else % linear interpolation
+    eef = interp1(t,eef,ti);
+    q = interp1(t,q,ti);
 end
 
-if any(strcmp('smooth',varargin))
-    ti = 0:interp_dt:max(t);
+t = ti;
+
+ind = find(strcmp('smooth',varargin));
+if ind
+    %ti = 0:interp_dt:max(t);    % Not sure why this was here
+    
+    lowpass_cut = varargin{ind+1}; % Lowpas filter cutoff
+    
+    Wn = lowpass_cut/((1/interp_dt)/2);
+    [b,a] = butter(4, Wn, 'low');
+        
+    qs = filtfilt(b, a, q);
+    q = qs;
 
 end
 
