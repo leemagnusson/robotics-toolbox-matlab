@@ -11,13 +11,64 @@ function [ t, q, eef, ws ] = import_logfile( logname , varargin)
 %       'spline' - Do spine interpolation between points
 %       'smooth' <cutoff> - Smooth q with a lowpass filter with <cutoff>
 %                           cutoff frequency in Hz
+%       'pitch1' - Only read in one of the pitch joints instead of all 3
+%       'arm' <armnum> = Which arm to import. If unspecified, uses arm0
 
 
 data = import_log(logname);
 ws = [-1,1,-1,1,-1,1];
-eef_cols = 45:51;
 t_tmp = data(:,2)-data(1,2);
-qcols = [125,130,85,91,135,140,105,110,115,150,145];
+
+% See which arm specified
+ind = find(strcmp('arm',varargin));
+if ind
+    arm = varargin{ind+1};
+else
+    % If not specified, just use arm0
+    arm = 0;
+end
+
+switch arm
+    case 0 %arm0
+        % Do we get all 3 pitch joints or just 1?
+        if any(strcmp('pitch1', varargin))
+            % Just one
+            qcols = [125,130,85,90,135,140,105,150,145];
+        else
+            % All three
+            qcols = [125,130,85,90,135,140,105,110,115,150,145];
+        end
+        eef_cols = 45:51;
+    case 1 %arm1
+        if any(strcmp('pitch1', varargin))
+            qcols = [276,281,236,241,286,291,256,301,296];
+        else
+            qcols = [276,281,236,241,286,291,256,261,266,301,296];
+        end    
+        eef_cols = 196:202;
+    case 2 %arm2
+        if any(strcmp('pitch1', varargin))
+            qcols = [427,432,387,392,437,442,407,452,447];
+        else
+            qcols = [427,432,387,392,437,442,407,412,417,452,447];
+        end
+        eef_cols = 347:353;
+    case 3 %arm3
+        if any(strcmp('pitch1', varargin))
+            qcols = [578,583,538,543,588,593,558,603,598];
+        else
+            qcols = [578,583,538,543,588,593,558,563,568,603,598];
+        end
+        eef_cols = 498:504;
+    otherwise
+        disp('Invalid arm specified. Use 0-3.');
+        return
+end
+
+
+
+
+% Special logs? Emailed Lee to ask about these...
 switch logname
     case 'logs/hernia.log'
         data = data(t_tmp>34,:);
