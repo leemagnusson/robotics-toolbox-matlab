@@ -11,13 +11,13 @@ function [ t, q, eef, ws ] = import_logfile( logname , varargin)
 %       'spline' - Do spine interpolation between points
 %       'smooth' <cutoff> - Smooth q with a lowpass filter with <cutoff>
 %                           cutoff frequency in Hz
-%       'pitch1' - Only read in one of the pitch joints instead of all 3
 %       'arm' <armnum> = Which arm to import. If unspecified, uses arm0
 
-
-data = import_log(logname);
-ws = [-1,1,-1,1,-1,1];
-t_tmp = data(:,2)-data(1,2);
+logfile = fopen(logname, 'r');
+if logfile == -1
+    display('Failed to open ', logname);
+    return;
+end
 
 % See which arm specified
 ind = find(strcmp('arm',varargin));
@@ -28,58 +28,67 @@ else
     arm = 0;
 end
 
-switch arm
-    case 0 %arm0
-        % Do we get all 3 pitch joints or just 1?
-        if any(strcmp('pitch1', varargin))
-            % Just one
-            qcols = [125,130,85,90,135,140,105,150,145];
-        else
-            % All three
-            qcols = [125,130,85,90,135,140,105,110,115,150,145];
+col_locations = table;
+
+line = fgets(logfile);
+while (ischar(line))
+    % Get arm number and first word
+    matches = regexp(line, 'arm([0123]) (\w*)', 'tokens');
+    %is this our arm?
+    if ~isempty(matches) && (str2num(matches{1}{1}) == arm)
+
+        % Handle eef pose line
+        if strcmp(matches{1}{2}, 'commanded_eef_pose')
+            eeftokens = regexp(line, 'commanded_eef_pose=(\d*) \.\.\. (\d*)', 'tokens');
+            if size(eeftokens{1},2) ~= 2
+                disp('EEF token parse error:');
+                disp(line);
+                return;
+            end
+            col_locations.commanded_eef_pose = str2num(eeftokens{1}{1}):str2num(eeftokens{1}{2});
+            
+         % Handle all joint lines:   
+        elseif any(strcmp(matches{1}{2}, {'elbow', 'forearm', 'pit_a', 'pit_b', 'pit_c', 'should_p', ...
+                'should_r', 'spher_b', 'spher_r', 'rotate', 'transl'}))
+            jointcmdtoken = regexp(line, 'cmd=(\d*)', 'tokens');
+            if size(jointcmdtoken{1},2) ~= 1
+                disp('Joint parse error for joint: ', matches{1}{2});
+                disp(line);
+                return;
+            end
+            col_locations.(matches{1}{2}) = str2num(jointcmdtoken{1}{1});
         end
-        eef_cols = 45:51;
-    case 1 %arm1
-        if any(strcmp('pitch1', varargin))
-            qcols = [276,281,236,241,286,291,256,301,296];
-        else
-            qcols = [276,281,236,241,286,291,256,261,266,301,296];
-        end    
-        eef_cols = 196:202;
-    case 2 %arm2
-        if any(strcmp('pitch1', varargin))
-            qcols = [427,432,387,392,437,442,407,452,447];
-        else
-            qcols = [427,432,387,392,437,442,407,412,417,452,447];
-        end
-        eef_cols = 347:353;
-    case 3 %arm3
-        if any(strcmp('pitch1', varargin))
-            qcols = [578,583,538,543,588,593,558,603,598];
-        else
-            qcols = [578,583,538,543,588,593,558,563,568,603,598];
-        end
-        eef_cols = 498:504;
-    otherwise
-        disp('Invalid arm specified. Use 0-3.');
-        return
+    elseif ~any(regexp(line, '[a-z]'))
+        % Stop parsing if we have a line with now lowercase letters (means
+        % we're done with the header)
+        break;
+    end
+    line = fgets(logfile);
 end
 
-
-
-
-% Special logs? Emailed Lee to ask about these...
-switch logname
-    case 'logs/hernia.log'
-        data = data(t_tmp>34,:);
-        qcols = [129,134,89,94,139,144,119,154,149];
-        ws = [-.5,.5,-.1,.8,-.1,.7];
-    case 'logs/lowerAnteria.log';
-        qcols = [129,134,89,94,139,144,119,154,149];
-        ws = [-.4,.4,-.5,.5,-.3,.8];
+if size(col_locations,2) ~= 12
+    disp('Parse error, did not find expected 12 columns. Found:');
+    disp(col_locations)
+    return
 end
 
 %%
+
+data = import_log(logname);
+ws = [-1,1,-1,1,-1,1];
+t_tmp = data(:,2)-data(1,2);
+
+%Columns we want:
+qcols = [col_locations.should_p, col_locations.should_r, col_locations.elbow, ...
+    col_locations.forearm, col_locations.spher_b, col_locations.spher_r,      ...
+    col_locations.pit_a, col_locations.pit_b, col_locations.pit_c,            ...
+    col_locations.transl, col_locations.rotate];
+eef_cols = col_locations.commanded_eef_pose;
+
+
+%%
+
+
 
 if any(strcmp('selective',varargin))
     good_inds = 1:20:size(data,1);
@@ -95,12 +104,12 @@ else
 end
 
 
-
-
 q = data(good_inds,qcols);
 if (size(q,2) == 11)
-    q = [q(:,1:6),sum(q(:,7:9),2),q(:,10:end)];
+    q = [q(:,1:6),sum(q(:,7:9),2),q(:,10:end)]; % Sum pitch joint into one joint
 end
+
+
 
 eef = data(good_inds,eef_cols);
 t = data(good_inds,2)-data(1,2);
@@ -130,4 +139,5 @@ if ind
     q = qs;
 
 end
+
 
