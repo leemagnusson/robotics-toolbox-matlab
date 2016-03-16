@@ -1,7 +1,10 @@
+%% Test the robot
+% Plot the robot at different joint input
+% can draw coordinate system
+%%
 clc
 clear all
 close all
-% URDF_file= 'necessity_V1.URDF';
 URDF_file= 'V1_Arm_URDF.URDF';
 urdf_input = URDF(URDF_file);
 link_input = urdf_input.links;
@@ -22,8 +25,8 @@ hold on
 view(62,28)
 axis equal
 for j=1:1
-    %     cla
-    q=[0,0,0,0,0,0,0,0,0,0,0]';
+    cla
+    q=[0,0,0,0,0,0,0,0,0,pi/3,pi/3]';
     q_rcm = convert2rcm(q);
     Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm,base_T);
     for i = 1:18
@@ -38,16 +41,14 @@ for j=1:1
             
         end
         if ismember(i,[1 6 7])
-        draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb',num2str(i-1))
-        hold on
+            draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb',num2str(i))
+            hold on
         end
     end
     T_eef = Arm_Kinematics1(14).Tran_matrix;
     eef = T_eef(1:3,4);
     plot3(eef(1),eef(2),eef(3),'Marker','*','MarkerSize',20)
     hold on
-    Arm_Kinematics1(8).Tran_matrix(1:3,3)-Arm_Kinematics1(9).Tran_matrix(1:3,3)
-    Arm_Kinematics1(8).Tran_matrix(1:3,3)-Arm_Kinematics1(10).Tran_matrix(1:3,3)
     axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
     drawnow;
 end

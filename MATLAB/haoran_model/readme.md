@@ -2,13 +2,11 @@ haoran_model
 
 This folder contains kinematics simulation codes written by Haoran Yu
 
-by 3/16/2016 the codes have not been commented
-
 3/16/2016
 
-1. start_up_haoran.m: this is a script
+1. start_up_haoran.m: this is a script that initiate the folder
 
-2. test.m: import URDF and draw robot at home configuration.
+2. main.m: import URDF and draw robot at different joint configuration.
 
 3. resolved_rates.m: run resolved rates by giving the end effector a commanded velocity.
 
