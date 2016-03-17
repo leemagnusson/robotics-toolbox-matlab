@@ -4,7 +4,7 @@ This folder contains kinematics simulation codes written by Haoran Yu
 
 3/16/2016
 
-1. start_up_haoran.m: this is a script that initiate the folder
+1. startup_haoran.m: this is a script that initiate the folder
 
 2. main.m: import URDF and draw robot at different joint configuration.
 
