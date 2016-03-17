@@ -41,7 +41,7 @@ for i = 1:length(qtest)
     Pm = motor_power_heat(Tj,.01*sign(Tj),other_param);
     Pm_sum = sum(Pm)
     
-    pause
+    
 end
 
 %set(gcf,'Renderer','painters')
