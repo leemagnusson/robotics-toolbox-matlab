@@ -26,7 +26,7 @@ view(62,28)
 axis equal
 for j=1:1
     cla
-    q=[0,0,0,0,0,0,0,0,0,pi/3,pi/3]';
+    q=[0,0,0,0,0,0,0,0,0,0,0]';
     q_rcm = convert2rcm(q);
     Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm,base_T);
     for i = 1:18
@@ -40,15 +40,31 @@ for j=1:1
             hold on
             
         end
-        if ismember(i,[1 6 7])
+        if ismember(i,[])
             draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb',num2str(i))
+            hold on
+        end
+        if ismember(i,[1])
+            draw_coordinate_system([0.13 0.13 0.13],R,d,'rgb','b')
+            hold on
+        end
+        if ismember(i,[7])
+            draw_coordinate_system([0.1 0.1 0.1],R,d,'rgb','car')
+            hold on
+        end
+        if ismember(i,[14])
+            draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb','eef')
+            hold on
+        end
+        if ismember(i,[18])
+            draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb','rcm')
             hold on
         end
     end
     T_eef = Arm_Kinematics1(14).Tran_matrix;
     eef = T_eef(1:3,4);
-    plot3(eef(1),eef(2),eef(3),'Marker','*','MarkerSize',20)
-    hold on
+%     plot3(eef(1),eef(2),eef(3),'Marker','*','MarkerSize',20)
+%     hold on
     axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
     drawnow;
 end

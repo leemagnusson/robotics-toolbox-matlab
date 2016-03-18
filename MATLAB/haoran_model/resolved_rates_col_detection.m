@@ -60,8 +60,8 @@ for j=1:100
                     number = number + 1;
                 end
             end
-            plotSTL(VertexData_tran1(:,i),rgba)
-            hold on
+%             plotSTL(VertexData_tran1(:,i),rgba)
+%             hold on
         end
     end
     %% Arm 2
@@ -89,8 +89,8 @@ for j=1:100
                     number = number + 1;
                 end
             end
-            plotSTL(VertexData_tran2(:,i),rgba)
-            hold on
+%             plotSTL(VertexData_tran2(:,i),rgba)
+%             hold on
         end
     end
     %% detect collision
@@ -101,16 +101,16 @@ for j=1:100
         % detect points from arm2 inside arm1 volume
         triangle_data1 = delaunayTriangulation(point_clouds_tran1{i}'); % triangulate the point clouds
         collision_index1 = pointLocation (triangle_data1,point_clouds_all_arm2'); % detect points inside the triangulate volume
-        %                 tetramesh(dt1);
-        %                 hold on
+                        tetramesh(triangle_data1);
+                        hold on
         if ~isempty(find (isnan(collision_index1) == 0,1))
             collision = true;
         end
         % detect points from arm1 inside arm2 volume
         triangle_data2 = delaunayTriangulation(point_clouds_tran2{i}'); % triangulate the point clouds
         collision_index2 = pointLocation (triangle_data2,point_clouds_all_arm1'); % detect points inside the triangulate volume
-        %                 tetramesh(dt2);
-        %                 hold on
+                        tetramesh(triangle_data2);
+                        hold on
         if ~isempty(find (isnan(collision_index2) == 0,1))
             collision = true;
         end
