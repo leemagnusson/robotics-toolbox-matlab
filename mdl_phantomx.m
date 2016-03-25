@@ -49,7 +49,6 @@ L(4) = Revolute('a', -105);
 % s='Rz(q1) Tz(L1) Ry(q2) Tz(L2) Ry(q3) Tz(L3) Ry(q4) Tz(L4)'
 % DHFactor(s)
 
-px = SerialLink(L, 'name', 'PhantomX', 'manufacturer', 'Trossen Robotics', ...
-    'plotopt', {'tilesize', 50});
+px = SerialLink(L, 'name', 'PhantomX', 'manufacturer', 'Trossen Robotics');
 qz = [0 0 0 0];
 px.tool = trotz(-pi/2) * trotx(pi/2);

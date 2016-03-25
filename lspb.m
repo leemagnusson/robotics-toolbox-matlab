@@ -19,9 +19,6 @@
 % figure.
 %
 % Notes::
-% - Velocity is in units of distance per trajectory step, not per second.
-% - Acceleration is in units of distance per trajectory step squared, not
-%   per second squared. 
 % - For some values of V no solution is possible and an error is flagged.
 %
 % References::
@@ -49,9 +46,6 @@
 % along with RTB.  If not, see <http://www.gnu.org/licenses/>.
 %
 % http://www.petercorke.com
-
-%TODO
-% add a 'dt' option, to convert to everything to units of seconds
 
 function [s,sd,sdd] = lspb(q0, q1, t, V)
 

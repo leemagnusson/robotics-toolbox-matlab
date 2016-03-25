@@ -266,17 +266,14 @@ classdef Quaternion
             n = double(q1)*double(q2)';
         end
 
-        function q = interp(Q1, Q2, r, varargin)
+        function q = interp(Q1, Q2, r)
         %Quaternion.interp Interpolate quaternions
         %
-        % QI = Q1.interp(Q2, S, OPTIONS) is a unit-quaternion that interpolates a rotation 
+        % QI = Q1.interp(Q2, S) is a unit-quaternion that interpolates a rotation 
         % between Q1 for S=0 and Q2 for S=1.
         %
         % If S is a vector QI is a vector of quaternions, each element
         % corresponding to sequential elements of S.
-        %
-        % Options::
-        % 'shortest'   Take the shortest path along the great circle
         %
         % Notes::
         % - This is a spherical linear interpolation (slerp) that can be interpretted 
@@ -293,20 +290,13 @@ classdef Quaternion
             q1 = double(Q1);
             q2 = double(Q2);
             
-            opt.shortest = false;
-            
-            opt = tb_optparse(opt, varargin);
-            
 
             cosTheta = q1*q2';
-            
-            if opt.shortest
-                % take shortest path along the great circle, patch by Gauthier Gras
-                if cosTheta < 0
-                    q1 = - q1;
-                    cosTheta = - cosTheta;
-                end;
-            end
+            % take shortest path along the great circle, patch by Gauthier Gras
+            if cosTheta < 0
+                q1 = - q1;
+                cosTheta = - cosTheta;
+            end;
             
             theta = acos(cosTheta);
             count = 1;

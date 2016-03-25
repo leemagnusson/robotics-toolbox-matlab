@@ -84,8 +84,10 @@ function [t, q, qd] = fdyn(robot, t1, torqfun, q0, qd0, varargin)
     q0 = [q0(:); qd0(:)];
         
     [t,y] = ode45(@fdyn2, [0 t1], q0, [], robot, torqfun, varargin{:});
+%    [y] = ode1(@fdyn2, t1, q0, robot, torqfun, varargin{:});
     q = y(:,1:n);
     qd = y(:,n+1:2*n);
+    %t = t1;
 
 end
 
@@ -104,8 +106,8 @@ end
 % if not given zero joint torques are assumed.
 %
 % The result is XDD = [QD QDD].
-function xd = fdyn2(t, x, robot, torqfun, varargin)
-
+function [xd,qdd] = fdyn2(t, x, robot, torqfun, varargin)
+    
     n = robot.n;
 
     q = x(1:n)';
@@ -117,7 +119,6 @@ function xd = fdyn2(t, x, robot, torqfun, varargin)
     else
         tau = zeros(1,n);
     end
-    
     qdd = robot.accel(x(1:n,1)', x(n+1:2*n,1)', tau);
     xd = [x(n+1:2*n,1); qdd];
 end
