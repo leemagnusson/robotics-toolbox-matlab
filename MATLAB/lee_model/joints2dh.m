@@ -6,7 +6,7 @@ function [dh,T_mod,T] = joints2dh(j)
 %   Use just the location of the axes to determine new coordinate systems
 %   for dh
 
-n = length(j);
+n = length(j);calc
 dh = zeros(n,6);
 
 

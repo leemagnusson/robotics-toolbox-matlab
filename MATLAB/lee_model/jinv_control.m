@@ -11,7 +11,7 @@ dt = t(2)-t(1);
 
 global q0 r
 
-q00 = q0 + [-1,0,1,0,0,0,1];%+[-.5,0,0,.1,-.5,0,0];
+q00 = q0 + [-1,0,1,0,0,0,1,0,0];%+[-.5,0,0,.1,-.5,0,0];
 T0 = r.fkine(q00);
 x0 = T0(1:3,4);
 xf = x0+[0;-.1;-.1];
@@ -32,7 +32,7 @@ tc = ctraj(T0,Tf,length(t));
 tc(:,:,end+1) = tc(:,:,end);
 x_dot = zeros(length(t),6);
 q_dot = zeros(length(t),7);
-q = zeros(length(t),7);
+q = zeros(length(t),length(q0));
 q(1,:) = q00;
 for i = 1:length(t)-1
     x_dot(i,:) = tr2delta(tc(:,:,i),tc(:,:,i+1))/dt;

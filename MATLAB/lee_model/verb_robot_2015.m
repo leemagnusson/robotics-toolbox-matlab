@@ -8,7 +8,7 @@
 
 close all;
 
-global r other_param
+global r other_param robot_dir
 
 robot_dir = 'robot 2015'
 
