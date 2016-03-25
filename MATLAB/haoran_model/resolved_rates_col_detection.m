@@ -1,17 +1,17 @@
 %% Resolved rates single arm
 % This code runs resolved rates for single arm with desired task space
 % input.
+% by Haoran Yu 3/16/2016
 %%
 % init
 clc
 clear all
 close all
-URDF_file= 'V1_Arm_URDF.URDF';
-urdf_input = URDF(URDF_file);
-link_input = urdf_input.links;
-joint_input = urdf_input.joints;
+load('URDF_info.mat')
 load('point_clouds_all.mat');
-load('VertexData_origin.mat')
+load('VertexData_origin.mat');
+
+% init base transformation for both arms
 base_T1=eye(4);
 base_T2=[RotationMatrix_rad(pi/2,[0;0;1]) [-0.8; -0.8; 0]; 0 0 0 1];
 

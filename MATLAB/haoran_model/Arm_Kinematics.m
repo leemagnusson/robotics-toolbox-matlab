@@ -18,6 +18,7 @@ classdef Arm_Kinematics
         inertia_matrix % inertia matrix of the link
         color % color of the link
         parent % parent link/joint pair
+        jnt_limit % joint limit
     end
     methods
         function Arm_Kinematics_out = Arm_Kinematics(link_input,joint_input,q_rcm,base_T)
@@ -41,32 +42,38 @@ classdef Arm_Kinematics
                     if i==1
                         % base link
                         Arm_Kinematics_out(i).Tran_matrix = base_T;
+                        Arm_Kinematics_out(i).jnt_limit = [[];[]];
                     else
+                        if isfield(joint_input{joint_number},'limit')
+                            Arm_Kinematics_out(i).jnt_limit = [joint_input{joint_number}.limit.lower; joint_input{joint_number}.limit.upper];
+                        else
+                            Arm_Kinematics_out(i).jnt_limit = [[];[]];
+                        end
                         % joint translation and fixed frame roll pitch yaw
-                        d = joint_input{joint_number}.origin.xyz;
-                        euler = joint_input{joint_number}.origin.rpy;
+                        d = joint_input{joint_number}.origin.xyz';
+                        euler = joint_input{joint_number}.origin.rpy';
                         % active joint axis and joint value
-                        if i>14
+                        if strcmp(joint_input{joint_number}.type, 'fixed') || ~isempty(strfind(joint_input{joint_number}.name,'jaw'))
                             joint_value = 0;
                             joint_axis = [0;0;1];
                         else
                             joint_value = q_rcm(joint_number);
-                            joint_axis = joint_input{joint_number}.axis.xyz;
+                            joint_axis = joint_input{joint_number}.axis.xyz';
                         end
                         % homogeneous transformation for revolute and
                         % prismatic joints
-                        if i~=11
+                        if ~strcmp(joint_input{joint_number}.type, 'prismatic')
                             rot_matrix = RotationMatrix_rad(euler(3),[0;0;1])*...
                                 RotationMatrix_rad(euler(2),[0;1;0])*...
                                 RotationMatrix_rad(euler(1),[1;0;0])*...
                                 RotationMatrix_rad(joint_value,joint_axis);
-                            T = [rot_matrix d'; 0 0 0 1];
+                            T = [rot_matrix d; 0 0 0 1];
                         else
                             rot_matrix = RotationMatrix_rad(euler(3),[0;0;1])*...
                                 RotationMatrix_rad(euler(2),[0;1;0])*...
                                 RotationMatrix_rad(euler(1),[1;0;0]);
-                            disp = (joint_axis * joint_value)';
-                            T = [rot_matrix d' + rot_matrix * disp; 0 0 0 1];
+                            disp = joint_axis * joint_value;
+                            T = [rot_matrix d + rot_matrix * disp; 0 0 0 1];
                         end
                         Arm_Kinematics_out(i).Tran_matrix = T;
                     end

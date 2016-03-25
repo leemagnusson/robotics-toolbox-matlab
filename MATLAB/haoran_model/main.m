@@ -1,70 +1,33 @@
 %% Test the robot
 % Plot the robot at different joint input
 % can draw coordinate system
+% by Haoran Yu 3/16/2016
 %%
 clc
 clear all
 close all
-URDF_file= 'V1_Arm_URDF.URDF';
-urdf_input = URDF(URDF_file);
-link_input = urdf_input.links;
-joint_input = urdf_input.joints;
+load('URDF_info.mat')
+load('VertexData_origin.mat')
 base_T=eye(4);
-Arm_Kinematics_init = Arm_Kinematics(link_input,joint_input,zeros(13,1),base_T);
-for i=1:18
-    if exist(Arm_Kinematics_init(i).stl_name, 'file') == 2
-        VertexData_origin(:,i)=stl2matlab(Arm_Kinematics_init(i).stl_name);
-    else
-        VertexData_origin(:,i) = {[];[];[]};
-    end
-end
-fclose('all');
 
 figure(1)
 hold on
 view(62,28)
 axis equal
 for j=1:1
-    cla
-    q=[0,0,0,0,0,0,0,0,0,0,0]';
+%     cla
+    q=[-pi/4,pi/4,0,0,pi/4,pi,-pi/4,0,0,0,0]';
     q_rcm = convert2rcm(q);
     Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm,base_T);
-    for i = 1:18
-        T = Arm_Kinematics1(i).Tran_matrix;
-        R = T(1:3,1:3);
-        d = T(1:3,4);
-        if isempty(VertexData_origin{1,i}) == 0
-            VertexData_tran = transformSTL(VertexData_origin(:,i),R,d);
-            rgba = Arm_Kinematics1(i).color;
-            plotSTL(VertexData_tran,rgba)
-            hold on
-            
-        end
-        if ismember(i,[])
-            draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb',num2str(i))
-            hold on
-        end
-        if ismember(i,[1])
-            draw_coordinate_system([0.13 0.13 0.13],R,d,'rgb','b')
-            hold on
-        end
-        if ismember(i,[7])
-            draw_coordinate_system([0.1 0.1 0.1],R,d,'rgb','car')
-            hold on
-        end
-        if ismember(i,[14])
-            draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb','eef')
-            hold on
-        end
-        if ismember(i,[18])
-            draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb','rcm')
-            hold on
-        end
-    end
+    Draw_Robot_Arm(Arm_Kinematics1,VertexData_origin,[1 2 3]);
     T_eef = Arm_Kinematics1(14).Tran_matrix;
     eef = T_eef(1:3,4);
+    Arm_Kinematics1(18).Tran_matrix(1:3,4)
+    norm(Arm_Kinematics1(18).Tran_matrix(1:3,4)-Arm_Kinematics1(14).Tran_matrix(1:3,4));
 %     plot3(eef(1),eef(2),eef(3),'Marker','*','MarkerSize',20)
 %     hold on
     axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
     drawnow;
 end
+light('Position',[1 3 2]);
+light('Position',[-3 -1 -3]);

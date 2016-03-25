@@ -1,4 +1,4 @@
-function handlePlot=plotSTL(VertexData,rgba,FVCD,fignr,holdoff_flag)
+function handlePlot=plotSTL_gui(VertexData,rgba,axes_handle)
 % PLOTSTL plots surface patches from STL-file
 %
 % Usage:
@@ -24,55 +24,14 @@ function handlePlot=plotSTL(VertexData,rgba,FVCD,fignr,holdoff_flag)
 %
 
 
-if nargin<5
-    holdoff_flag=1;
-    if nargin<4
-        fignr=1;
-        if nargin<3
-            FVCD=[];
-            if nargin<2
-                error('plotSTL must have an input with VertexData');
-            end
-        end
-    end
-end
 
-if isempty(fignr)
-    fignr=1;
-else
-    fignr=round(fignr);
-end
-
-if isempty(holdoff_flag)
-    holdoff_flag=1;
-elseif not(holdoff_flag==0 | holdoff_flag==1)
-    holdoff_flag=1;
-end
-
-if fignr>0
-    figure(fignr),hold on
-end
-
-if isempty(FVCD)
-
-    hPlot = patch(VertexData{1},VertexData{2},VertexData{3},zeros(size(VertexData{1})));
+    hPlot = patch(VertexData{1},VertexData{2},VertexData{3},zeros(size(VertexData{1})),'parent',axes_handle);
     set(hPlot,'facec',rgba(1:3),'EdgeColor','none','FaceLighting','flat');
 %     material metal 
 %     set(hPlot,'facec',[0.8 0.4 0.4]);
 %     set(hPlot,'facec', rgba(1:3));
     alpha(hPlot,rgba(4));
-elseif length(FVCD(:))==3
-    
-    hPlot = patch(VertexData{1},VertexData{2},VertexData{3},zeros(size(VertexData{1})));
-    set(hPlot,'facec','flat','EdgeColor','none');
-    set(hPlot,'facec',FVCD);    
-    
-else
-    
-    hPlot = patch(VertexData{1},VertexData{2},VertexData{3},FVCD);
-    set(hPlot,'facec','flat','EdgeColor','none');
-    
-end
+
 
 axis image
 
@@ -96,9 +55,6 @@ zl(1)=zl(1)-sc*dz;
 zl(2)=zl(2)+sc*dz;
 zlim(zl);
 
-if holdoff_flag
-    hold off;
-end
 
 if nargout>0
     handlePlot=hPlot;
