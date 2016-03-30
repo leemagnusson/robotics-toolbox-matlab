@@ -19,8 +19,8 @@ q_rcm = convert2rcm(q);
 Arm_Kinematics_init = Arm_Kinematics(link_input,joint_input,q_rcm,base_T);
 p_eef = Arm_Kinematics_init(14).Tran_matrix(1:3,4);
 R_eef = Arm_Kinematics_init(14).Tran_matrix(1:3,1:3);
-p_t = p_eef; % target position
-R_t = R_eef * RotationMatrix_rad(pi,[1;0;0]); % target orientation
+p_t = p_eef + [0.05;0.05;0.05]; % target position
+R_t = R_eef * RotationMatrix_rad(pi/3,[1;0;0]) * RotationMatrix_rad(pi/4,[0;1;0]); % target orientation
 ncycle_t = 5;
 ncycle_r = 2;
 v_max = 0.25;
@@ -38,6 +38,7 @@ axis equal
 p_err = [100;100;100];
 theta_err = 100;
 index = 1;
+movie_index = 1;
 while((norm(p_err) > p_eps) || (abs(theta_err) > theta_eps))
     cla
     Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm,base_T);
@@ -64,7 +65,6 @@ while((norm(p_err) > p_eps) || (abs(theta_err) > theta_eps))
         omega_eef = omega_max * vect_err;
     end
     t_eef = [v_eef;omega_eef];
-        [t_eef [p_err;0;0;0]]
     [J_rcm,J_car,J_all] = calc_Jacobian_all(Arm_Kinematics1);
     % Calculate Jacobian and q_dot
     %     J = J_all;
@@ -99,5 +99,9 @@ while((norm(p_err) > p_eps) || (abs(theta_err) > theta_eps))
     draw_coordinate_system([0.1 0.1 0.1],R_t,p_t,'rgb','t')
     hold on
     axis([-0.8 0.8 -1.2 0.3 -0.3 0.9])
+    light('Position',[1 3 2]);
+    light('Position',[-3 -1 -3]);
     drawnow;
+    F(movie_index) = getframe;
+        movie_index = movie_index + 1;
 end

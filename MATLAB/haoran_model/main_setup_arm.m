@@ -1,11 +1,13 @@
 clc
 clear all
 close all
-load('URDF_info.mat')
-load('VertexData_origin.mat')
+load('URDF_info.mat');
+load('VertexData_origin.mat');
 load('VertexData_Hernia_Body.mat');
 % load('q_init_setup.mat');
-load('q_init_setup_hernia_optimized4.mat');
+load('q_init_setup_hernia_optimized5.mat');
+load('Tool_path_left.mat');
+load('Tool_path_right.mat');
 ARM_setup_hernia
 figure(1)
 hold on
@@ -26,14 +28,28 @@ draw_coordinate_system([0.02 0.02 0.02],R_Trocar2,Trocar2,'rgb','t2')
 hold on
 draw_coordinate_system([0.02 0.02 0.02],R_Trocar3,Trocar3,'rgb','t3')
 hold on
+draw_coordinate_system([0.02 0.02 0.02],R_Camera,p_Camera,'rgb','c')
+hold on
 VertexData_hernia_tran = transformSTL(VertexData_Hernia_Body,R_Hernia_Body,Hernia_Body);
 rgba = [0 0 1 0.1];
-plotSTL(VertexData_hernia_tran,rgba)
+plotSTL(VertexData_hernia_tran,rgba);
 hold on
+
+for j = 1 : length(Tool_path_left)
+    Tool_path_left(1:3,4,j) = R_Camera * Tool_path_left(1:3,4,j) + p_Camera;
+    Tool_path_left(1:3,1:3,j) = R_Camera * Tool_path_left(1:3,1:3,j);
+    Tool_path_right(1:3,4,j) = R_Camera * Tool_path_right(1:3,4,j) + p_Camera;
+    Tool_path_right(1:3,1:3,j) = R_Camera * Tool_path_right(1:3,1:3,j);
+    plot3(Tool_path_left(1,4,j),Tool_path_left(2,4,j),Tool_path_left(3,4,j),'Color','r','Marker','.')
+    hold on
+    plot3(Tool_path_right(1,4,j),Tool_path_right(2,4,j),Tool_path_right(3,4,j),'Color','g','Marker','.')
+    hold on
+end
+
 for index = 1:3
     q_rcm = convert2rcm(q_init_setup(:,index));
     Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm,base_T_setup(:,:,index));
-    Draw_Robot_Arm(Arm_Kinematics1,VertexData_origin);
+    Draw_Robot_Arm(Arm_Kinematics1,VertexData_origin,[14]);
     index_jnt_limit = 1;
     for i = 1:length(Arm_Kinematics1)
         if ~isempty(Arm_Kinematics1(i).jnt_limit)
@@ -52,7 +68,7 @@ for index = 1:3
 %     hold on
 %     plot3(eef(1),eef(2),eef(3),'Marker','*','MarkerSize',20)
 %     hold on
-%     axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
+    axis([ -0.6 0.8 -0.8 0.9 -0.4 0.9])
     
 end
 plot3(Hernia(1),Hernia(2),Hernia(3),'Marker','o','MarkerSize',10)

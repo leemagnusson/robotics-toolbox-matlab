@@ -405,7 +405,7 @@
       <material
         name="">
         <color
-          rgba="1 0 0 1" />
+          rgba="0.5 0 0.5 1" />
       </material>
     </visual>
     <collision>

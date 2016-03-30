@@ -13,7 +13,7 @@ if nargin > 1
         end
         if nargin > 2
             if ismember(i,Frames)
-                draw_coordinate_system([0.07 0.07 0.07],R,d,'rgb',num2str(i))
+                draw_coordinate_system([0.02 0.02 0.02],R,d,'rgb',num2str(i))
                 hold on
             end
         end

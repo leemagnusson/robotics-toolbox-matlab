@@ -10,7 +10,7 @@ close all
 ARM_setup_hernia
 load('URDF_info.mat')
 load('VertexData_origin.mat')
-load('q_init_setup_hernia_optimized4.mat')
+% load('q_init_setup_hernia_optimized4.mat')
 % init resolved rates
 
 dt = 0.01;
@@ -23,13 +23,14 @@ theta_eps = 1 * pi/180;
 figure(1)
 hold on
 view(3)
-view(-2,56)
+view(-75,38)
 % camzoom(5)
 axis equal
-
+movie_index = 1;
 for index = 1:3
     
-    q = q_init_setup(:,index);
+    %     q = q_init_setup(:,index);
+    q = q_set(:,index);
     q_rcm = convert2rcm(q);
     Arm_Kinematics_init = Arm_Kinematics(link_input,joint_input,q_rcm,base_T_setup(:,:,index));
     p_rcm = Arm_Kinematics_init(18).Tran_matrix(1:3,4);
@@ -83,17 +84,27 @@ for index = 1:3
         hold on
         draw_coordinate_system([0.1 0.1 0.1],Arm_Kinematics1(7).Tran_matrix(1:3,1:3),Arm_Kinematics1(18).Tran_matrix(1:3,4),'rgb','rcm')
         hold on
-        draw_coordinate_system([0.1 0.1 0.1],Arm_Kinematics1(7).Tran_matrix(1:3,1:3),Arm_Kinematics1(7).Tran_matrix(1:3,4),'rgb','roll')
-        hold on
-        %     axis([-0.8 0.8 -1.2 0.3 -0.3 0.9])
+        %         draw_coordinate_system([0.1 0.1 0.1],Arm_Kinematics1(7).Tran_matrix(1:3,1:3),Arm_Kinematics1(7).Tran_matrix(1:3,4),'rgb','roll')
+        %         hold on
+        axis([ -0.6 0.8 -0.8 0.9 -0.4 0.9])
+        light('Position',[1 3 2]);
+        light('Position',[-3 -1 -3]);
         drawnow;
+        
+        F(movie_index) = getframe;
+        movie_index = movie_index + 1;
     end
     
     
     q_rcm = convert2rcm(q);
     Arm_Kinematics_init = Arm_Kinematics(link_input,joint_input,q_rcm,base_T_setup(:,:,index));
     p_eef = Arm_Kinematics_init(12).Tran_matrix(1:3,4);
+    if index==2
+        p_t = p_Camera;
+    else
     p_t = 0.9 * Hernia + 0.1 * Trocar(:,index); % target position
+    end
+    
     R_t = R_Trocar(:,:,index); % target orientation
     
     p_err = p_t - p_eef;
@@ -120,12 +131,17 @@ for index = 1:3
         % update q
         q = q + q_dot_all *dt;
         q_rcm = convert2rcm(q);
-        Draw_Robot_Arm(Arm_Kinematics1,VertexData_origin)
+        Draw_Robot_Arm(Arm_Kinematics1,VertexData_origin,[12])
         
         draw_coordinate_system([0.1 0.1 0.1],R_t,p_t,'rgb','t')
         hold on
-        
+        axis([ -0.6 0.8 -0.8 0.9 -0.4 0.9])
+        light('Position',[1 3 2]);
+        light('Position',[-3 -1 -3]);
         drawnow;
+%         F(movie_index) = getframe;
+%         movie_index = movie_index + 1;
+        
     end
     q_init_setup(:,index) = wrap2pi(q);
 end

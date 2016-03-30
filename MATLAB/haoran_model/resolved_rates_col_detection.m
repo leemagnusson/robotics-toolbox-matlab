@@ -1,4 +1,4 @@
-%% Resolved rates single arm
+%% Resolved rates collision detection
 % This code runs resolved rates for single arm with desired task space
 % input.
 % by Haoran Yu 3/16/2016
@@ -16,13 +16,14 @@ base_T1=eye(4);
 base_T2=[RotationMatrix_rad(pi/2,[0;0;1]) [-0.8; -0.8; 0]; 0 0 0 1];
 
 % init both arms for resolved rates
-q_init = [0;0;0;0;0;0;0;0;0;0;0];
+q_init1 = [0;0;0;0;0;pi/8;-pi/8;0;0;0;0];
+q_init2 = [0;0;0;0;0;0;0;0;0;0;0];
 v_eef1 = [0.0; 0.3; 0.0];
-v_eef2 = [0.3; -0.3; 0.0];
+v_eef2 = [0.0; 0; 0.0];
 dt = 0.01;
-q1 = q_init;
+q1 = q_init1;
 q_rcm1 = convert2rcm(q1);
-q2 = q_init;
+q2 = q_init2;
 q_rcm2 = convert2rcm(q2);
 
 %% resolved rates
@@ -30,16 +31,18 @@ q_rcm2 = convert2rcm(q2);
 figure(1)
 hold on
 % view(62,28)
-view(12,10)
+view(3,22)
 axis equal
+% camzoom(2)
 collision_number = 0;
-for j=1:100
-    cla
+movie_index=1;
+for j=1:60
+    cla;
     %% Arm1
     % kinematics
     Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm1,base_T1);
     % jacobian and resolved rates
-    [J_rcm1,J_car1,J_car_6DoF1,J_all1] = calc_Jacobian_all(Arm_Kinematics1);
+    [J_rcm1,J_car1,J_all1] = calc_Jacobian_all(Arm_Kinematics1);
     J1 = J_rcm1(1:3,1:4);
     q_dot1 = pinv(J1) * v_eef1;
     q_dot_all1 = [0;0;0;0;0;q_dot1;0;0];
@@ -60,15 +63,15 @@ for j=1:100
                     number = number + 1;
                 end
             end
-%             plotSTL(VertexData_tran1(:,i),rgba)
-%             hold on
+            plotSTL(VertexData_tran1(:,i),rgba)
+            hold on
         end
     end
     %% Arm 2
     % kinematics
     Arm_Kinematics2 = Arm_Kinematics(link_input,joint_input,q_rcm2,base_T2);
     % jacobian and resolved rates
-    [J_rcm2,J_car2,J_car_6DoF2,J_all2] = calc_Jacobian_all(Arm_Kinematics2);
+    [J_rcm2,J_car2,J_all2] = calc_Jacobian_all(Arm_Kinematics2);
     J2 = J_rcm2(1:3,1:4);
     q_dot2 = pinv(J2) * v_eef2;
     q_dot_all2 = [0;0;0;0;0;q_dot2;0;0];
@@ -89,8 +92,8 @@ for j=1:100
                     number = number + 1;
                 end
             end
-%             plotSTL(VertexData_tran2(:,i),rgba)
-%             hold on
+            plotSTL(VertexData_tran2(:,i),rgba)
+            hold on
         end
     end
     %% detect collision
@@ -101,23 +104,23 @@ for j=1:100
         % detect points from arm2 inside arm1 volume
         triangle_data1 = delaunayTriangulation(point_clouds_tran1{i}'); % triangulate the point clouds
         collision_index1 = pointLocation (triangle_data1,point_clouds_all_arm2'); % detect points inside the triangulate volume
-                        tetramesh(triangle_data1);
-                        hold on
+        %         tetramesh(triangle_data1);
+        %         hold on
         if ~isempty(find (isnan(collision_index1) == 0,1))
             collision = true;
         end
         % detect points from arm1 inside arm2 volume
         triangle_data2 = delaunayTriangulation(point_clouds_tran2{i}'); % triangulate the point clouds
         collision_index2 = pointLocation (triangle_data2,point_clouds_all_arm1'); % detect points inside the triangulate volume
-                        tetramesh(triangle_data2);
-                        hold on
+        %         tetramesh(triangle_data2);
+        %         hold on
         if ~isempty(find (isnan(collision_index2) == 0,1))
             collision = true;
         end
     end
     
     % show and store collision result
-    collision
+    title(['Collision =' num2str(collision)])
     if collision
         collision_number = collision_number +1;
         % store collision joint values
@@ -128,8 +131,8 @@ for j=1:100
         collision_pnt1(:,collision_number) = p1;
         collision_pnt2(:,collision_number) = p2;
         p = (p1+p2)/2;
-        plot3(p(1),p(2),p(3),'Marker','.','MarkerSize',15);
-        hold on
+        %         plot3(p(1),p(2),p(3),'Marker','.','MarkerSize',15);
+        %         hold on
     end
     %     [p1,p2,d_cp] = find_closest_pnt(center1,center2);
     %
@@ -143,6 +146,12 @@ for j=1:100
     %     plot3(p2(1),p2(2),p2(3),'Marker','o');
     %     hold on
     %     line([p1(1) p2(1)],[p1(2) p2(2)],[p1(3) p2(3)],'LineWidth',2);
-    axis([ -1.6 0.8 -1.2 0.3 -0.3 0.9])
+    draw_coordinate_system([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
+    hold on
+    axis([ -1.1 0.3 -1.0 0.4 -0.1 0.7])
+    light('Position',[1 3 2]);
+    light('Position',[-3 -1 -3]);
     drawnow;
+    F(movie_index) = getframe(gcf);
+    movie_index = movie_index + 1;
 end

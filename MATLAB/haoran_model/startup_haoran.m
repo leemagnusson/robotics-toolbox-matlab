@@ -77,7 +77,7 @@ for i=1:length(Arm_Kinematics_init)
 end
 % save('index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_c','index_tool_rotate','index_tool_translate');
 % save('VertexData_origin.mat','VertexData_origin'); % uncomment for a new urdf
-% save('VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); % 
+% save('VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); %
 fclose('all');
 
 %% generate the point cloud for collision detection
@@ -91,6 +91,7 @@ axis equal
 steps=[100;30;100;30;100;30;30;1;1;1;1;5;100;100;100;100;100;100];
 % save point cloud in cell
 point_clouds = cell(length(Arm_Kinematics_init),1);
+point_boundary = cell(length(Arm_Kinematics_init),1);
 down_sample_thres = 0.02;
 %% Generate point clouds
 for i = 1:length(Arm_Kinematics_init)
@@ -123,11 +124,29 @@ for i = 1:length(Arm_Kinematics_init)
                     end
                 end
             end
+            if ~isempty(regexp(Arm_Kinematics_init(i).name,'pitch_c','once'))
+                length_cur_link = length(point_clouds{i,1});
+                point_clouds{i,1}(:,length_cur_link+1) = [0.05689;-0.3214;-0.03313];
+                point_clouds{i,1}(:,length_cur_link+2) = [0.05689;-0.3135;-0.07816];
+                point_clouds_temp{i,1} = point_clouds{i,1};
+                point_clouds{i,1} = [];
+                number = 1;
+                for index_pitch_c = 1 : length(point_clouds_temp{i,1})
+                    if point_clouds_temp{i,1}(2,index_pitch_c)<=0.03
+                        point_clouds{i,1}(:,number) = point_clouds_temp{i,1}(:,index_pitch_c);
+                        number = number + 1;
+                    end
+                end
+            end
+        end
+        if ~isempty(point_clouds{i,1})
+            
+            [rotmat,point_boundary{i,1},volume,surface,edgelength] = minboundbox(point_clouds{i,1}(1,:),point_clouds{i,1}(2,:),point_clouds{i,1}(3,:),'e');
         end
     end
 end
 % save ('point_clouds_all.mat','point_clouds'); % uncomment for a new urdf
-
+% save ('point_boundary_all.mat','point_boundary');
 %% plot point clouds and arm
 for i = 1:length(Arm_Kinematics_init)
     R = Arm_Kinematics_init(i).Tran_matrix(1:3,1:3);
@@ -141,7 +160,14 @@ for i = 1:length(Arm_Kinematics_init)
             center = R * point_clouds{i}(:,index) + d;
             plot3(center(1),center(2),center(3),'Marker','o')
             hold on
+            
         end
+        for index = 1 : length(point_boundary{i,1})
+            % transform point boundary corners
+            point_boundary{i,1}(index,:) = (R * point_boundary{i}(index,:)' + d)';
+        end
+        plotminbox(point_boundary{i,1});
+        hold on
         plotSTL(VertexData_tran(:,i),rgba)
         hold on
     end

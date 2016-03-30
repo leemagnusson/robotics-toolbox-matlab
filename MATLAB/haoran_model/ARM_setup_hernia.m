@@ -60,10 +60,26 @@ R_Trocar(:,:,1) = R_Trocar1;
 R_Trocar(:,:,2) = R_Trocar2;
 R_Trocar(:,:,3) = R_Trocar3;
 
+% p_Camera = Hernia - 0.08 * (Hernia - Trocar2)/norm(Hernia - Trocar2) + [0;0;-0.02];
+% z_Camera = (p_Camera - Trocar2)/norm(p_Camera - Trocar2);
+% vect_Camera2 = (Trocar3 - Trocar2)/norm(Trocar3 - Trocar2);
+% x_Camera = cross(z_Camera,vect_Camera2)/norm(cross(z_Camera,vect_Camera2));
+% y_Camera = cross(z_Camera,x_Camera);
+% R_Camera = [x_Camera,y_Camera,z_Camera];
+% R_Camera = R_Camera * RotationMatrix_rad(-pi/4,[0;0;1]);
+p_Camera = Hernia - 0.1 * (Hernia - Trocar2)/norm(Hernia - Trocar2);
+x_Camera = (p_Camera - Trocar2)/norm(p_Camera - Trocar2);
+vect_Camera1 = (Trocar1 - Trocar2)/norm(Trocar1 - Trocar2);
+z_Camera = cross(vect_Camera1,x_Camera)/norm(cross(vect_Camera1,x_Camera));
+y_Camera = cross(z_Camera,x_Camera);
+R_Camera = [x_Camera,y_Camera,z_Camera];
+R_Camera = R_Camera * RotationMatrix_rad(pi,[1;0;0]);
+
+
 % q1_set = [-70.85;25.5;16.48;-18.09;53;-185.95;0;0;0;0;0]*deg2rad;
 % q2_set = [-5.97;-0.68;-31.68;18.75;66.62;-121.21;0;0;0;0;0]*deg2rad;
 % q3_set = [26.81;-42.17;-16.42;-85.22;80.36;-9.89;0;0;0;0;0]*deg2rad;
 q1_set = [30;-45;0;90;30;0;0;0;0;0;0]*deg2rad;
 q2_set = [0;0;0;-20;0;100;0;0;0;0;0]*deg2rad;
-q3_set = [-45;45;0;0;45;180;-45;0;0;0;0]*deg2rad;
+q3_set = [-45;20;-10;0;45;180;-45;0;0;0;0]*deg2rad;
 q_set = [q1_set q2_set q3_set];
