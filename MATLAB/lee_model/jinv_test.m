@@ -1,26 +1,26 @@
 % jinv_test.m
 % Lee Magnusson 1/8/16
-% Take a look at what it might looks like to do control off a load cell
-% on the end effector
+% Test kinematic control
 
 tmax = 1;
 t = linspace(0,tmax,tmax*10);
 dt = t(2)-t(1);
 
-global q0 r other_param
-
-r.tool(3,4) = .05;  % virtual center offset
+r.tool(3,4) = -.1;  % virtual center offset
 
 movie = false 
-plot3d = false
+plot3d = true
 
-q00 = q0 + [-1,0,1,0,0,0,0,0,0];%+[-.5,0,0,.1,-.5,0,0];
-q00 = q0 + [-2.5,0,1.25,0,-1,0,0,0,0];  % folded config
-ws = [-.5,.5,-.4,.65,-.3,.65]
+B = .0001*diag([ones(1,5),.00001*ones(1,r.n-5)]);
+q00 = q0;
+q00(7:9) = -.3*[1,-1,1];
+%q00(1:9) = q00(1:9) + [-1,0,1,0,0,0,0,0,0];%+[-.5,0,0,.1,-.5,0,0];
+%q00(1:9) = q00(1:9) + [-2.5,0,1.25,0,-1,0,0,0,0];  % folded config
+ws = [-.5,.5,-1.3,.3,-.3,.85]
 fname = 'virtual_1_in_folded';
-q00 = q0 + [.5,0,-.5,0,0,0,0,0,0]; % outstretched
-ws = [-.5,.5,-.1,1.5,-.1,.75];
-fname = 'virtual_1_in_extend';
+%q00(1:9) = q00(1:9) + [.5,0,-.5,0,0,0,0,0,0]; % outstretched
+%ws = [-.5,.5,-.1,1.5,-.1,.75];
+%fname = 'virtual_1_in_extend';
 
 T0 = r.fkine(q00);
 x0 = T0(1:3,4);
@@ -78,11 +78,15 @@ for i = 1:length(t)-1
     
     J = r.jacob0(q(i,:));
     
+    % add constraints
+    J = [J;C];
+    x_dot_tmp = [x_dot(i,:),zeros(1,size(C,1))];
+    
     % direct psuedo inverse
-    q_dot(i,:) = (pinv(J)*x_dot(i,:)')';
+    q_dot(i,:) = (pinv(J)*x_dot_tmp')';
     
     % damped least squares 
-    q_dot(i,:) = (inv(J'*J+.0001*diag([1,1,1,1,1,.00001,.00001,.00001,.00001]))*J'*x_dot(i,:)')';
+    q_dot(i,:) = (inv(J'*J+B)*J'*x_dot_tmp')';
     %q_dot(i,:) = (inv(J'*J+.0001*eye(length(q00)))*J'*x_dot(i,:)')';
     
     q(i+1,:) = q(i,:) + q_dot(i,:)*dt;
@@ -175,5 +179,5 @@ Pt_mean = mean(sum(Pt,2))
 
 accel = max(abs(Tj),[],1) - abs(mean(Tj))
 
-end
+
 

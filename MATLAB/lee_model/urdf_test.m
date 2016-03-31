@@ -1,5 +1,10 @@
 
 urdf_dir = 'V1_Arm_URDF';
+if ~exist(urdf_dir,'dir') 
+    error(sprintf(['download URDF dir from google drive:\n'...
+    '<a href="https://drive.google.com/open?id=0B0xpVoDExulnSmdmWERUMlltRGc">' ...
+    'https://drive.google.com/open?id=0B0xpVoDExulnSmdmWERUMlltRGc</a>']));
+end
 u = URDF([urdf_dir '/V1_Arm_URDF.URDF']);
 stl_dir = [urdf_dir '/asciistl'];
 mkdir(stl_dir);
@@ -8,6 +13,11 @@ mkdir(stl_dir);
 [dh,T_mod,T] = joints2dh(u.joints(1:12));
 r = SerialLink([dh(2:end-1,:);0,0,0,0,0,0],'base',T(:,:,1));
 r.gravity = t2r(T(:,:,1))*r.gravity;
+
+% mainly enter constraint matrix
+% q8 = -q7, q9 = -q8
+C = zeros(2,r.n);
+C(:,7:9) = [1 1 0; 0 1 1];
 
 q0 = zeros(1,r.n);
 
