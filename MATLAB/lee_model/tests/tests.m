@@ -3,6 +3,7 @@
 try
     rmdir tests s
 end
+mkdir tests
 %%
 urdf_test
 %%

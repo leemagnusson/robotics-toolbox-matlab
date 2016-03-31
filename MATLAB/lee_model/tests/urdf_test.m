@@ -1,12 +1,12 @@
 
-urdf_dir = 'V1_Arm_URDF';
+urdf_dir = [lee_model_dir, filesep, 'V1_Arm_URDF'];
 if ~exist(urdf_dir,'dir') 
     error(sprintf(['download URDF dir from google drive:\n'...
     '<a href="https://drive.google.com/open?id=0B0xpVoDExulnSmdmWERUMlltRGc">' ...
     'https://drive.google.com/open?id=0B0xpVoDExulnSmdmWERUMlltRGc</a>']));
 end
-u = URDF([urdf_dir '/V1_Arm_URDF.URDF']);
-stl_dir = [urdf_dir '/asciistl'];
+u = URDF([urdf_dir, filesep, 'V1_Arm_URDF.URDF']);
+stl_dir = [urdf_dir, filesep, 'asciistl'];
 mkdir(stl_dir);
 
 % main conversion
@@ -25,7 +25,8 @@ q0 = zeros(1,r.n);
 for i = 1:r.n
     if isfield(u.links{i},'visual')
         fname = u.links{i}.visual.geometry.mesh.filename;
-        fname = fname(11:end);
+        [~,file,ext] = fileparts(fname);
+        fname = [urdf_dir, filesep, 'meshes', filesep, file, ext];
         [v, f, n, name] = stlRead(fname);
         vnew = [v';ones(1,length(v))];
         if (i~=1)
