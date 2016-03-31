@@ -1,7 +1,7 @@
 clc
 clear all
 close all
-eef_arm = import_logfile_eef('logs\hernia.log',10);
+[eef_arm,time] = import_logfile_eef('C:\Users\haoranyu\Desktop\logs\hernia.log',10);
 figure(1)
 hold on
 view(3)
@@ -26,8 +26,7 @@ for j = 1 : length(eef_arm)
     plot3(Tool_path_right(1,4,j),Tool_path_right(2,4,j),Tool_path_right(3,4,j),'Color',color(2),'Marker','o')
     hold on
 end
-% save('Tool_path_left.mat','Tool_path_left')
-% save('Tool_path_right.mat','Tool_path_right')
+% save('Tool_path.mat','Tool_path_left','Tool_path_right','time')
 draw_coordinate_system([0.04 0.04 0.04],eye(3),[0;0;0],'rgb','c')
 hold on
 

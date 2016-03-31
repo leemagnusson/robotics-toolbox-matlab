@@ -78,7 +78,7 @@ function set_robot_Callback(hObject, eventdata, handles)
 % hObject    handle to set_robot (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-q_setup = get(handles.uitable_jnt, 'data');
+q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
 load('URDF_info.mat')
 load('VertexData_origin.mat')
 load('VertexData_Hernia_Body.mat');
@@ -118,7 +118,7 @@ for index = 1:3
     index_jnt_limit = 1;
 end
 plot3(Hernia(1),Hernia(2),Hernia(3),'Marker','o','MarkerSize',10)
-axis([-0.6 0.8 -0.8 0.9 -0.4 0.9])
+axis([-0.45 0.6 -0.5 0.8 -0.2 0.65])
 light('Position',[1 3 2]);
 light('Position',[-3 -1 -3]);
 drawnow;
@@ -136,8 +136,9 @@ for index = 1:3
         jnt_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,1:3) = q_init_setup;
-q_setup(:,4:6) = jnt_percentage;
+q_setup(:,1:3) = q_init_setup * 180 / pi;
+q_setup(:,4:6) = jnt_percentage * 100;
+size_q = size(q_setup);
 set(handles.uitable_jnt,'data',q_setup);
 
 
@@ -177,7 +178,7 @@ for index = 1:3
         jnt_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,4:6) = jnt_percentage;
+q_setup(:,4:6) = jnt_percentage * 100;
 set(handles.uitable_jnt,'data',q_setup);
 
 
@@ -209,14 +210,14 @@ function uitable_jnt_CellEditCallback(hObject, eventdata, handles)
 %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
-q_setup = get(handles.uitable_jnt, 'data');
+q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
 load('jnt_limit_active.mat')
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
         jnt_percentage(i,index) = (q_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,4:6) = jnt_percentage;
+q_setup(:,4:6) = jnt_percentage * 100;
 set(handles.uitable_jnt,'data',q_setup);
 
 

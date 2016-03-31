@@ -1,4 +1,4 @@
-function [arm] = import_logfile_eef( logname,step_size)
+function [arm,time] = import_logfile_eef( logname,step_size)
 %IMPORT_LOGFILE Read Verb log files
 %   preparsed to only include new data points
 %   q, cmd of [should_p, should_r, elbow, forearm, spher_b, spher_r,
@@ -15,6 +15,7 @@ function [arm] = import_logfile_eef( logname,step_size)
 
 data = import_log(logname);
 num = length(data);
+time = data(1:step_size:num,2) - data(1,2);
 arm0 = data(1:step_size:num,15:21);
 arm1 = data(1:step_size:num,170:176);
 arm2 = data(1:step_size:num,325:331);

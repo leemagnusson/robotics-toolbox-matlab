@@ -27,5 +27,4 @@ for i = 2 : index_car
         J_6DoF_at_rcm(:,index) = [cross(z(:,i),rcm - p(:,i));z(:,i)];
         index = index + 1;
 end
-
 end

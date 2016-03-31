@@ -6,8 +6,7 @@ load('VertexData_origin.mat');
 load('VertexData_Hernia_Body.mat');
 % load('q_init_setup.mat');
 load('q_init_setup_hernia_best.mat');
-load('Tool_path_left.mat');
-load('Tool_path_right.mat');
+load('Tool_path.mat');
 load('point_boundary_all.mat');
 ARM_setup_hernia
 dt = 0.0025;
@@ -24,7 +23,7 @@ hold on
 axis equal
 view(3)
 view(-2,43)
-camzoom(3)
+% camzoom(3)
 q(:,1) = q_init_setup(:,1);
 q_rcm(:,1) = convert2rcm(q_init_setup(:,1));
 Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm(:,1),base_T_setup(:,:,1));
@@ -52,18 +51,13 @@ R_eef(:,:,3) = Arm_Kinematics3(14).Tran_matrix(1:3,1:3);
 % end
 movie_index = 1;
 number_col = 1;
-draw_coordinate_system([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
-hold on
-for j = 1767 :4: 2592
-%     for j = 1767
-    cla
-    draw_coordinate_system([0.02 0.02 0.02],R_Camera,p_Camera,'rgb','c')
-    hold on
-    %     draw_coordinate_system([0.02 0.02 0.02],R_Camera,p_Camera,'rgb','c')
-    %     hold on
-    %     draw_coordinate_system([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
-    %     hold on
-    
+num_q = 1;
+index_start = 1767;
+index_end = 2592;
+sample_rate = 1;
+tic
+for j = index_start :sample_rate: index_end
+
     Tool_path_left(1:3,4,j) = R_Camera * Tool_path_left(1:3,4,j) + p_Camera;
     Tool_path_left(1:3,1:3,j) = R_Camera * Tool_path_left(1:3,1:3,j);
     Tool_path_right(1:3,4,j) = R_Camera * Tool_path_right(1:3,4,j) + p_Camera;
@@ -114,6 +108,11 @@ for j = 1767 :4: 2592
         end
     end
     
+    q_store{1}(:,num_q) = q(:,1);
+    q_store{2}(:,num_q) = q(:,2);
+    q_store{3}(:,num_q) = q(:,3);
+    num_q = num_q + 1;
+    
     for index = 1:3
         % generate point clouds from vertex data
         Arm_Kinematics_cur = Arm_Kinematics(link_input,joint_input,q_rcm(:,index),base_T_setup(:,:,index));
@@ -123,149 +122,84 @@ for j = 1767 :4: 2592
             for index_boundary = 1 : length(point_boundary{i})
                 point_boundary_tran{i,index}(index_boundary,:) = (R * point_boundary{i}(index_boundary,:)' + d)'; % transformed point clouds stored separately
             end
-            %              plotminbox(point_boundary_tran{i,index});
-            %              hold on
         end
     end
     
-    collide_index12=[];
-    collide_index13=[];
-    collide_index23=[];
-    
-    Collision12 = false;
-    for index1 = 7:10
-        %         if Collision12
-        %             break;
-        %         end
-        for index2 = 7:10
-            if Collision_detection_boxes(point_boundary_tran{index1,1},point_boundary_tran{index2,2})
-                collide_index12 = [collide_index12 [index1;index2]];
-            end
-            Collision12 = Collision12 | Collision_detection_boxes(point_boundary_tran{index1,1},point_boundary_tran{index2,2});
-        end
-    end
-    
-    Collision13 = false;
-    for index1 = 7:10
-        %         if Collision13
-        %             break;
-        %         end
-        for index2 = 7:10
-            if Collision_detection_boxes(point_boundary_tran{index1,1},point_boundary_tran{index2,3})
-                collide_index13 = [collide_index13 [index1;index2]];
-            end
-            Collision13 = Collision13 | Collision_detection_boxes(point_boundary_tran{index1,1},point_boundary_tran{index2,3});
-        end
-    end
-    
-    Collision23 = false;
-    for index1 = 7:10
-        %         if Collision23
-        %             break;
-        %         end
-        for index2 = 7:10
-            if Collision_detection_boxes(point_boundary_tran{index1,2},point_boundary_tran{index2,3})
-                collide_index23 = [collide_index23 [index1;index2]];
-            end
-            Collision23 = Collision23 | Collision_detection_boxes(point_boundary_tran{index1,2},point_boundary_tran{index2,3});
-        end
-    end
-    
-    if Collision12 || Collision13 || Collision23
-        q_store(:,:,number_col) = q;
-        Collision_store(:,number_col) = [Collision12;Collision13;Collision23];
-        title(['Collision12 =' num2str(Collision12) ';   ' 'Collision13 =' num2str(Collision13) ';   ' 'Collision23 =' num2str(Collision23)],'Color','r')
-        number_col = number_col + 1;
-    else
-        title(['Collision12 =' num2str(Collision12) ';   ' 'Collision13 =' num2str(Collision13) ';   ' 'Collision23 =' num2str(Collision23)],'Color','b')
-    end
-    
+    [Collision12,collide_index12] = find_collision_two_arm (point_boundary_tran(:,1),point_boundary_tran(:,2),7:10);
+    [Collision13,collide_index13] = find_collision_two_arm (point_boundary_tran(:,1),point_boundary_tran(:,3),7:10);
+    [Collision23,collide_index23] = find_collision_two_arm (point_boundary_tran(:,2),point_boundary_tran(:,3),7:10);
     
     Arm_Kinematics_cur1 = Arm_Kinematics(link_input,joint_input,q_rcm(:,1),base_T_setup(:,:,1));
     Arm_Kinematics_cur2 = Arm_Kinematics(link_input,joint_input,q_rcm(:,2),base_T_setup(:,:,2));
     Arm_Kinematics_cur3 = Arm_Kinematics(link_input,joint_input,q_rcm(:,3),base_T_setup(:,:,3));
-    if Collision12
-        for index12 = 7:10
-            if ismember(index12,collide_index12(1,:))
-                if index12 == 10
-                    Arm_Kinematics_cur1(index12).color = [1 0 0 1];
-                    Arm_Kinematics_cur1(index12+1).color = [1 0 0 1];
-                else
-                    Arm_Kinematics_cur1(index12).color = [1 0 0 1];
-                end
-            end
-            
-            if ismember(index12,collide_index12(1,:))
-                if index12 == 10
-                    Arm_Kinematics_cur2(index12).color = [1 0 0 1];
-                    Arm_Kinematics_cur2(index12+1).color = [1 0 0 1];
-                else
-                    Arm_Kinematics_cur2(index12).color = [1 0 0 1];
-                end
-            end
-        end
-    end
-    
-    if Collision13
-        for index13 = 7:10
-            if ismember(index13,collide_index13(1,:))
-                if index13 == 10
-                    Arm_Kinematics_cur1(index13).color = [1 0 0 1];
-                    Arm_Kinematics_cur1(index13+1).color = [1 0 0 1];
-                else
-                    Arm_Kinematics_cur1(index13).color = [1 0 0 1];
-                end
-            end
-            
-            if ismember(index13,collide_index13(1,:))
-                if index13 == 10
-                    Arm_Kinematics_cur3(index13).color = [1 0 0 1];
-                    Arm_Kinematics_cur3(index13+1).color = [1 0 0 1];
-                else
-                    Arm_Kinematics_cur3(index13).color = [1 0 0 1];
-                end
-            end
-        end
-    end
-    
-    if Collision23
-        for index23 = 7:10
-            if ismember(index23,collide_index23(1,:))
-                if index23 == 10
-                    Arm_Kinematics_cur2(index23).color = [1 0 0 1];
-                    Arm_Kinematics_cur2(index23+1).color = [1 0 0 1];
-                else
-                    Arm_Kinematics_cur2(index23).color = [1 0 0 1];
-                end
-            end
-            
-            if ismember(index23,collide_index23(1,:))
-                if index23 == 10
-                    Arm_Kinematics_cur3(index23).color = [1 0 0 1];
-                    Arm_Kinematics_cur3(index23+1).color = [1 0 0 1];
-                else
-                    Arm_Kinematics_cur3(index23).color = [1 0 0 1];
-                end
-            end
-        end
-    end
-    
-    Draw_Robot_Arm(Arm_Kinematics_cur1,VertexData_origin)
-    hold on
-    Draw_Robot_Arm(Arm_Kinematics_cur2,VertexData_origin)
-    hold on
-    Draw_Robot_Arm(Arm_Kinematics_cur3,VertexData_origin)
-    hold on
-    
-    
     VertexData_hernia_tran = transformSTL(VertexData_Hernia_Body,R_Hernia_Body,Hernia_Body);
     rgba = [0 0 1 0.1];
-    plotSTL(VertexData_hernia_tran,rgba);
-    hold on
-    axis([-0.45 0.6 -0.5 0.8 -0.2 0.65])
-    light('Position',[1 3 2]);
-    light('Position',[-3 -1 -3]);
-    drawnow;
-    F(movie_index) = getframe(gcf);
-    movie_index = movie_index + 1;
+    
+    [Arm_Kinematics_cur1,Arm_Kinematics_cur2] = Change_link_color(Arm_Kinematics_cur1,Arm_Kinematics_cur2,Collision12,collide_index12);
+    [Arm_Kinematics_cur1,Arm_Kinematics_cur3] = Change_link_color(Arm_Kinematics_cur1,Arm_Kinematics_cur3,Collision13,collide_index13);
+    [Arm_Kinematics_cur2,Arm_Kinematics_cur3] = Change_link_color(Arm_Kinematics_cur2,Arm_Kinematics_cur3,Collision23,collide_index23);
+    
+%     cla;
+    
+    if Collision12 || Collision13 || Collision23
+        q_store_collision(:,:,number_col) = q;
+        Collision_store(:,number_col) = [Collision12;Collision13;Collision23];
+%         title(['Collision12 =' num2str(Collision12) ';   ' 'Collision13 =' num2str(Collision13) ';   ' 'Collision23 =' num2str(Collision23)],'Color','r')
+        number_col = number_col + 1;
+    else
+%         title(['Collision12 =' num2str(Collision12) ';   ' 'Collision13 =' num2str(Collision13) ';   ' 'Collision23 =' num2str(Collision23)],'Color','b')
+    end
+    
+%       draw_coordinate_system([0.02 0.02 0.02],R_Camera,p_Camera,'rgb','c')
+%       hold on
+%       draw_coordinate_system([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
+%       hold on
+%     draw_coordinate_system([0.02 0.02 0.02],R_Camera,p_Camera,'rgb','c')
+%     hold on
+%     Draw_Robot_Arm(Arm_Kinematics_cur1,VertexData_origin)
+%     hold on
+%     Draw_Robot_Arm(Arm_Kinematics_cur2,VertexData_origin)
+%     hold on
+%     Draw_Robot_Arm(Arm_Kinematics_cur3,VertexData_origin)
+%     hold on
+%     plotSTL(VertexData_hernia_tran,rgba);
+%     hold on
+%     axis([-0.45 0.6 -0.5 0.8 -0.2 0.65])
+%     light('Position',[1 3 2]);
+%     light('Position',[-3 -1 -3]);
+%     drawnow;
+%     F(movie_index) = getframe(gcf);
+%     movie_index = movie_index + 1;
 end
+toc
+
+dt_sep = (time(index_end) - time(index_start))/(index_end - index_start);
+time_sep = 0 : dt_sep : (index_end - index_start) * dt_sep;
+
+for i = 1 : 3
+    for j = 1 : 11
+        qd_store{i}(j,:) = diff(q_store{i}(j,:))/dt_sep;
+    end
+end
+
+for i = 1 : 3
+    for j = 1 : 11
+        qdd_store{i}(j,:) = diff(qd_store{i}(j,:))/dt_sep;
+    end
+end
+
+figure(2)
+plot(time_sep,q_store{1}(6:11,:));
+ylabel('q(rad)');
+xlabel('t(s)');
+legend('roll','pitch','trans','rotate','wr','dis_wr')
+figure(3)
+plot(time_sep(1:length(time_sep)-1),qd_store{1}(6:11,:));
+ylabel('qd(rad/s)');
+xlabel('t(s)');
+legend('roll','pitch','trans','rotate','wr','dis_wr')
+figure(4)
+plot(time_sep(1:length(time_sep)-2),qdd_store{1}(6:11,:));
+ylabel('qdd(rad/s2)');
+xlabel('t(s)');
+legend('roll','pitch','trans','rotate','wr','dis_wr')
