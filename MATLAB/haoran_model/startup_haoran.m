@@ -5,16 +5,23 @@
 clc
 clear all
 close all
-ARM_setup_hernia
+init_Hernia_setup
 % Add path for useful libraries
 addpath([pwd, '/../3rdparty/robotics-toolbox-matlab']);
+addpath([pwd, '/Kinematics_library']);
+addpath([pwd, '/Math_library']);
+addpath([pwd, '/Plot_library']);
+addpath([pwd, '/Collision_detection_library']);
+addpath([pwd, '/Common_library']);
+addpath([pwd, '/data_store']);
 % First row of parent number is for link in URDF to tell which parent link
 % it is attached to. Second row is which joint number defines the
 % transformation of this link.
 parent_number=[0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 14 7 10;...
     0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17];
-% save('parent_number.mat','parent_number'); % uncomment for a new URDF
+% save('/data_store/parent_number.mat','parent_number'); % uncomment for a new URDF
 
+% coupling matrix
 A = [1 0 0 0 0 0 0 0 0 0 0;...
     0 1 0 0 0 0 0 0 0 0 0;...
     0 0 1 0 0 0 0 0 0 0 0;...
@@ -28,7 +35,7 @@ A = [1 0 0 0 0 0 0 0 0 0 0;...
     0 0 0 0 0 0 0 0 1 0 0;...
     0 0 0 0 0 0 0 0 0 1 0;...
     0 0 0 0 0 0 0 0 0 0 1];
-% save('coupling_matrix.mat','A');
+% save('/data_store/coupling_matrix.mat','A');
 
 % Load URDF link and joint information
 folder_name = 'Arm_version_1.0/';
@@ -39,45 +46,47 @@ urdf_input = URDF(URDF_file);
 link_input = urdf_input.links;
 joint_input = urdf_input.joints;
 joint_sequence = urdf_input.jseq;
-save('URDF_info.mat','link_input','joint_input','joint_sequence'); % uncomment for a new URDF
+% save('URDF_info.mat','link_input','joint_input','joint_sequence'); % uncomment for a new URDF
 VertexData_Hernia_Body = stl2matlab(strcat(stl_folder_name,'Ventral_Hernia_Body.STL'));
 VertexData_Hernia_Body{1} = VertexData_Hernia_Body{1}/1000;
 VertexData_Hernia_Body{2} = VertexData_Hernia_Body{2}/1000;
 VertexData_Hernia_Body{3} = VertexData_Hernia_Body{3}/1000;
-% set base transformation
-base_T = eye(4);
-% initial joint value and convert to rcm joint value
-q_init = [0;0;0;0;0;0;0;0;0;0;0];
-q_rcm_init = convert2rcm(q_init);
-% initial arm kinematics
-Arm_Kinematics_init = Arm_Kinematics(link_input,joint_input,q_rcm_init,base_T);
+
+% Arm kinematics class
+Arm_class = Arm_Kinematics(link_input,joint_input);
+% save('Arm_version_1.0.mat','Arm_class') % uncomment for a new URDF
+
 % read stl files
-for i=1:length(Arm_Kinematics_init)
-    if exist(strcat(stl_folder_name,Arm_Kinematics_init(i).stl_name), 'file') == 2
-        VertexData_origin(:,i)=stl2matlab(strcat(stl_folder_name,Arm_Kinematics_init(i).stl_name));
+for i=1:length(Arm_class)
+    if exist(strcat(stl_folder_name,Arm_class(i).stl_name), 'file') == 2
+        VertexData_origin(:,i)=stl2matlab(strcat(stl_folder_name,Arm_class(i).stl_name));
     else
         VertexData_origin(:,i) = {[];[];[]};
     end
     % define index for the coordinates
-    if ~isempty(strfind(Arm_Kinematics_init(i).name,'_distal_wrist'))
+    if ~isempty(strfind(Arm_class(i).name,'_distal_wrist'))
         index_eef = i;
-    elseif ~isempty(strfind(Arm_Kinematics_init(i).name,'_RCM_'))
+    elseif ~isempty(strfind(Arm_class(i).name,'_RCM_'))
         index_rcm = i;
-    elseif ~isempty(strfind(Arm_Kinematics_init(i).name,'_spherical_roll_'))
+    elseif ~isempty(strfind(Arm_class(i).name,'_spherical_roll_'))
         index_car = i;
-    elseif ~isempty(strfind(Arm_Kinematics_init(i).name,'_wrist_'))
+    elseif ~isempty(strfind(Arm_class(i).name,'_wrist_'))
         index_wrist = i;
-    elseif ~isempty(strfind(Arm_Kinematics_init(i).name,'_pitch_c_'))
+    elseif ~isempty(strfind(Arm_class(i).name,'_pitch_a_'))
+        index_pitch_a = i;
+    elseif ~isempty(strfind(Arm_class(i).name,'_pitch_b_'))
+        index_pitch_b = i;
+    elseif ~isempty(strfind(Arm_class(i).name,'_pitch_c_'))
         index_pitch_c = i;
-    elseif ~isempty(strfind(Arm_Kinematics_init(i).name,'_tool_rotate_'))
+    elseif ~isempty(strfind(Arm_class(i).name,'_tool_rotate_'))
         index_tool_rotate = i;
-    elseif ~isempty(strfind(Arm_Kinematics_init(i).name,'_tool_translate_'))
+    elseif ~isempty(strfind(Arm_class(i).name,'_tool_translate_'))
         index_tool_translate = i;
     end
 end
-% save('index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_c','index_tool_rotate','index_tool_translate');
-% save('VertexData_origin.mat','VertexData_origin'); % uncomment for a new urdf
-% save('VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); %
+% save('/data_store/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate');
+% save('/data_store/VertexData_origin.mat','VertexData_origin'); % uncomment for a new urdf
+% save('/data_store/VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); %
 fclose('all');
 
 %% generate the point cloud for collision detection
@@ -90,14 +99,20 @@ axis equal
 % 18 link in total.
 steps=[100;30;100;30;100;30;30;1;1;1;1;5;100;100;100;100;100;100];
 % save point cloud in cell
-point_clouds = cell(length(Arm_Kinematics_init),1);
-point_boundary = cell(length(Arm_Kinematics_init),1);
+point_clouds = cell(length(Arm_class),1);
+point_boundary = cell(length(Arm_class),1);
 down_sample_thres = 0.02;
+% set base transformation
+base_T = eye(4);
+% initial joint value and convert to rcm joint value
+q_init = [0;0;0;0;0;0;0;0;0;0;0];
+q_rcm_init = convert2rcm(q_init);
+Frames_init = Arm_class.calc_FK(q_rcm_init,base_T);
 %% Generate point clouds
-for i = 1:length(Arm_Kinematics_init)
+for i = 1:length(Arm_class)
     % transformation
-    R = Arm_Kinematics_init(i).Tran_matrix(1:3,1:3);
-    d = Arm_Kinematics_init(i).Tran_matrix(1:3,4);
+    R = Frames_init(1:3,1:3,i);
+    d = Frames_init(1:3,4,i);
     % check if stl exists and transform
     if isempty(VertexData_origin{1,i}) == 0
         % save vertex data
@@ -113,7 +128,7 @@ for i = 1:length(Arm_Kinematics_init)
         end
         % down sample the points on pitch links and translation link by
         % setting the threshold on distance within the points
-        if ~isempty(regexp(Arm_Kinematics_init(i).name,'pitch_a||pitch_b||pitch_c||translate','once'))
+        if ~isempty(regexp(Arm_class(i).name,'pitch_a||pitch_b||pitch_c||translate','once'))
             for index1 = 1 : 200
                 for index2 = 1 : 200
                     if index1 ~= index2 && index1 <= length(point_clouds{i,1}) && index2 <= length(point_clouds{i,1})
@@ -124,7 +139,7 @@ for i = 1:length(Arm_Kinematics_init)
                     end
                 end
             end
-            if ~isempty(regexp(Arm_Kinematics_init(i).name,'pitch_c','once'))
+            if ~isempty(regexp(Arm_class(i).name,'pitch_c','once'))
                 length_cur_link = length(point_clouds{i,1});
                 point_clouds{i,1}(:,length_cur_link+1) = [0.05689;-0.3214;-0.03313];
                 point_clouds{i,1}(:,length_cur_link+2) = [0.05689;-0.3135;-0.07816];
@@ -145,16 +160,16 @@ for i = 1:length(Arm_Kinematics_init)
         end
     end
 end
-% save ('point_clouds_all.mat','point_clouds'); % uncomment for a new urdf
-% save ('point_boundary_all.mat','point_boundary');
+% save ('/data_store/point_clouds_all.mat','point_clouds'); % uncomment for a new urdf
+% save ('/data_store/point_boundary_all.mat','point_boundary');
 %% plot point clouds and arm
-for i = 1:length(Arm_Kinematics_init)
-    R = Arm_Kinematics_init(i).Tran_matrix(1:3,1:3);
-    d = Arm_Kinematics_init(i).Tran_matrix(1:3,4);
+for i = 1:length(Arm_class)
+    R = Frames_init(1:3,1:3,i);
+    d = Frames_init(1:3,4,i);
     if isempty(VertexData_origin{1,i}) == 0
         % transform vertex data
         VertexData_tran(:,i) = transformSTL(VertexData_origin(:,i),R,d);
-        rgba = Arm_Kinematics_init(i).color;
+        rgba = Arm_class(i).color;
         for index = 1 : length(point_clouds{i,1})
             % transform point clouds
             center = R * point_clouds{i}(:,index) + d;

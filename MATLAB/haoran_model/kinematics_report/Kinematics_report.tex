@@ -104,52 +104,15 @@ The homogeneous transformation with respect to the base frame is given by
 %----------------------------------------------------------------------------------------
 
 \section{Jacobian}
-Most joints in our robotic arm is serial robot except for the spherical arm which has kinematic coupling. The Cartesian arm Jacobian $\mathbf{J}_{car5} \in \mathbb{R}^{[6\times5]}$ from base to spherical roll joint origin $\mathbf{p}_{car}$ with 5 DoF joint input ($i=1\cdots5$)
+Most joints in our robotic arm is serial robot except for the spherical arm which has kinematic coupling. The overall arm Jacobian for all active and passive joints $\mathbf{J}_{all13} \in \mathbb{R}^{[6\times13]}$ from base to end-effector $\mathbf{p}_{eef}$ with 13 DoF joint input $\mathbf{q}_{rcm}$ ($i=1\cdots13$)
 \begin{equation}
-\mathbf{J}_{car5}(i) =  \begin{bmatrix}\hat{\mathbf{z}}_i \times (\mathbf{p}_{car} - \mathbf{p}_i) \\ \hat{\mathbf{z}}_i \end{bmatrix}
+\mathbf{J}_{all13}(i) =  \begin{bmatrix}\hat{\mathbf{z}}_i \times (\mathbf{p}_{eef} - \mathbf{p}_i) \\ \hat{\mathbf{z}}_i \end{bmatrix}
 \end{equation}
-Cartesian arm Jacobian from base to spherical roll joint origin $\mathbf{p}_{car}$ with 6 DoF joint input ($i=1\cdots6$). This Jacobian $\mathbf{J}_{car6} \in \mathbb{R}^{[6\times6]}$ also include the spherical arm roll joint as an input, thus allowing us to perform full 6 DoF control on RCM position and orientation.
+The overall arm Jacobian with only the active joints $\mathbf{q}$ ($i=1\cdots11$) is like this:
 \begin{equation}
-\mathbf{J}_{car6}(i) =  \begin{bmatrix}\hat{\mathbf{z}}_i \times (\mathbf{p}_{car} - \mathbf{p}_i) \\ \hat{\mathbf{z}}_i \end{bmatrix}
+\mathbf{J}_{all} =  \mathbf{J}_{all13} * \mathbf{A}
 \end{equation}
-With this $\mathbf{J}_{car5}$, we can obtain the twist $\mathbf{t}_{car}$.
-\begin{equation}
-\mathbf{t}_{car} = \mathbf{J}_{car5} {\mathbf{q}_{1\cdots5}}
-\end{equation}
-For the spherical arm, because of the kinematic coupling on the pitch arm, we could not treat it as a simple serial robot. Here we present the geometric solution for Jacobian. First we look at the twist of the arm at the RCM point ($\mathbf{t}_{rcm}$) instantaneously. And we know for the pitch arm, the rotation axis $\hat{\mathbf{z}}_7$, $\hat{\mathbf{z}}_8$ and $\hat{\mathbf{z}}_9$ are always parallel to each other.
-\begin{equation}
-\begin{split}
-\boldsymbol{\omega}_{rcm} &= q_6\hat{\mathbf{z}}_6 +  q_7\hat{\mathbf{z}}_7 -  q_7\hat{\mathbf{z}}_8 +  q_7\hat{\mathbf{z}}_9 + q_9 \hat{\mathbf{z}}_{11}\\
-&= q_6\hat{\mathbf{z}}_6 +  q_7\hat{\mathbf{z}}_7 + q_9 \hat{\mathbf{z}}_{11}\\
-\mathbf{v}_{rcm} &= q_8 \hat{\mathbf{z}}_{10}
-\end{split}
-\end{equation}
-From the RCM point to the wrist joint origin, we can calculate the twist at the wrist $\mathbf{t}_{wr}$.
-\begin{equation}
-\begin{split}
-\boldsymbol{\omega}_{wr} &= \boldsymbol{\omega}_{rcm}\\
-&=  \begin{bmatrix}\hat{\mathbf{z}}_6 & \hat{\mathbf{z}}_7 & \mathbf{0}_{3\times1} & \hat{\mathbf{z}}_{11} \end{bmatrix} \begin{bmatrix}q_6\\q_7\\q_8\\q_9 \end{bmatrix}\\
-\mathbf{v}_{wr} &= q_8 \hat{\mathbf{z}}_{10} + \boldsymbol{\omega}_{wr} \times (\mathbf{p}_{wr} - \mathbf{p}_{rcm})\\
-&= q_8 \hat{\mathbf{z}}_{10} + \begin{bmatrix}(\mathbf{p}_{rcm} - \mathbf{p}_{wr})\times \end{bmatrix} \boldsymbol{\omega}_{wr}\\
-& = \begin{bmatrix}\mathbf{B}_1 & \mathbf{B}_2 & \hat{\mathbf{z}}_{10} & \mathbf{B}_3 \end{bmatrix} \begin{bmatrix}q_6\\q_7\\q_8\\q_9 \end{bmatrix}\\
-\mathbf{B} &= \begin{bmatrix}\mathbf{B}_1 & \mathbf{B}_2 & \mathbf{B}_3 \end{bmatrix} =  \begin{bmatrix}(\mathbf{p}_{rcm} - \mathbf{p}_{wr})\times \end{bmatrix} \begin{bmatrix}\hat{\mathbf{z}}_6 & \hat{\mathbf{z}}_7 & \hat{\mathbf{z}}_{11} \end{bmatrix}\in \mathbb{R}^{[3\times3]}
-\end{split}
-\end{equation}
-In the current arm version, the end effector $\mathbf{p}_{eef}$ is set at the origin of the distal wrist axis.
-\begin{equation}
-\begin{split}
-&\boldsymbol{\omega}_{eef} = \boldsymbol{\omega}_{wr} + q_{10} \hat{\mathbf{z}}_{12} + q_{11} \hat{\mathbf{z}}_{13} \\
-&= \begin{bmatrix}\hat{\mathbf{z}}_6 & \hat{\mathbf{z}}_7 & \mathbf{0}_{3\times1} & \hat{\mathbf{z}}_{11} & \hat{\mathbf{z}}_{12} & \hat{\mathbf{z}}_{13} \end{bmatrix} \mathbf{q}_{6\cdots11}\\
-&\mathbf{v}_{eef} = \mathbf{v}_{wr} +  q_{10} \hat{\mathbf{z}}_{12}\times(\mathbf{p}_{eef} - \mathbf{p}_{12}) + q_{11} \hat{\mathbf{z}}_{13}\times(\mathbf{p}_{eef} - \mathbf{p}_{13})\\
-&=  \begin{bmatrix}\mathbf{B}_1 & \mathbf{B}_2 & \hat{\mathbf{z}}_{10} & \mathbf{B}_3 & \hat{\mathbf{z}}_{12}\times(\mathbf{p}_{eef} - \mathbf{p}_{12}) & \hat{\mathbf{z}}_{13}\times(\mathbf{p}_{eef} - \mathbf{p}_{13}) \end{bmatrix} \mathbf{q}_{6\cdots11}
-\end{split}
-\end{equation}
-Thus, the 6DoF RCM Jacobian $\mathbf{J}_{rcm} \in \mathbb{R}^{[6\times6]}$ for the spherical arm plus the wrist joints is given here.
-\begin{equation}
-\mathbf{J}_{rcm} =  \begin{bmatrix} \mathbf{B}_1 & \mathbf{B}_2 & \hat{\mathbf{z}}_{10} & \mathbf{B}_3 & \hat{\mathbf{z}}_{12}\times(\mathbf{p}_{eef} - \mathbf{p}_{12}) & \hat{\mathbf{z}}_{13}\times(\mathbf{p}_{eef} - \mathbf{p}_{13})\\
-						\hat{\mathbf{z}}_6 & \hat{\mathbf{z}}_7 & \mathbf{0}_{3\times1} & \hat{\mathbf{z}}_{11} & \hat{\mathbf{z}}_{12} & \hat{\mathbf{z}}_{13}\end{bmatrix}
-\end{equation}
-The overall arm Jacobian for all 11 DoF $\mathbf{J}_{all} \in \mathbb{R}^{[6\times11]}$ is given by putting two Jacobians side by side
+The overall arm Jacobian for all 11 DoF $\mathbf{J}_{all} \in \mathbb{R}^{[6\times11]}$ could be separate into $\mathbf{J}_{car5}$ for cartesian arm and $\mathbf{J}_{rcm}$ for spherical arm.
 \begin{equation}
 \mathbf{J}_{all} =  \begin{bmatrix} \mathbf{J}_{car5} & \mathbf{J}_{rcm} \end{bmatrix}
 \end{equation}

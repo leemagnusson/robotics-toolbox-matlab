@@ -1,18 +1,36 @@
 haoran_model
 
-This folder contains kinematics simulation codes written by Haoran Yu
+This folder contains kinematics foundation and simulation codes written by Haoran Yu
 
-3/16/2016
+3/31/2016
 
-1. startup_haoran.m: this is a script that initiate the folder
+1. startup_haoran.m: this is a script that initiate the folder. The code use "URDF.m" from matlab robotics toolbox and convert URDF file into matlab urdf data format. This script also generate point clouds and boundary boxes for collision detection.
 
-2. main.m: import URDF and draw robot at different joint configuration.
+2. Test files
 
-3. resolved_rates.m: run resolved rates by giving the end effector a commanded velocity.
+	a. Test_Draw_arm.m: draw single robot at different joint configuration.
 
-4. resolved_rates_col_detection.m: run resolved rates on two arms and detect contact by showing "colision" as true or false in each arm configuration.
+	b. Test_Resolved_rates.m: run resolved rates by giving the end effector a target position and orientation.
 
-5. The code use "URDF.m" from matlab robotics toolbox and convert URDF file into matlab urdf data format
+3. Init files:
+	a. init_Hernia_setup.m: get all the SW input and setup hernia trocar, arm base, init guess of joint angles and hernia position
+
+	b. init_IK_parameters.m: init IK dt, velocity, convergence radius and etc
+
+	c. init_Tool_path.m: init tool path from log files
+
+4. Analysis files:
+	a. Analysis_Collision_detection_hernia.m: analyze the collision detection with hernia setup and hernia log.
+
+	b. Analysis_Hernia_setup.m: Simulate the automatic hernia setup with estimate from joint angles.
+
+	c. Analysis_EEF_workspace.m: analyze and plot the EEF workspace with fixed RCM
+
+	d. Analysis_RCM_workspace.m: analyze and plot the Trocar workspace
+
+	e. Analysis_Reach_study_hernia.m: analyze the reach study with hernia setup. Being developed. 
+
+5. 
 
 6. Arm_Kinematics.m: define the class Arm_Kinematics that contains information of forward kinematics that is transformed from URDF information and basic arm dynamics parameter.
 

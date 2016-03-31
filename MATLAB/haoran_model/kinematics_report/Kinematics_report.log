@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.16)  17 MAR 2016 17:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.16)  31 MAR 2016 16:31
 entering extended mode
-**C:/Users/haoranyu/Documents/git_haoran/arm_analysis/MATLAB/haoran_model/kinem
-atics_report/Kinematics_report.tex
+**C:/Users/haoranyu/Documents/git_haoran_clean/arm_analysis/MATLAB/haoran_model
+/Kinematics_report/Kinematics_report.tex
 
-(C:/Users/haoranyu/Documents/git_haoran/arm_analysis/MATLAB/haoran_model/kinema
-tics_report/Kinematics_report.tex
+(C:/Users/haoranyu/Documents/git_haoran_clean/arm_analysis/MATLAB/haoran_model/
+Kinematics_report/Kinematics_report.tex
 LaTeX2e <2015/10/01> patch level 2
 Babel <3.9n> and hyphenation patterns for 69 languages loaded.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -935,37 +935,37 @@ Package pdftex.def Info: arm_home_config.jpg used on input line 55.
  [1
 
 {C:/Users/haoranyu/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2 <./ar
-m_home_config.jpg>] [3] [4] [5]
-<before_move.jpg, id=83, 949.74825pt x 870.25125pt>
+m_home_config.jpg>] [3] [4]
+<before_move.jpg, id=74, 949.74825pt x 870.25125pt>
 File: before_move.jpg Graphic file (type jpg)
  <use before_move.jpg>
-Package pdftex.def Info: before_move.jpg used on input line 226.
+Package pdftex.def Info: before_move.jpg used on input line 189.
 (pdftex.def)             Requested size: 156.62819pt x 143.51886pt.
 
-<after_move.jpg, id=84, 894.34125pt x 867.84225pt>
+<after_move.jpg, id=75, 894.34125pt x 867.84225pt>
 File: after_move.jpg Graphic file (type jpg)
  <use after_move.jpg>
-Package pdftex.def Info: after_move.jpg used on input line 232.
+Package pdftex.def Info: after_move.jpg used on input line 195.
 (pdftex.def)             Requested size: 155.24895pt x 150.64314pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 238.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 201.
 
-[6 <./before_move.jpg> <./after_move.jpg>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 238.
+[5 <./before_move.jpg> <./after_move.jpg>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 201.
  (Kinematics_report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 238.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 238.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 201.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 201.
 Package rerunfilecheck Info: File `Kinematics_report.out' has not changed.
 (rerunfilecheck)             Checksum: 12569A8DA0B6B147E35F19B4F271C056;148.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 238.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 201.
  ) 
 Here is how much of TeX's memory you used:
- 19236 strings out of 493634
- 378400 string characters out of 3141305
- 450447 words of memory out of 3000000
+ 19230 strings out of 493634
+ 378347 string characters out of 3141305
+ 445447 words of memory out of 3000000
  22409 multiletter control sequences out of 15000+200000
  17066 words of font info for 66 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 40i,26n,44p,10535b,734s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 40i,26n,44p,10541b,734s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:
@@ -983,9 +983,9 @@ eX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX
 9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/
 fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Program Files (x86)/MiKTeX 2
 .9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Kinematics_report.pdf (6 pages, 521376 bytes).
+Output written on Kinematics_report.pdf (5 pages, 516808 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 43 named destinations out of 1000 (max. 500000)
+ 150 PDF objects out of 1000 (max. 8388607)
+ 37 named destinations out of 1000 (max. 500000)
  40 words of extra memory for PDF output out of 10000 (max. 10000000)
 

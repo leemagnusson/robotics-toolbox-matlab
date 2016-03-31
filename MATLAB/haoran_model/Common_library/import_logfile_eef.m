@@ -1,0 +1,36 @@
+function [arm,time] = import_logfile_eef( logname,step_size)
+%IMPORT_LOGFILE Read Verb log files
+%   This function takes the raw log data and import only the eef data for
+%   all four arms.
+% by Haoran Yu 3/23/2016
+
+
+data = import_log(logname);
+num = length(data);
+time = data(1:step_size:num,2) - data(1,2);
+arm0 = data(1:step_size:num,15:21);
+arm1 = data(1:step_size:num,170:176);
+arm2 = data(1:step_size:num,325:331);
+arm3 = data(1:step_size:num,480:486);
+
+% arm0 = data(1:step_size:num,45:51);
+% arm1 = data(1:step_size:num,196:202);
+% arm2 = data(1:step_size:num,347:353);
+% arm3 = data(1:step_size:num,498:504);
+
+% arm0 = data(1:step_size:num,25:31);
+% arm1 = data(1:step_size:num,176:182);
+% arm2 = data(1:step_size:num,327:333);
+% arm3 = data(1:step_size:num,478:484);
+
+% arm0 = data(1:step_size:num,65:71);
+% arm1 = data(1:step_size:num,216:222);
+% arm2 = data(1:step_size:num,367:373);
+% arm3 = data(1:step_size:num,518:524);
+
+arm(:,:,1) = arm0;
+arm(:,:,2) = arm1;
+arm(:,:,3) = arm2;
+arm(:,:,4) = arm3;
+end
+
