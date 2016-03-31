@@ -16,6 +16,13 @@ baseT = r2t(roty(-pi/2));
 [r,other_param] = create_robot(robot_dir,baseT)
 
 r.links(8).qlim = [-.1 .1];
+r.links(8).m = 1.8; %carriage + tool mass (kg)
+%r.links(8).m = 2.8; % See what happens with it big
+
+
+% Tooldrive mockup mass on 3/25
+%r.links(7).m = 0.656;
+%r.links(8).m = 0.624 + 0.238; % carriage + weights
 r.links(9).G = 0;
 
 initial_robot_tests(r,other_param,robot_dir);

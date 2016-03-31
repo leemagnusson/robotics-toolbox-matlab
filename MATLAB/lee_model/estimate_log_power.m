@@ -1,4 +1,4 @@
-function [ results, all_powers ] = estimate_log_power( r, other_param, gravities, outfile_prefix, varargin)
+function [ results, all_powers ] = estimate_log_power( r, other_param, gravities, outfile_prefix, files)
 % Estimates power usage for several logs returning aggregate results and
 % saving plots for every arm in every log.
 %
@@ -14,6 +14,8 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
     max_powers = [];
     rms_powers = [];
     gravity_used = [];
+    max_joint_torque = [];
+    rms_joint_torque = [];
     
 
     lowpass_cut = 15;
@@ -21,18 +23,35 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
 
     all_powers = [];
 
-    for lognum = 1:length(varargin)
-        logname = varargin{lognum}{1}
-        class(logname)
-        [logpath, logfile, logext] = fileparts(logname);
+    for lognum = 1:length(files)
+        %%
+        logname = files{lognum};
+        if ~strcmp(logname, 'STRAIGHTBACK_WIGGLE')
+            [logpath, logfile, logext] = fileparts(logname);
+            armcount = 4
+        else
+            logfile = logname;
+            armcount = 1
+        end
+        
+        % Close all figures with each log so we don't get too many open
+        close all;
         
         % Run on all 4 arms (skipping any arm that doesn't move)
-        for armnum = 0:3
-        
+        for armnum = 0:(armcount-1)
+       %%
             % Import joint positions from logfile:
-            [t, q, eef, ws] = import_logfile(logname, 'arm', armnum, 'pitch1', 'interp_dt', dt, 'spline', 'smooth', lowpass_cut);
+            if ~strcmp(logname, 'STRAIGHTBACK_WIGGLE')
+                [t, q, eef, ws] = import_logfile(logname, 'arm', armnum, 'pitch1', 'interp_dt', dt, 'spline', 'smooth', lowpass_cut);
+            else
+                [q, t] = straightback_wiggle(dt);
+            end
+            
+            %return
+            
 
             for gravnum = 1:size(gravities, 2)
+                %%
                 gravity = gravities(:,gravnum);
                 
                 r.gravity = gravity;
@@ -73,8 +92,8 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
                 %% Inverse dynamics 
 
                 % Don't bother with dynamics if we don't move at all (i.e
-                % values in qd are 0)
-                if ~any(any(qd))
+                % values in qd are 0 or very close to it)
+                if ~any(any(qd > 1e-2 | qd < -1e-2))
                     T = repmat(r.gravload(q(1,:)), size(q,1), 1); % Not moving, so torques are all gravity, and the same
                 else            
                     T = r.rne(q,qd,qdd); % Inverse dynamics
@@ -132,13 +151,16 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
                 max_powers = [max_powers; max(Pm_sum)];
                 rms_powers = [rms_powers; sqrt(mean(Pm_sum.^2))];
                 gravity_used = [gravity_used; gravity'];
+                max_joint_torque = [max_joint_torque; max(abs(T))];
+                rms_joint_torque = [rms_joint_torque; sqrt(mean(T.^2))];
 
                 saveas(fig.Number,[outfile_prefix, logfile, '_arm', num2str(armnum), '_grav', num2str(gravnum) '.pdf'],'pdf');
+                saveas(fig.Number,[outfile_prefix, logfile, '_arm', num2str(armnum), '_grav', num2str(gravnum) '.fig'],'fig');
 
                 all_powers = vertcat(all_powers, Pm_sum);
             end
         end
     end
     
-    results = table(logfilenames,armnumbers,max_powers,rms_powers,gravity_used)
+    results = table(logfilenames,armnumbers,max_powers,rms_powers,max_joint_torque, rms_joint_torque, gravity_used)
 end

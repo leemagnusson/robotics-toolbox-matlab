@@ -47,9 +47,9 @@ while (ischar(line))
             end
             col_locations.commanded_eef_pose = str2num(eeftokens{1}{1}):str2num(eeftokens{1}{2});
             
-         % Handle all joint lines:   
+        % Handle all joint lines:   
         elseif any(strcmp(matches{1}{2}, {'elbow', 'forearm', 'pit_a', 'pit_b', 'pit_c', 'should_p', ...
-                'should_r', 'spher_b', 'spher_r', 'rotate', 'transl'}))
+                'should_r', 'spher_b', 'spher_r', 'rotate', 'transl', 'proxim', 'distal', 'jaw_a', 'jaw_b'}))
             jointcmdtoken = regexp(line, 'cmd=(\d*)', 'tokens');
             if size(jointcmdtoken{1},2) ~= 1
                 disp('Joint parse error for joint: ', matches{1}{2});
@@ -66,11 +66,13 @@ while (ischar(line))
     line = fgets(logfile);
 end
 
-if size(col_locations,2) ~= 12
+if size(col_locations,2) ~= 16
     disp('Parse error, did not find expected 12 columns. Found:');
-    disp(col_locations)
+    col_locations
     return
 end
+
+col_locations
 
 %%
 
@@ -84,6 +86,7 @@ qcols = [col_locations.should_p, col_locations.should_r, col_locations.elbow, ..
     col_locations.pit_a, col_locations.pit_b, col_locations.pit_c,            ...
     col_locations.transl, col_locations.rotate];
 eef_cols = col_locations.commanded_eef_pose;
+wrist_cols = [col_locations.proxim, col_locations.distal, col_locations.jaw_a, col_locations.jaw_b];
 
 
 %%
@@ -109,6 +112,12 @@ if (size(q,2) == 11)
     q = [q(:,1:6),sum(q(:,7:9),2),q(:,10:end)]; % Sum pitch joint into one joint
 end
 
+wrist = data(good_inds,wrist_cols);
+% Calculate jaw angle
+wrist = [wrist(:,1), wrist(:,2), wrist(:,4) - wrist(:,3)];
+% If jaws try to go less than 0, set them to 0
+wrist(wrist(:,3) < 0, 3) = 0;
+
 
 
 eef = data(good_inds,eef_cols);
@@ -119,6 +128,7 @@ ti = 0:interp_dt:max(t);
 if any(strcmp('spline',varargin))
     eef = interp1(t,eef,ti,'spline');
     q = interp1(t,q,ti,'spline');
+    wrist = interp1(t,wrist,ti,'spline');
 else % linear interpolation
     eef = interp1(t,eef,ti);
     q = interp1(t,q,ti);
@@ -136,7 +146,9 @@ if ind
     [b,a] = butter(4, Wn, 'low');
         
     qs = filtfilt(b, a, q);
+    wrist_filt = filtfilt(b, a, wrist);
     q = qs;
+    wrist = wrist_filt;
 
 end
 
