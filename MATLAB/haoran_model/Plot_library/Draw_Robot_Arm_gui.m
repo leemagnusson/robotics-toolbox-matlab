@@ -15,7 +15,7 @@ if nargin > 1
             hold on
             
         end
-        if nargin > 2
+        if nargin > 4
             if ismember(i,plot_frame)
                 draw_coordinate_system([axis_length axis_length axis_length],R,d,'rgb',num2str(i))
                 hold on

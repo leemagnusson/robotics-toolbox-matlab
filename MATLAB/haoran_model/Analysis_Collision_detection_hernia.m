@@ -9,15 +9,15 @@
 clc
 clear all
 close all
-load('/../data_store/URDF_info.mat');
-load('/../data_store/VertexData_origin.mat');
-load('/../data_store/VertexData_Hernia_Body.mat');
-load('/../data_store/Arm_version_1.0.mat')
-% load('/../data_store/q_init_setup.mat');
-load('/../data_store/q_init_setup_hernia_best.mat');
-load('/../data_store/Tool_path.mat');
-load('/../data_store/point_boundary_all.mat');
-load('/../data_store/index_joints.mat');
+load('URDF_info.mat');
+load('VertexData_origin.mat');
+load('VertexData_Hernia_Body.mat');
+load('Arm_version_1.0.mat')
+% load('q_init_setup.mat');
+load('q_init_setup_hernia_best.mat');
+load('Tool_path.mat');
+load('point_boundary_all.mat');
+load('index_joints.mat');
 init_Hernia_setup;
 % iterative inverse kinematics parameters
 init_IK_parameters;

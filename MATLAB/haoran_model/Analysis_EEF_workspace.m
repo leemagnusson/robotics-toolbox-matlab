@@ -6,9 +6,9 @@
 clc
 clear all
 close all
-load('/data_store/URDF_info.mat')
-load('/data_store/VertexData_origin.mat')
-load('/data_store/Arm_version_1.0.mat')
+load('URDF_info.mat')
+load('VertexData_origin.mat')
+load('Arm_version_1.0.mat')
 do_plot = 1; % 0 to resweep work space, 1 to just plot
 figure(1)
 hold on

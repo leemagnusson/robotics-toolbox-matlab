@@ -82,7 +82,9 @@ q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
 load('URDF_info.mat')
 load('VertexData_origin.mat')
 load('VertexData_Hernia_Body.mat');
-ARM_setup_hernia;
+load('Arm_version_1.0.mat');
+init_Hernia_setup;
+Arm_color = get_arm_color(Arm_class);
 axes(handles.disp_fig)
 cla
 hold on
@@ -113,8 +115,8 @@ if get(handles.check_Body,'Value') == 1
 end
 for index = 1:3
     q_rcm = convert2rcm(q_setup(:,index));
-    Arm_Kinematics1 = Arm_Kinematics(link_input,joint_input,q_rcm,base_T_setup(:,:,index));
-    Draw_Robot_Arm_gui(Arm_Kinematics1,VertexData_origin,handles.disp_fig);
+    Frames = Arm_class.calc_FK(q_rcm,base_T_setup(:,:,index));
+    Draw_Robot_Arm_gui(Frames,VertexData_origin,Arm_color,handles.disp_fig);
     index_jnt_limit = 1;
 end
 plot3(Hernia(1),Hernia(2),Hernia(3),'Marker','o','MarkerSize',10)

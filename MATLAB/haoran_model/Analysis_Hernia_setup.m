@@ -8,11 +8,11 @@ clc
 clear all
 close all
 init_Hernia_setup
-load('/data_store/URDF_info.mat')
-load('/data_store/VertexData_origin.mat')
-load('/data_store/VertexData_Hernia_Body.mat');
-load('/../data_store/Arm_version_1.0.mat')
-load('/../data_store/index_joints.mat');
+load('URDF_info.mat')
+load('VertexData_origin.mat')
+load('VertexData_Hernia_Body.mat');
+load('Arm_version_1.0.mat')
+load('index_joints.mat');
 % load('q_init_setup_hernia_optimized4.mat')
 
 % init resolved rates
