@@ -7,7 +7,9 @@ This folder contains kinematics foundation and simulation codes written by Haora
 1. startup_haoran.m: this is a script that initiate the folder. The code use "URDF.m" from matlab robotics toolbox and convert URDF file into matlab urdf data format. This script also generate point clouds and boundary boxes for collision detection.
 
     --- Arm_version_1.0 is the old URDF
+
     --- Arm_version_1.0_modified is the new URDF with the tool rotate joint change.
+
     --- change do_save to 0 since all the URDF have already been created.
 
 2. Test files
