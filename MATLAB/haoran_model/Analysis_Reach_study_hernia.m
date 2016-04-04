@@ -8,7 +8,7 @@ load('VertexData_Hernia_Body.mat');
 load('q_init_setup_hernia_best.mat');
 load('Tool_path.mat');
 load('point_boundary_all.mat');
-ARM_setup_hernia
+init_Hernia_setup
 dt = 0.0025;
 ncycle_t = 5;
 ncycle_r = 2;

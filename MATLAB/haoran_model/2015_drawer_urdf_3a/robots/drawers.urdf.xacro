@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"
+  name="drawers" >
+  
+  <!-- The following include files set up definitions of parts of the robot body -->
+  <xacro:include filename="$(find 2015_drawer_urdf_3a)/urdf/drawer.urdf.xacro" />
+
+  <xacro:drawer_set drawer_number="0"/>
+  <xacro:drawer_set drawer_number="1"/>
+  <xacro:drawer_set drawer_number="2"/>
+  <xacro:drawer_set drawer_number="3"/>
+  <xacro:drawer_set drawer_number="4"/>
+  <xacro:drawer_set drawer_number="5"/>
+  <xacro:drawer_set drawer_number="6"/>
+  <xacro:drawer_set drawer_number="7"/>
+
+
+</robot>
+

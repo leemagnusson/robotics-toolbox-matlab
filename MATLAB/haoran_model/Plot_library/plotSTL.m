@@ -57,6 +57,7 @@ if isempty(FVCD)
 
     hPlot = patch(VertexData{1},VertexData{2},VertexData{3},zeros(size(VertexData{1})));
     set(hPlot,'facec',rgba(1:3),'EdgeColor','none','FaceLighting','flat');
+    alpha 0.3
 %     material metal 
 %     set(hPlot,'facec',[0.8 0.4 0.4]);
 %     set(hPlot,'facec', rgba(1:3));

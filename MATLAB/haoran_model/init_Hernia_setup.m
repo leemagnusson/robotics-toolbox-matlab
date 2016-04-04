@@ -1,11 +1,16 @@
-scale = 1000;
+%% Hernia measurement
+% hernia setup from the measurement of CAD
+%%
+
+scale = 1000; % 1000mm/1m
 deg2rad = pi/180;
 setup_offset = [0;0;-1093]/scale;
 R_setup = rotr([1;0;0],pi/2);
-Hernia = R_setup * [34.9827;1499.0355;0]/scale+setup_offset;
 
+Hernia = R_setup * [34.9827;1499.0355;0]/scale+setup_offset;
 R_Hernia_Body = R_setup * rotr([0;1;0],pi);
-Hernia_Body = R_setup * [-15.8173;1143.4355;0]/scale + setup_offset + [0.45;-0.35;-0.07];
+% Hernia_Body = R_setup * [-15.8173;1143.4355;0]/scale + setup_offset + [0.45;-0.35;-0.07];
+Hernia_Body = R_setup * [-15.8173;1143.4355;0]/scale + setup_offset;
 
 Trocar1 = R_setup * [63.1933;1389.8945;-186.0630]/scale+setup_offset;
 Trocar2 = R_setup * [-3.4349;1388.7323;-193.9687]/scale+setup_offset;

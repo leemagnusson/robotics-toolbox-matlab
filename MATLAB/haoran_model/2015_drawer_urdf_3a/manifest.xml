@@ -1,0 +1,6 @@
+<package>
+  <description brief="2015_drawer_urdf_3a">2015_drawer_urdf_3a</description>
+  <depend package="gazebo" />
+  <author>me</author>
+  <license>BSD</license>
+</package>

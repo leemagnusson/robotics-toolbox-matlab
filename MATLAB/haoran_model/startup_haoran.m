@@ -5,7 +5,6 @@
 clc
 clear all
 close all
-init_Hernia_setup
 % Add path for useful libraries
 addpath([pwd, '/../3rdparty/robotics-toolbox-matlab']);
 addpath([pwd, '/Kinematics_library']);
@@ -14,13 +13,15 @@ addpath([pwd, '/Plot_library']);
 addpath([pwd, '/Collision_detection_library']);
 addpath([pwd, '/Common_library']);
 addpath([pwd, '/data_store']);
+do_save = 1; % 1 to save new mat files; 0 to not save
+
 % First row of parent number is for link in URDF to tell which parent link
 % it is attached to. Second row is which joint number defines the
 % transformation of this link.
 parent_number=[0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 14 7 10;...
     0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17];
 % save('/data_store/parent_number.mat','parent_number'); % uncomment for a new URDF
-
+init_Hernia_setup;
 % coupling matrix
 A = [1 0 0 0 0 0 0 0 0 0 0;...
     0 1 0 0 0 0 0 0 0 0 0;...
@@ -38,7 +39,7 @@ A = [1 0 0 0 0 0 0 0 0 0 0;...
 % save('/data_store/coupling_matrix.mat','A');
 
 % Load URDF link and joint information
-folder_name = 'Arm_version_1.0/';
+folder_name = 'Arm_version_1.0_modified/';
 URDF_name = 'V1_Arm_URDF.URDF';
 stl_folder_name = strcat(folder_name,'meshes/');
 URDF_file= strcat(folder_name, 'robots/',URDF_name);
@@ -46,7 +47,6 @@ urdf_input = URDF(URDF_file);
 link_input = urdf_input.links;
 joint_input = urdf_input.joints;
 joint_sequence = urdf_input.jseq;
-% save('URDF_info.mat','link_input','joint_input','joint_sequence'); % uncomment for a new URDF
 VertexData_Hernia_Body = stl2matlab(strcat(stl_folder_name,'Ventral_Hernia_Body.STL'));
 VertexData_Hernia_Body{1} = VertexData_Hernia_Body{1}/1000;
 VertexData_Hernia_Body{2} = VertexData_Hernia_Body{2}/1000;
@@ -54,7 +54,6 @@ VertexData_Hernia_Body{3} = VertexData_Hernia_Body{3}/1000;
 
 % Arm kinematics class
 Arm_class = Arm_Kinematics(link_input,joint_input);
-% save('Arm_version_1.0.mat','Arm_class') % uncomment for a new URDF
 
 % read stl files
 for i=1:length(Arm_class)
@@ -84,9 +83,6 @@ for i=1:length(Arm_class)
         index_tool_translate = i;
     end
 end
-% save('/data_store/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate');
-% save('/data_store/VertexData_origin.mat','VertexData_origin'); % uncomment for a new urdf
-% save('/data_store/VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); %
 fclose('all');
 
 %% generate the point cloud for collision detection
@@ -146,9 +142,9 @@ for i = 1:length(Arm_class)
                 point_clouds_temp{i,1} = point_clouds{i,1};
                 point_clouds{i,1} = [];
                 number = 1;
-                for index_pitch_c = 1 : length(point_clouds_temp{i,1})
-                    if point_clouds_temp{i,1}(2,index_pitch_c)<=0.03
-                        point_clouds{i,1}(:,number) = point_clouds_temp{i,1}(:,index_pitch_c);
+                for index_c = 1 : length(point_clouds_temp{i,1})
+                    if point_clouds_temp{i,1}(2,index_c)<=0.03
+                        point_clouds{i,1}(:,number) = point_clouds_temp{i,1}(:,index_c);
                         number = number + 1;
                     end
                 end
@@ -160,8 +156,7 @@ for i = 1:length(Arm_class)
         end
     end
 end
-% save ('/data_store/point_clouds_all.mat','point_clouds'); % uncomment for a new urdf
-% save ('/data_store/point_boundary_all.mat','point_boundary');
+
 %% plot point clouds and arm
 for i = 1:length(Arm_class)
     R = Frames_init(1:3,1:3,i);
@@ -189,3 +184,12 @@ for i = 1:length(Arm_class)
 end
 axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
 drawnow;
+if do_save
+    save('data_store/URDF_info.mat','link_input','joint_input','joint_sequence'); % uncomment for a new URDF
+    save('data_store/Arm_version_1.0.mat','Arm_class') % uncomment for a new URDF
+    save('data_store/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate');
+    save('data_store/VertexData_origin.mat','VertexData_origin'); % uncomment for a new urdf
+    save('data_store/VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); %
+    save ('data_store/point_clouds_all.mat','point_clouds'); % uncomment for a new urdf
+    save ('data_store/point_boundary_all.mat','point_boundary');
+end
