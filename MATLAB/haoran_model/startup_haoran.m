@@ -194,7 +194,7 @@ drawnow;
 % Change do_save to 1 if user want to regenerate the data files. This
 % process is usually for new URDFs and new Mesh files.
 if do_save
-    save('/data_store/coupling_matrix.mat','A'); % save coupling matrix
+    save('data_store/coupling_matrix.mat','A'); % save coupling matrix
     save('data_store/URDF_info.mat','link_input','joint_input','joint_sequence'); % save URDF for the arm
     save('data_store/Arm_version_1.0.mat','Arm_class') % save the arm kinematics class that contains the arm kinematic information
     save('data_store/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate'); % save the index of joints

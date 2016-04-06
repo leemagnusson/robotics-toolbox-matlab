@@ -16,10 +16,14 @@ view(62,28)
 axis equal
 for j=1:1
     cla
-    q=[pi/100*j,0,0,0,0,0,0,0,0,0,0]';
+    q=[0,0,0,0,0,0,0,0,0,pi/2,pi/2]';
     q_rcm = convert2rcm(q);
     Frames = Arm_class.calc_FK(q_rcm,base_T);
-    Draw_Robot_Arm(Frames,VertexData_origin,Arm_color,[10 11 12],0.2);
+    [J_rcm,J_car,J_all] = calc_Jacobian_all(Frames);
+%     rcm_rank = rank(J_rcm)
+%     car_rank = rank(J_car)
+%     all_rank = rank(J_all)
+    Draw_Robot_Arm(Frames,VertexData_origin,Arm_color,[],0.2);
     axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
     light('Position',[1 3 2]);
     light('Position',[-3 -1 -3]);

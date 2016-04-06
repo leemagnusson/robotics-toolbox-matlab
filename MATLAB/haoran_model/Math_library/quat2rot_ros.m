@@ -1,5 +1,4 @@
 %% quaternion to rotation matrix
-% Haoran Yu 3/30/2016
 % function to convert unit quaternion to rotation matrix
 % the quaternion is in the format of ROS
 % x y z qx qy qz qw
