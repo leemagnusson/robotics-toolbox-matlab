@@ -1,7 +1,8 @@
 %% rot2quat: Rotation matrix to quaternion
+% q=rot2quat(R)
 % This function converts a rotation matrix R into a normalized quaternion
-% 
-% Haoran Yu
+% The rotation matrix R is 3 X 3
+% The quaternion q is q = [qw, qx, qy, qz]
 
 function q=rot2quat(R)
 tr = R(1,1) + R(2,2) + R(3,3);

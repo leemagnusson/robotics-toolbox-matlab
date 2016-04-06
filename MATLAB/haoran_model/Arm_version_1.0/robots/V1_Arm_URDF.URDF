@@ -550,17 +550,17 @@
     name="V1_arm1_tool_translate_link">
     <inertial>
       <origin
-        xyz="-0.01953409 0.00743989 0.26133068"
+        xyz="-0.02077114 -0.00026745 0.27080724"
         rpy="0 0 0" />
       <mass
-        value="0.800" />
+        value="0.950" />
       <inertia
-        ixx="0.00164842"
-        ixy="-0.00006503"
-        ixz="0.00010273"
-        iyy="0.00179004"
-        iyz="-0.00002099"
-        izz="0.00059810" />
+        ixx="0.00162305"
+        ixy="-0.00000190"
+        ixz="0.00010383"
+        iyy="0.00181538"
+        iyz="0.00001572"
+        izz="0.00059814" />
     </inertial>
     <visual>
       <origin
@@ -606,17 +606,17 @@
     name="V1_arm1_tool_rotate_link">
     <inertial>
       <origin
-        xyz="0 0 0.38715"
+        xyz="0 0 0.20574152"
         rpy="0 0 0" />
       <mass
         value="0.05" />
       <inertia
-        ixx="0.00069673"
+        ixx="0.00068548"
         ixy="0"
         ixz="0"
-        iyy="0.00069673"
+        iyy="0.00068548"
         iyz="0"
-        izz="0.00000444" />
+        izz="0.00000452" />
     </inertial>
     <visual>
       <origin
@@ -647,7 +647,7 @@
     name="V1_arm1_tool_rotate_joint"
     type="revolute">
     <origin
-      xyz="0 0 -0.1891"
+      xyz="0 0 0"
       rpy="0 0 0" />
     <parent
       link="V1_arm1_tool_translate_link" />
@@ -703,7 +703,7 @@
     name="V1_arm1_wrist_joint"
     type="revolute">
     <origin
-      xyz="0 0 0"
+      xyz="0 0 -0.1891"
       rpy="1.5708 1.5708 0" />
     <parent
       link="V1_arm1_tool_rotate_link" />
