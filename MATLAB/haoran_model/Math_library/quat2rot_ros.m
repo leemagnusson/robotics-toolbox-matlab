@@ -5,8 +5,8 @@
 % x y z qx qy qz qw
 function R=quat2rot_ros(q)
 assert(length(q)==4,'Not quaternion')
-a=q(4); b=q(1); c=q(2); d=q(3); % intermediate variables for readability
-R=[a^2+b^2-c^2-d^2, 2*(b*c-a*d), 2*(b*d+a*c);
-    2*(b*c+a*d), a^2-b^2+c^2-d^2, 2*(c*d-a*b);
-    2*(b*d-a*c), 2*(c*d+a*b), a^2-b^2-c^2+d^2];
+qw=q(4); qx=q(1); qy=q(2); qz=q(3); % intermediate variables for readability
+R=[qw^2+qx^2-qy^2-qz^2, 2*(qx*qy-qw*qz), 2*(qx*qz+qw*qy);
+    2*(qx*qy+qw*qz), qw^2-qx^2+qy^2-qz^2, 2*(qy*qz-qw*qx);
+    2*(qx*qz-qw*qy), 2*(qy*qz+qw*qx), qw^2-qx^2-qy^2+qz^2];
 end

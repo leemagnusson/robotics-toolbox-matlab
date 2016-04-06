@@ -1,6 +1,5 @@
 %% Startup_haoran
 % This code is the startup code to run kinematic analysis in this folder.
-% % by Haoran Yu 3/16/2016
 %% initialization
 clc
 clear all
@@ -17,12 +16,19 @@ do_save = 1; % 1 to save new mat files; 0 to not save
 
 % First row of parent number is for link in URDF to tell which parent link
 % it is attached to. Second row is which joint number defines the
-% transformation of this link.
+% transformation of this link. For each new URDF with different links and
+% joints in order, this array will change.
 parent_number=[0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 14 7 10;...
-    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17];
+               0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17];
+
 % save('/data_store/parent_number.mat','parent_number'); % uncomment for a new URDF
 init_Hernia_setup;
-% coupling matrix
+% Coupling matrix: The coupling matrix transform the 11 by 1 joint angles
+% to 13 by 1 joint angles. The 11 by 1 joint angles are active joint angles
+% except for the jaws. The 13 by 1 joint angles add pitch b and pitch c
+% joints behind the pitch a joint. A is 13 by 11 with diagnal ones except
+% for the coupling components on lines 7 8 9 for pitch a pitch b and pitch
+% c joints. q_rcm = A * q;
 A = [1 0 0 0 0 0 0 0 0 0 0;...
     0 1 0 0 0 0 0 0 0 0 0;...
     0 0 1 0 0 0 0 0 0 0 0;...
@@ -36,7 +42,6 @@ A = [1 0 0 0 0 0 0 0 0 0 0;...
     0 0 0 0 0 0 0 0 1 0 0;...
     0 0 0 0 0 0 0 0 0 1 0;...
     0 0 0 0 0 0 0 0 0 0 1];
-% save('/data_store/coupling_matrix.mat','A');
 
 % Load URDF link and joint information
 folder_name = 'Arm_version_1.0_modified/';
@@ -48,9 +53,10 @@ link_input = urdf_input.links;
 joint_input = urdf_input.joints;
 joint_sequence = urdf_input.jseq;
 VertexData_Hernia_Body = stl2matlab(strcat(stl_folder_name,'Ventral_Hernia_Body.STL'));
-VertexData_Hernia_Body{1} = VertexData_Hernia_Body{1}/1000;
-VertexData_Hernia_Body{2} = VertexData_Hernia_Body{2}/1000;
-VertexData_Hernia_Body{3} = VertexData_Hernia_Body{3}/1000;
+scale_mm2m = 1/1000;
+VertexData_Hernia_Body{1} = VertexData_Hernia_Body{1} * scale_mm2m;
+VertexData_Hernia_Body{2} = VertexData_Hernia_Body{2} * scale_mm2m;
+VertexData_Hernia_Body{3} = VertexData_Hernia_Body{3} * scale_mm2m;
 
 % Arm kinematics class
 Arm_class = Arm_Kinematics(link_input,joint_input);
@@ -184,12 +190,16 @@ for i = 1:length(Arm_class)
 end
 axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
 drawnow;
+
+% Change do_save to 1 if user want to regenerate the data files. This
+% process is usually for new URDFs and new Mesh files.
 if do_save
-    save('data_store/URDF_info.mat','link_input','joint_input','joint_sequence'); % uncomment for a new URDF
-    save('data_store/Arm_version_1.0.mat','Arm_class') % uncomment for a new URDF
-    save('data_store/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate');
-    save('data_store/VertexData_origin.mat','VertexData_origin'); % uncomment for a new urdf
-    save('data_store/VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); %
-    save ('data_store/point_clouds_all.mat','point_clouds'); % uncomment for a new urdf
-    save ('data_store/point_boundary_all.mat','point_boundary');
+    save('/data_store/coupling_matrix.mat','A'); % save coupling matrix
+    save('data_store/URDF_info.mat','link_input','joint_input','joint_sequence'); % save URDF for the arm
+    save('data_store/Arm_version_1.0.mat','Arm_class') % save the arm kinematics class that contains the arm kinematic information
+    save('data_store/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate'); % save the index of joints
+    save('data_store/VertexData_origin.mat','VertexData_origin'); % save the vertex data of the arm for plot
+    save('data_store/VertexData_Hernia_Body.mat','VertexData_Hernia_Body'); % save the vertex data of the hernia body for plot
+    save ('data_store/point_clouds_all.mat','point_clouds'); % save the point clouds of the arm
+    save ('data_store/point_boundary_all.mat','point_boundary'); % save the bounding box of the arm
 end
