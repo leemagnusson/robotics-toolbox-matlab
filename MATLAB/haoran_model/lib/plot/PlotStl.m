@@ -1,5 +1,5 @@
 function PlotStl(vertex,rgba,axes_handle)
-% Plot stl files
+% Plot stl files with vertex data, rgba and axes handle
 % 
 if nargin == 2
     hPlot = patch(vertex{1},vertex{2},vertex{3},zeros(size(vertex{1})));
