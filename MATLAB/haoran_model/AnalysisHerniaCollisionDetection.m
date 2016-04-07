@@ -38,8 +38,8 @@ index_start = 1767;
 index_end = 2592;
 sample_rate = 100; % change the sample rate for simulation
 do_plot = 1; % set to 1 if want to plot
-do_save = 0; % set to 1 if want to store joint values
-do_save_video = 0; % set to 1 if want to save video
+do_save = 1; % set to 1 if want to store joint values
+do_save_video = 1; % set to 1 if want to save video
 
 % initialze all the arms
 q(:,1) = q_init_setup(:,1);
@@ -179,34 +179,34 @@ sample_first_index = index_start;
 sample_last_index = index_sample;
 if do_save
     % calculate the time separation
-    dt_sep = (time(sample_last_index) - time(sample_first_index))/(sample_last_index - sample_first_index)*sample_rate;
-    time_sep = 0 : dt_sep : (sample_last_index - sample_first_index)/sample_rate * dt_sep;
+    dt_separation = (time_log(sample_last_index) - time_log(sample_first_index))/(sample_last_index - sample_first_index)*sample_rate;
+    time_separation = 0 : dt_separation : (sample_last_index - sample_first_index)/sample_rate * dt_separation;
     % calculate qd
     for i = 1 : 3
         for j = 1 : 11
-            qd_store{i}(j,:) = diff(q_store{i}(j,:))/dt_sep;
+            qd_store{i}(j,:) = diff(q_store{i}(j,:))/dt_separation;
         end
     end
     % calculate qdd
     for i = 1 : 3
         for j = 1 : 11
-            qdd_store{i}(j,:) = diff(qd_store{i}(j,:))/dt_sep;
+            qdd_store{i}(j,:) = diff(qd_store{i}(j,:))/dt_separation;
         end
     end
     figure(2)
-    plot(time_sep,q_store{1}(6:11,:));
+    plot(time_separation,q_store{1}(6:11,:));
     ylabel('q(rad)');
     xlabel('t(s)');
     legend('roll','pitch','trans','rotate','wr','dis_wr')
     title('joint angle')
     figure(3)
-    plot(time_sep(1:length(time_sep)-1),qd_store{1}(6:11,:));
+    plot(time_separation(1:length(time_separation)-1),qd_store{1}(6:11,:));
     ylabel('qd(rad/s)');
     xlabel('t(s)');
     legend('roll','pitch','trans','rotate','wr','dis_wr')
     title('joint velocity')
     figure(4)
-    plot(time_sep(1:length(time_sep)-2),qdd_store{1}(6:11,:));
+    plot(time_separation(1:length(time_separation)-2),qdd_store{1}(6:11,:));
     ylabel('qdd(rad/s2)');
     xlabel('t(s)');
     legend('roll','pitch','trans','rotate','wr','dis_wr')

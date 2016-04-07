@@ -79,12 +79,13 @@ function set_robot_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
-load('URDF_info.mat')
-load('VertexData_origin.mat')
-load('VertexData_Hernia_Body.mat');
-load('Arm_version_1.0.mat');
-init_Hernia_setup;
-Arm_color = get_arm_color(Arm_class);
+load('urdf_info.mat')
+load('vertex_arm_origin.mat')
+load('vertex_hernia_patient_body.mat');
+load('arm_version_1.0.mat');
+load('coupling_matrix.mat')
+InitHerniaSetup;
+arm_color = GetRobotColor(robot_kinematics);
 axes(handles.disp_fig)
 cla
 hold on
@@ -92,34 +93,33 @@ axis equal
 view(3)
 view(str2double(get(handles.az_fig,'String')),str2double(get(handles.el_fig,'String')));
 if get(handles.check_Frames,'Value') == 1
-    draw_coordinate_system([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
+    DrawCoordinateSystem([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],R_Base1,Base1,'rgb','b1')
+    DrawCoordinateSystem([0.1 0.1 0.1],rotation_base1,translation_base1,'rgb','b1')
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],R_Base2,Base2,'rgb','b2')
+    DrawCoordinateSystem([0.1 0.1 0.1],rotation_base2,translation_base2,'rgb','b2')
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],R_Base3,Base3,'rgb','b3')
+    DrawCoordinateSystem([0.1 0.1 0.1],rotation_base3,translation_base3,'rgb','b3')
     hold on
-    draw_coordinate_system([0.02 0.02 0.02],R_Trocar1,Trocar1,'rgb','t1')
+    DrawCoordinateSystem([0.02 0.02 0.02],rotation_trocar1,translation_trocar1,'rgb','t1')
     hold on
-    draw_coordinate_system([0.02 0.02 0.02],R_Trocar2,Trocar2,'rgb','t2')
+    DrawCoordinateSystem([0.02 0.02 0.02],rotation_trocar2,translation_trocar2,'rgb','t2')
     hold on
-    draw_coordinate_system([0.02 0.02 0.02],R_Trocar3,Trocar3,'rgb','t3')
+    DrawCoordinateSystem([0.02 0.02 0.02],rotation_trocar3,translation_trocar3,'rgb','t3')
     hold on
 end
 if get(handles.check_Body,'Value') == 1
-    VertexData_hernia_tran = transformSTL(VertexData_Hernia_Body,R_Hernia_Body,Hernia_Body);
+    vertex_hernia_patient_transformed = transformSTL(vertex_hernia_patient_body,rotation_hernia_patient,translation_hernia_patient);
     rgba = [0 0 1 0.1];
-    plotSTL_gui(VertexData_hernia_tran,rgba,handles.disp_fig)
+    PlotStl(vertex_hernia_patient_transformed,rgba,handles.disp_fig)
     hold on
 end
 for index = 1:3
-    q_rcm = convert2rcm(q_setup(:,index));
-    Frames = Arm_class.calc_FK(q_rcm,base_T_setup(:,:,index));
-    Draw_Robot_Arm_gui(Frames,VertexData_origin,Arm_color,handles.disp_fig);
-    index_jnt_limit = 1;
+    q_rcm = ConvertToRcm(q_setup(:,index),coupling_matrix);
+    frames = robot_kinematics.CalculateFK(q_rcm,transformation_base(:,:,index));
+    DrawRobotGUI(frames,vertex_arm_origin,arm_color,handles.disp_fig);
 end
-plot3(Hernia(1),Hernia(2),Hernia(3),'Marker','o','MarkerSize',10)
+plot3(translation_hernia(1),translation_hernia(2),translation_hernia(3),'Marker','o','MarkerSize',10)
 axis([-0.45 0.6 -0.5 0.8 -0.2 0.65])
 light('Position',[1 3 2]);
 light('Position',[-3 -1 -3]);
@@ -132,19 +132,15 @@ function get_jnt_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % handles.jnt_file_name.String
 load(handles.jnt_file_name.String);
-load('jnt_limit_active.mat');
+load('joint_limit_active.mat');
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
-        jnt_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
+        joint_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
 q_setup(:,1:3) = q_init_setup * 180 / pi;
-q_setup(:,4:6) = jnt_percentage * 100;
-size_q = size(q_setup);
+q_setup(:,4:6) = joint_percentage * 100;
 set(handles.uitable_jnt,'data',q_setup);
-
-
-
 
 function jnt_file_name_Callback(hObject, eventdata, handles)
 % hObject    handle to jnt_file_name (see GCBO)
@@ -174,13 +170,13 @@ function reset_jnt_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 q_init_setup = zeros(11,3);
-load('jnt_limit_active.mat')
+load('joint_limit_active.mat')
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
-        jnt_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
+        joint_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,4:6) = jnt_percentage * 100;
+q_setup(:,4:6) = joint_percentage * 100;
 set(handles.uitable_jnt,'data',q_setup);
 
 
@@ -213,13 +209,13 @@ function uitable_jnt_CellEditCallback(hObject, eventdata, handles)
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
-load('jnt_limit_active.mat')
+load('joint_limit_active.mat')
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
-        jnt_percentage(i,index) = (q_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
+        joint_percentage(i,index) = (q_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,4:6) = jnt_percentage * 100;
+q_setup(:,4:6) = joint_percentage * 100;
 set(handles.uitable_jnt,'data',q_setup);
 
 
