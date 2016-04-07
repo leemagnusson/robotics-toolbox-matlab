@@ -87,6 +87,7 @@ for index_arm=1:length(robot_kinematics)
     end
 end
 save('lib/kinematics/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate'); % save the index of joints
+save('data/index_joints.mat','index_eef','index_rcm','index_car','index_wrist','index_pitch_a','index_pitch_b','index_pitch_c','index_tool_rotate','index_tool_translate'); % save the index of joints
 fclose('all');
 
 %% generate the point cloud for collision detection

@@ -32,30 +32,30 @@ hold on
 view(49,16)
 camzoom(5)
 axis equal
-movie_index = 1;
-while((norm(p_err) > p_eps) || (abs(theta_err) > theta_eps))
+index_movie = 0;
+while((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation))
     cla
-    Frames_cur = Arm_class.calc_FK(q_rcm,transformation_base);
-    p_eef = Frames_cur(1:3,4,14);
-    rotation_eef = Frames_cur(1:3,1:3,14);
+    frames_cur = robot_kinematics.CalculateFK(q_rcm,transformation_base);
+    p_eef = frames_cur(1:3,4,14);
+    rotation_eef = frames_cur(1:3,1:3,14);
     % compute twist
-    [t_eef,p_err,theta_err] = compute_twist(p_t,p_eef,rotation_t,rotation_eef);
+    [twist_eef,p_err,theta_err] = ComputeTwist(p_t,p_eef,rotation_t,rotation_eef);
     % get Jacobian
-    [J_rcm,J_car,J_all] = calc_Jacobian_all(Frames_cur);
-    J = J_rcm;
-    q_dot = pinv(J)*t_eef;
+    [jacobian_rcm,jacobian_cartesian,jacobian_all] = CalculateJacobianAll(frames_cur);
+    jacobian = jacobian_rcm;
+    q_dot = pinv(jacobian)*twist_eef;
     q_dot_all = [0;0;0;0;0;q_dot];
     % update q
     q = q + q_dot_all *dt;
-    q_rcm = convert2rcm(q);
-    Draw_Robot_Arm(Frames_cur,VertexData_origin,arm_color,[14],0.1)
+    q_rcm = ConvertToRcm(q,coupling_matrix);
+    DrawRobot(frames_cur,vertex_arm_origin,arm_color,[14],0.1)
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],rotation_t,p_t,'rgb','t')
+    DrawCoordinateSystem([0.1 0.1 0.1],rotation_t,p_t,'rgb','t')
     hold on
     axis([-0.8 0.8 -1.2 0.3 -0.3 0.9])
     light('Position',[1 3 2]);
     light('Position',[-3 -1 -3]);
     drawnow;
-    F(movie_index) = getframe;
-    movie_index = movie_index + 1;
+    index_movie = index_movie + 1;
+    movie_frames(index_movie) = getframe(gcf);
 end

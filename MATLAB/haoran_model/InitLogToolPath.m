@@ -5,36 +5,43 @@ clc
 clear all
 close all
 % load log
-[eef_arm,time] = import_logfile_eef('C:\Users\haoranyu\Desktop\logs\hernia.log',10);
+[arm_eef_pose,time_log] = ImportLogfileEEF('C:\Users\haoranyu\Desktop\logs\hernia.log',10);
 % init
-figure(1)
-hold on
-view(3)
-axis equal
-color = ['r','g','b','black'];
-p_cam = eef_arm(1,1:3,3)';
-R_cam = quat2rot_ros(eef_arm(1,4:7,3)');
-num = length(eef_arm);
-Tool_path_left = zeros(4,4,num);
-Tool_path_right = zeros(4,4,num);
-% load and register the left and right arm tool path
-for j = 1 : length(eef_arm)
-    Tool_path_left(:,:,j) = eye(4);
-    Tool_path_left(1:3,4,j) = R_cam' * (eef_arm(j,1:3,1)' - p_cam);
-    Tool_path_left(1:3,1:3,j) = R_cam' * quat2rot_ros(eef_arm(j,4:7,1)');
-    Tool_path_right(:,:,j) = eye(4);
-    Tool_path_right(1:3,4,j) = R_cam' * (eef_arm(j,1:3,2)' - p_cam);
-    Tool_path_right(1:3,1:3,j) = R_cam' * quat2rot_ros(eef_arm(j,4:7,2)');
-    plot3(Tool_path_left(1,4,j),Tool_path_left(2,4,j),Tool_path_left(3,4,j),'Color',color(1),'Marker','o')
+do_plot = 0;
+if do_plot
+    figure(1)
     hold on
-    plot3(Tool_path_right(1,4,j),Tool_path_right(2,4,j),Tool_path_right(3,4,j),'Color',color(2),'Marker','o')
-    hold on
+    view(3)
+    axis equal
 end
-% save('Tool_path.mat','Tool_path_left','Tool_path_right','time')
-draw_coordinate_system([0.04 0.04 0.04],eye(3),[0;0;0],'rgb','c')
-hold on
-draw_coordinate_system([0.02 0.02 0.02],Tool_path_left(1:3,1:3,1),Tool_path_left(1:3,4,1),'rgb','l')
-hold on
-draw_coordinate_system([0.02 0.02 0.02],Tool_path_right(1:3,1:3,1),Tool_path_right(1:3,4,1),'rgb','r')
-hold on
-drawnow;
+color = ['r','g','b','black'];
+p_cam = arm_eef_pose(1,1:3,3)';
+rotation_cam = QuaternionToRotation(arm_eef_pose(1,4:7,3)');
+num_pose = length(arm_eef_pose);
+tool_path_left = zeros(4,4,num_pose);
+tool_path_right = zeros(4,4,num_pose);
+% load and register the left and right arm tool path
+for index_sample = 1 : length(arm_eef_pose)
+    tool_path_left(:,:,index_sample) = eye(4);
+    tool_path_left(1:3,4,index_sample) = rotation_cam' * (arm_eef_pose(index_sample,1:3,1)' - p_cam);
+    tool_path_left(1:3,1:3,index_sample) = rotation_cam' * QuaternionToRotation(arm_eef_pose(index_sample,4:7,1)');
+    tool_path_right(:,:,index_sample) = eye(4);
+    tool_path_right(1:3,4,index_sample) = rotation_cam' * (arm_eef_pose(index_sample,1:3,2)' - p_cam);
+    tool_path_right(1:3,1:3,index_sample) = rotation_cam' * QuaternionToRotation(arm_eef_pose(index_sample,4:7,2)');
+    if do_plot
+        plot3(tool_path_left(1,4,index_sample),tool_path_left(2,4,index_sample),tool_path_left(3,4,index_sample),'Color',color(1),'Marker','o')
+        hold on
+        plot3(tool_path_right(1,4,index_sample),tool_path_right(2,4,index_sample),tool_path_right(3,4,index_sample),'Color',color(2),'Marker','o')
+        hold on
+    end
+end
+save('data/hernia_tool_path.mat','tool_path_left','tool_path_right','time_log')
+if do_plot
+    DrawCoordinateSystem([0.04 0.04 0.04],eye(3),[0;0;0],'rgb','c')
+    hold on
+    DrawCoordinateSystem([0.02 0.02 0.02],tool_path_left(1:3,1:3,1),tool_path_left(1:3,4,1),'rgb','l')
+    hold on
+    DrawCoordinateSystem([0.02 0.02 0.02],tool_path_right(1:3,1:3,1),tool_path_right(1:3,4,1),'rgb','r')
+    hold on
+    drawnow;
+end

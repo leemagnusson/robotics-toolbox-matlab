@@ -18,10 +18,10 @@ collision = false;
 % detect collision
 for index1 = indices_arm
     for index2 = indices_arm
-        if Collision_detection_SAT(point_boundary1{index1},point_boundary2{index2})
+        if CollisionDetectionSAT(point_boundary1{index1},point_boundary2{index2})
             colliding_arm_index = [colliding_arm_index [index1;index2]];
         end
-        collision = collision | Collision_detection_SAT(point_boundary1{index1},point_boundary2{index2});
+        collision = collision | CollisionDetectionSAT(point_boundary1{index1},point_boundary2{index2});
     end
 end
 end
