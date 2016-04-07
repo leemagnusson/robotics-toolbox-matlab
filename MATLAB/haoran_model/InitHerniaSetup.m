@@ -3,7 +3,7 @@
 %%
 scale_mm_to_m = 1/1000; % 1000mm/1m
 scale_deg_to_rad = pi/180;
-translation_setup = [0;0;-1093]*scale_mm_to_m;
+translation_setup = [0;0;0]*scale_mm_to_m;
 rotation_setup = RotationAxisAngle([1;0;0],pi/2);
 
 translation_hernia = rotation_setup * [34.9827;1499.0355;0]*scale_mm_to_m+translation_setup;

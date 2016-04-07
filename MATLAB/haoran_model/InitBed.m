@@ -75,7 +75,7 @@ for index_bed_adapter = 1 : length(urdf_joint_bed_adapter)
     axis_bed_adapter(:,index_bed_adapter) = urdf_joint_bed_adapter{index_bed_adapter}.axis.xyz';
 end
 
-save('data/vertex_bed.mat','vetex_bed','transformation_bed_base');
+save('data/vertex_bed.mat','vertex_bed','transformation_bed_base');
 save('data/vertex_bed_adapter.mat','vertex_bed_adapter','frames_bed_adapter_base');
 save('data/bed_adapter_info.mat','xyz_bed_adapter','rpy_bed_adapter','axis_bed_adapter')
 
