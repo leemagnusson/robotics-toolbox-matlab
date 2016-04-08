@@ -5,10 +5,9 @@
 clc
 clear all
 close all
-load('urdf_info.mat')
-load('vertex_arm_origin.mat')
-load('arm_version_1.0.mat')
-load('coupling_matrix.mat')
+load('URDF_info.mat')
+load('VertexData_origin.mat')
+load('Arm_version_1.0.mat')
 do_plot = 1; % 0 to resweep work space, 1 to just plot
 figure(1)
 hold on
@@ -16,25 +15,25 @@ view(46,23)
 axis equal
 % setup arm
 q=[0,0,0,0,0,0,0,0,0,0,0]';
-q_rcm = ConvertToRcm(q,coupling_matrix);
-transformation_base=eye(4);
-frames = robot_kinematics.CalculateFK(q_rcm,transformation_base);
-arm_color = GetRobotColor(robot_kinematics);
-DrawRobot(frames,vertex_arm_origin,arm_color);
+q_rcm = convert2rcm(q);
+base_T=eye(4);
+Frames = Arm_class.calc_FK(q_rcm,base_T);
+Arm_color = get_arm_color(Arm_class);
+Draw_Robot_Arm(Frames,VertexData_origin,Arm_color);
 hold on
-joint_limits = [robot_kinematics(2).joint_limit_ robot_kinematics(3).joint_limit_ robot_kinematics(4).joint_limit_ robot_kinematics(5).joint_limit_ robot_kinematics(6).joint_limit_];
+jnt_limits = [Arm_class(2).jnt_limit Arm_class(3).jnt_limit Arm_class(4).jnt_limit Arm_class(5).jnt_limit Arm_class(6).jnt_limit];
 if ~do_plot
     num_data = 1;
     sample_step = 20*pi/180;
-    for q1 = joint_limits(1,1):sample_step:joint_limits(2,1)
-        for q2 = joint_limits(1,2):sample_step:joint_limits(2,2)
-            for q3 = joint_limits(1,3):sample_step:joint_limits(2,3)
-                for q4 = joint_limits(1,4):sample_step:joint_limits(2,4)
-                    for q5 = joint_limits(1,5):sample_step:joint_limits(2,5)
+    for q1 = jnt_limits(1,1):sample_step:jnt_limits(2,1)
+        for q2 = jnt_limits(1,2):sample_step:jnt_limits(2,2)
+            for q3 = jnt_limits(1,3):sample_step:jnt_limits(2,3)
+                for q4 = jnt_limits(1,4):sample_step:jnt_limits(2,4)
+                    for q5 = jnt_limits(1,5):sample_step:jnt_limits(2,5)
                         q=[q1,q2,q3,q4,q5,0,0,0,0,0,0]';
-                        q_rcm = ConvertToRcm(q,coupling_matrix);
-                        frames = robot_kinematics.CalculateFK(q_rcm,transformation_base);
-                        rcm_store(:,num_data) = frames(1:3,4,18);
+                        q_rcm = convert2rcm(q);
+                        Frames = Arm_class.calc_FK(q_rcm,base_T);
+                        rcm_store(:,num_data) = Frames(1:3,4,18);
                         num_data = num_data + 1;
                     end
                 end
@@ -43,7 +42,7 @@ if ~do_plot
     end
 %     save('/data_store/rcm_workspace.mat','rcm_store');
 else
-    load('/data/rcm_workspace.mat');
+    load('/data_store/rcm_workspace.mat');
     % filter work space
     num_filtered = 1;
     for i = 1 : length(rcm_store)
