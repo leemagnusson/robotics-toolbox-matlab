@@ -53,14 +53,16 @@ NecessityDrawRobot(ARM);
 %% Dynamics simulation
 x0 = [ARM.q(1:n_joints);ARM.qd(1:n_joints);];
 option = odeset('RelTol',1e-1,'InitialStep',0.05); 
-[t,x] = ode45(@NecessityODE6DOF,[0,10],x0,option);
+[t,x] = ode45(@NecessityODE6DOF,[0,.7],x0,option);
 writerObj = VideoWriter(strcat('drop_18.avi'));
-writerObj.FrameRate = 30;
+writerObj.FrameRate = 60;
 open(writerObj);
-for i = 1:100:size(x,1)
-    ARM.q(1:n_joints) = x(i,1:n_joints)';
+ti = 0:1/writerObj.FrameRate:max(t);
+xi = interp1(t,x,ti);
+for i = 1:length(ti)
+    ARM.q(1:n_joints) = xi(i,1:n_joints)';
     NecessityDrawRobot(ARM);
-    title(num2str(t(i)));
+    title(num2str(ti(i)));
 %     axis tight
     set(gca,'nextplot','replacechildren');
     set(gcf,'Renderer','zbuffer');
