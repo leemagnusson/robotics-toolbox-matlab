@@ -16,7 +16,7 @@ end
 
 
 % Get a bunch of q positions
-q_list = GetPositionArray(r,u);%q0;
+q_list = q0%GetPositionArray(r,u);%q0;
 
 % Set tool position to end
 r.tool(3,4) = .28;  % m
