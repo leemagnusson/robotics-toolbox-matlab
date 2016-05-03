@@ -16,6 +16,7 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
     gravity_used = [];
     max_joint_torque = [];
     rms_joint_torque = [];
+    max_qd = [];
     
 
     lowpass_cut = 15;
@@ -153,6 +154,7 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
                 gravity_used = [gravity_used; gravity'];
                 max_joint_torque = [max_joint_torque; max(abs(T))];
                 rms_joint_torque = [rms_joint_torque; sqrt(mean(T.^2))];
+                max_qd = [max_qd; max(abs(qd))];
 
                 saveas(fig.Number,[outfile_prefix, logfile, '_arm', num2str(armnum), '_grav', num2str(gravnum) '.pdf'],'pdf');
                 saveas(fig.Number,[outfile_prefix, logfile, '_arm', num2str(armnum), '_grav', num2str(gravnum) '.fig'],'fig');
@@ -162,5 +164,5 @@ function [ results, all_powers ] = estimate_log_power( r, other_param, gravities
         end
     end
     
-    results = table(logfilenames,armnumbers,max_powers,rms_powers,max_joint_torque, rms_joint_torque, gravity_used)
+    results = table(logfilenames,armnumbers,max_qd,max_powers,rms_powers,max_joint_torque, rms_joint_torque, gravity_used)
 end
