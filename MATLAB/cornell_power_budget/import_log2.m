@@ -1,7 +1,8 @@
 %%
-logname = 'logs/lowerAnteria.log';
+%logname = 'logs/lowerAnteria.log';
 %logname = 'logs/hernia.log';
-logname = 'logs/picknplace.log';
+%logname = 'logs/picknplace.log';
+logname = 'logs/sponge1.log'
 
 data = import_log(logname);
 ws = [-1,1,-1,1,-1,1];
@@ -19,35 +20,68 @@ end
 
 qm = data(:,[129,134,89,94,139,144,119,154,149]);
 %qm(:,5) = -qm(:,5);
-%qm(:,4) = -qm(:,4);
+%qm(:,4) = -q[m(:,4);
 
 tm = data(:,2)-data(1,2);
 dt = 1/3000;
 t = 0:dt:max(tm);
 q = interp1(tm,qm,t);
-qs = idealfilt(t,q,1000,'lowpass',2);
-q = qs;
-qd = [zeros(1,size(q,2));diff(q,1,1)]/dt;
-qdd = [zeros(1,size(q,2));diff(q,2,1);zeros(1,size(q,2))]/dt^2;
+
+% q = zeros(size(t,2), size(qm,2));
+% 
+% for i=1:length(qm(1,:))
+%     pc = spline(tm,qm(:,i));
+%     q(:,i) = transpose(ppval(pc,t));
+% end
+
+%pc = pchip(repmat(tm,9,1), qm);
+%q = transpose(ppval(pc,t));
+
+%qs = idealfilt(t,q,1000,'lowpass',2);
+%qs = idealfilter(timeseries(q,t),[0,1000],'pass')
+%q = qs.Data
+
+qd2 = [zeros(1,size(q,2));diff(q,1,1)]/dt;
+%qdd = [zeros(1,size(q,2));diff(q,2,1);zeros(1,size(q,2))]/dt^2;
+
+qd = zeros(size(q));
+qdd = zeros(size(q));
+for i = 1:size(qm, 2)
+    qd(:,i) = movingslope(q(:,i),300,3,dt);
+    qdd(:,i) = movingslope(qd(:,i),300,3,dt);
+end
 
 figure(1);clf; hold all;
 plot(t,q);
-plot(tm,qm,'.');
+plot(tm,qm(:,7),'.');
+
+
+
+figure(2);
+%plot(qs);
 %r.plot3d(qi(300:end,:),'workspace',[-.5,.5,-1,1,-.1,1]);
 
+%return
 
 figure(2); clf; hold all;
 plot(tm,qm,'.')
-plot(t,qs);
+%plot(t,qs);
+%plot(qs);
+plot(t,q);
 title('q')
 
 figure(3);
-plot(t,qd);
+hold all;
+plot(t,qd(:,7));
+plot(t, qd2(:,7));
 title('qd');
 
 figure(4)
 plot(t,qdd);
 title('qdd');
+
+%return
+
 %% Inverse dynamics 
 
 T = r.rne(q,qd,qdd);
@@ -81,7 +115,7 @@ end
     
  %%
  
- [Pm,Pt] = motor_power_heat(T,qd,other_param);
+ [Pm,Pt,Tm,Tm_clipped] = motor_power_heat(T,qd,other_param);
 Pm_sum = sum(Pm,2);
 figure(19); clf; hold on;
 plot(t,Pm,t,Pm_sum);

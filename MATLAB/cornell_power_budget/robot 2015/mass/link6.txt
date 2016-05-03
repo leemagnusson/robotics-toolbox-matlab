@@ -1,0 +1,32 @@
+Mass properties of 2015 Spherical Arm
+     Configuration: just roll
+     Coordinate system: Coordinate System2
+
+Mass = 875.000 grams
+
+Volume = 180205.437 cubic millimeters
+
+Surface area = 21000.010  square millimeters
+
+Center of mass: ( millimeters )
+	X = 7.953
+	Y = 232.464
+	Z = 64.993
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.614,  0.281,  0.737)   	Px = 359911.901
+	 Iy = (-0.678, -0.289,  0.676)   	Py = 759360.838
+	 Iz = ( 0.404, -0.915,  0.013)   	Pz = 877110.941
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 627797.571	Lxy = 112515.122	Lxz = 180277.510
+	Lyx = 112515.122	Lyy = 826291.774	Lyz = 84257.828
+	Lzx = 180277.510	Lzy = 84257.828	Lzz = 542294.335
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 51608507.263	Ixy = 1730237.138	Ixz = 632563.230
+	Iyx = 1730237.138	Iyy = 4577691.025	Iyz = 13304189.781
+	Izx = 632563.230	Izy = 13304189.781	Izz = 47882297.112

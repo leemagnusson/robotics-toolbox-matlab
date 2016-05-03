@@ -7,4 +7,3 @@ link,name1,name2,transmission,motor_constant
 6,j6,spherical_roll,CSD14_100,0.121
 7,j7,spherical_pitch,CSD14_100,0.121
 8,j8,translate,CSD14_100,0.121
-9,j9,rotate,CSD14_100,0.121

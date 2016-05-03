@@ -48,11 +48,11 @@ end
 spd = spd*n;
 etta = (x(1)*tmp + x(2)*tmp.^2 + x(3)*abs(spd) + x(4))/100;
 
-
 Tin = zeros(size(Tout));
 % quadrant 1 & 3
 ind = (Tout >= 0 & spd >= 0) | (Tout <= 0 & spd <= 0);
 Tin(ind) = Tout(ind)./etta(ind)/100;
+
 % quadrant 2 & 4
 ind = (Tout > 0 & spd < 0) | (Tout < 0 & spd > 0);
 Tin(ind) = Tout(ind).*etta(ind)/100;

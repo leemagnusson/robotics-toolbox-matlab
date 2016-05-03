@@ -1,0 +1,6 @@
+{"format": {"Jt":"inertia in kg*m^2","G":"gear ratio > 1 for reduction"},
+ "CSG20_100": {"Jt":193e-7, "Tm":0},
+ "CSG14_100": {"Jt":33e-7},
+ "CSD14_100": {"Jt":21e-7,"G":100},
+ "CSD20_100": {"Jt":90e-7,"G":100},
+ "CSD25_100": {"Jt":282e-7,"G":100}}

@@ -1,0 +1,31 @@
+     Configuration: Default
+     Coordinate system: Coordinate System1
+
+Mass (user-overridden) = 1000.00 grams
+
+Volume = 36112.61 cubic millimeters
+
+Surface area = 7326.19  square millimeters
+
+Center of mass: ( millimeters )
+	X = 0.00
+	Y = 0.00
+	Z = -358.90
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.00,  0.00, -1.00)   	Px = 60500.00
+	 Iy = ( 0.00,  1.00,  0.00)   	Py = 782333.33
+	 Iz = ( 1.00,  0.00,  0.00)   	Pz = 782333.33
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 782333.33	Lxy = 0.00	Lxz = 0.00
+	Lyx = 0.00	Lyy = 782333.33	Lyz = 0.00
+	Lzx = 0.00	Lzy = 0.00	Lzz = 60500.00
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 129591543.33	Ixy = 0.00	Ixz = 0.00
+	Iyx = 0.00	Iyy = 129591543.33	Iyz = 0.00
+	Izx = 0.00	Izy = 0.00	Izz = 60500.00

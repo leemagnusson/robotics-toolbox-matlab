@@ -1,0 +1,32 @@
+Mass properties of arm1_shoulder_pitch_link
+     Configuration: Default
+     Coordinate system: Coordinate System2
+
+Mass (user-overridden) = 1195.00 grams
+
+Volume = 508031.66 cubic millimeters
+
+Surface area = 59654.99  square millimeters
+
+Center of mass: ( millimeters )
+	X = 0.00
+	Y = 0.01
+	Z = 60.84
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.00,  0.00,  1.00)   	Px = 1430575.03
+	 Iy = ( 0.00,  1.00,  0.00)   	Py = 2418419.92
+	 Iz = (-1.00,  0.00,  0.00)   	Pz = 2959715.36
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 2959715.36	Lxy = -9.05	Lxz = 2.00
+	Lyx = -9.05	Lyy = 2418419.85	Lyz = -263.68
+	Lzx = 2.00	Lzy = -263.68	Lzz = 1430575.10
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 7383359.07	Ixy = -9.05	Ixz = -3.42
+	Iyx = -9.05	Iyy = 6842063.33	Iyz = 748.11
+	Izx = -3.42	Izy = 748.11	Izz = 1430575.33

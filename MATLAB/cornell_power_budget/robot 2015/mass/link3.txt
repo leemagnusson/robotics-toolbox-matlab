@@ -1,0 +1,32 @@
+Mass properties of arm1_elbow_link
+     Configuration: Default
+     Coordinate system: Coordinate System2
+
+Mass (user-overridden) = 1289.00 grams
+
+Volume = 415630.20 cubic millimeters
+
+Surface area = 39821.81  square millimeters
+
+Center of mass: ( millimeters )
+	X = -4.93
+	Y = -8.56
+	Z = -67.58
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.23,  0.28, -0.93)   	Px = 813077.84
+	 Iy = (-0.97,  0.15, -0.19)   	Py = 2809085.68
+	 Iz = ( 0.09,  0.95,  0.30)   	Pz = 2931969.81
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 2708609.96	Lxy = 114624.48	Lxz = -423628.68
+	Lyx = 114624.48	Lyy = 2765116.71	Lyz = -553889.85
+	Lzx = -423628.68	Lzy = -553889.85	Lzz = 1080406.65
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 8689613.93	Ixy = 169038.37	Ixz = 5772.90
+	Iyx = 169038.37	Iyy = 8682919.05	Iyz = 192046.33
+	Izx = 5772.90	Izy = 192046.33	Izz = 1206255.49

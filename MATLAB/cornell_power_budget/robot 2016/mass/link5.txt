@@ -1,0 +1,32 @@
+Mass properties of J6_roll joint block
+     Configuration: Default
+     Coordinate system: COORD - J6 roll joint
+
+Mass (user-overridden) = 700.000000 grams
+
+Volume = 210685.575221 cubic millimeters
+
+Surface area = 28396.520906  square millimeters
+
+Center of mass: ( millimeters )
+	X = -0.000022
+	Y = 8.992228
+	Z = 73.905707
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.000000,  0.358980, -0.933345)   	Px = 261187.990492
+	 Iy = (-0.000020,  0.933345,  0.358980)   	Py = 924012.627012
+	 Iz = ( 1.000000,  0.000018,  0.000007)   	Pz = 938245.414752
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 938245.414747	Lxy = -0.333906	Lxz = 0.087053
+	Lyx = -0.333906	Lyy = 838596.690552	Lyz = -222080.852032
+	Lzx = 0.087053	Lzy = -222080.852032	Lzz = 346603.926958
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 4818285.040596	Ixy = -0.471825	Ixz = -1.046480
+	Iyx = -0.471825	Iyy = 4662034.198694	Iyz = 243123.038623
+	Izx = -1.046480	Izy = 243123.038623	Izz = 403206.044665
