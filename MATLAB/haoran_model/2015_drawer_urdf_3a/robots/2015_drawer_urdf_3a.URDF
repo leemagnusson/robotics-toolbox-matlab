@@ -144,8 +144,8 @@
     name="dummy_link"
     type="revolute">
     <origin
-      xyz="-0.18149 0.0063436 0.083002"
-      rpy="0 0 3.1415" />
+      xyz="-0.192576 0.0063436 0.11251"
+      rpy="0 0 1.571" />
     <parent
       link="Translation_link" />
     <child

@@ -1,6 +1,13 @@
 %% Collision detection simulation
 % This simulation reads the logs of hernia on simulation data and detect
-% the collision between arms.
+% the collision between arms. This analysis first import the the joint
+% values for hernia setup. The joint values for hernia setup is calculated
+% from "AnalysisHerniaProcedureSetup.m" and saved in "q_init_setup_hernia.mat".
+% The init condition for trocar position, target position and table adapter
+% position are from "InitHerniaSetup.m". The log file is input from
+% "InitLogToolPath.m" and saved in "hernia_tool_path.mat". The vertex data
+% are stls models. "vertex_bed.mat" and "vertex_bed_adapter.mat" have table
+% and table adapter information in them. 
 % set is_artificial = 0 if want to load the real tool path
 % set is_artificial = 1 if want to create artificial path that the arm will
 % collide
@@ -8,7 +15,6 @@
 clc
 clear all
 close all
-load('urdf_info.mat');
 load('vertex_arm_origin.mat');
 load('vertex_hernia_patient_body.mat');
 load('arm_version_1.0.mat')
@@ -17,10 +23,13 @@ load('hernia_tool_path.mat');
 load('point_boundary_arm.mat');
 load('index_joints.mat');
 load('coupling_matrix.mat');
+load('vertex_bed.mat');
+load('vertex_bed_adapter.mat');
+% Init hernia procedure setup with trocar and base
 InitHerniaSetup;
 % iterative inverse kinematics parameters
 InitIKParameters;
-% set simulation 
+% set simulation
 is_artificial = 0; % set to 1 to create artificial colliding simulation
 % figure parameters
 figure_handle = figure(1);
@@ -29,17 +38,17 @@ hold on
 axis equal
 view(3)
 view(-2,43)
-
+camzoom(2)
 % set index
 movie_index = 1;
 num_collision = 0;
 num_q_store = 0;
 index_start = 1767;
 index_end = 2592;
-sample_rate = 100; % change the sample rate for simulation
+sample_rate = 10; % change the sample rate for simulation
 do_plot = 1; % set to 1 if want to plot
-do_save = 0; % set to 1 if want to store joint values
-do_save_video = 0; % set to 1 if want to save video
+do_save = 1; % set to 1 if want to store joint values
+do_save_video = 1; % set to 1 if want to save video
 
 % initialze all the arms
 q(:,1) = q_init_setup(:,1);
@@ -59,6 +68,15 @@ q_rcm(:,3) = ConvertToRcm(q_init_setup(:,3),coupling_matrix);
 frames_robot3 = robot_kinematics.CalculateFK(q_rcm(:,3),transformation_base(:,:,3));
 p_eef(:,3) = frames_robot3(1:3,4,index_eef);
 rotation_eef(:,:,3) = frames_robot3(1:3,1:3,index_eef);
+% setup bed adapter
+q_bed_adapter = [0 -0.02 0;-40*pi/180 -0.18 0;0 -0.02 0]';
+index_robot = 0;
+selected_arm = [2 1 5];
+for index_bed_adapter = selected_arm;
+    index_robot = index_robot + 1;
+    frames_bed_adapter = CalculateBedAdapterFK(q_bed_adapter(:,index_robot),frames_bed_adapter_base(:,:,index_bed_adapter));
+    transformation_base(:,:,index_robot) = frames_bed_adapter(:,:,end);
+end
 
 for index_sample = index_start : sample_rate : index_end
     % transform the tool path on all the arms into world frame
@@ -84,6 +102,7 @@ for index_sample = index_start : sample_rate : index_end
         rotation_err = rotation_t(:,:,index) * rotation_eef(:,:,index)';
         theta_err = acos((rotation_err(1,1)+rotation_err(2,2)+rotation_err(3,3)-1)/2);
         % iterative IK
+        error_signal = 0;
         while((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation))
             % compute the current frames
             frames_cur = robot_kinematics.CalculateFK(q_rcm(:,index),transformation_base(:,:,index));
@@ -93,13 +112,17 @@ for index_sample = index_start : sample_rate : index_end
             % compute twist
             [twist_eef,p_err,theta_err] = ComputeTwist(p_t(:,index),p_eef(:,index),rotation_t(:,:,index),rotation_eef(:,:,index));
             % compute Jacobian
-            [jacobian_rcm,jacobian_cartesian,jacobian_all] = CalculateJacobianAll(frames_cur);
+            [jacobian_spherical,jacobian_cartesian,jacobian_all] = CalculateJacobianAll(frames_cur);
             % compute joint velocity
-            q_dot = pinv(jacobian_rcm)*twist_eef;
+            q_dot = pinv(jacobian_spherical)*twist_eef;
             q_dot_all = [0;0;0;0;0;q_dot];
             % update q
             q(:,index) = q(:,index) + q_dot_all *dt;
             q_rcm(:,index) = ConvertToRcm(q(:,index),coupling_matrix);
+            error_signal = error_signal + 1;
+            if error_signal >= 10000
+                error('IK not converging!');
+            end
         end
     end
     
@@ -155,6 +178,18 @@ for index_sample = index_start : sample_rate : index_end
         DrawRobot(frames(:,:,:,3),vertex_arm_origin,arm_color3)
         hold on
         
+        frames_bed_adapter1 = CalculateBedAdapterFK(q_bed_adapter(:,1),frames_bed_adapter_base(:,:,selected_arm(1)));
+        frames_bed_adapter2 = CalculateBedAdapterFK(q_bed_adapter(:,2),frames_bed_adapter_base(:,:,selected_arm(2)));
+        frames_bed_adapter3 = CalculateBedAdapterFK(q_bed_adapter(:,3),frames_bed_adapter_base(:,:,selected_arm(3)));
+        DrawBed(vertex_bed,[0.0 0.7 0.0 1])
+        hold on
+        DrawBedAdapter(frames_bed_adapter1,vertex_bed_adapter,[1 0 0 1])
+        hold on
+        DrawBedAdapter(frames_bed_adapter2,vertex_bed_adapter,[1 0 0 1])
+        hold on
+        DrawBedAdapter(frames_bed_adapter3,vertex_bed_adapter,[1 0 0 1])
+        hold on
+        
         if collision12 || collision13 || collision23
             title(['Collision12 =' num2str(collision12) ';   ' 'Collision13 =' num2str(collision13) ';   ' 'Collision23 =' num2str(collision23)],'Color','r')
         else
@@ -165,7 +200,7 @@ for index_sample = index_start : sample_rate : index_end
         rgba = [0 0 1 0.1];
         PlotStl(vertex_hernia_patient_body_transformed,rgba);
         hold on
-        axis([-0.45 0.6 -0.5 0.8 -0.2 0.65])
+        axis([-1.2 1 -0.8 0.8 -0.2 2.8])
         light('Position',[1 3 2]);
         light('Position',[-3 -1 -3]);
         drawnow;
@@ -179,36 +214,37 @@ sample_first_index = index_start;
 sample_last_index = index_sample;
 if do_save
     % calculate the time separation
-    dt_sep = (time(sample_last_index) - time(sample_first_index))/(sample_last_index - sample_first_index)*sample_rate;
-    time_sep = 0 : dt_sep : (sample_last_index - sample_first_index)/sample_rate * dt_sep;
+    dt_separation = (time_log(sample_last_index) - time_log(sample_first_index))/(sample_last_index - sample_first_index)*sample_rate;
+    time_separation = 0 : dt_separation : (sample_last_index - sample_first_index)/sample_rate * dt_separation;
     % calculate qd
     for i = 1 : 3
         for j = 1 : 11
-            qd_store{i}(j,:) = diff(q_store{i}(j,:))/dt_sep;
+            qd_store{i}(j,:) = diff(q_store{i}(j,:))/dt_separation;
         end
     end
     % calculate qdd
     for i = 1 : 3
         for j = 1 : 11
-            qdd_store{i}(j,:) = diff(qd_store{i}(j,:))/dt_sep;
+            qdd_store{i}(j,:) = diff(qd_store{i}(j,:))/dt_separation;
         end
     end
     figure(2)
-    plot(time_sep,q_store{1}(6:11,:));
+    plot(time_separation,q_store{1}(6:11,:));
     ylabel('q(rad)');
     xlabel('t(s)');
     legend('roll','pitch','trans','rotate','wr','dis_wr')
     title('joint angle')
     figure(3)
-    plot(time_sep(1:length(time_sep)-1),qd_store{1}(6:11,:));
+    plot(time_separation(1:length(time_separation)-1),qd_store{1}(6:11,:));
     ylabel('qd(rad/s)');
     xlabel('t(s)');
     legend('roll','pitch','trans','rotate','wr','dis_wr')
     title('joint velocity')
     figure(4)
-    plot(time_sep(1:length(time_sep)-2),qdd_store{1}(6:11,:));
+    plot(time_separation(1:length(time_separation)-2),qdd_store{1}(6:11,:));
     ylabel('qdd(rad/s2)');
     xlabel('t(s)');
     legend('roll','pitch','trans','rotate','wr','dis_wr')
     title('joint acceleration')
+    save('data/hernia_suture_joint_states.mat','time_separation','q_store','qd_store','qdd_store')
 end

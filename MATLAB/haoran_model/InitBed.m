@@ -1,7 +1,10 @@
 %% Input URDF for bed and bed adapter
-% input URDF for bed and bed adapter
+% This code loads the current version of table and table adapter from the
+% urdf input in folder '2015_drawer_urdf_3a/'. The hard code numbers are
+% not being modified so far because the bed and bed adapter urdf need to be
+% modified to match the setup for modular robot design.
 %%
-
+% this is the old version of urdf for table adapter and skytron table.
 name_urdf_bed_folder = '2015_drawer_urdf_3a/';
 urdf_bed=URDF(strcat(name_urdf_bed_folder,'robots/drawers.urdf'));
 urdf_bed_adapter=URDF(strcat(name_urdf_bed_folder,'robots/2015_drawer_urdf_3a.urdf'));
@@ -28,12 +31,14 @@ for index_bed = 2 : 5
     frames_bed(:,:,index_bed) = frames_bed(:,:,index_bed-1) * frames_bed(:,:,index_bed);
 end
 
+% hard code the table height because there is not FK written for table
 frames_bed(:,:,3) = [frames_bed(1:3,1:3,3) [0;0;0.2984500]; 0 0 0 1];
 % 
 frames_bed(:,:,4) = [frames_bed(1:3,1:3,4) [0;0;0.4762478]; 0 0 0 1];
 % 
 frames_bed(:,:,5) = [frames_bed(1:3,1:3,5) [0;0;0.6298416]; 0 0 0 1];
 
+% define table link 6 to 10. they are attached to different parent frames
 for index_bed = 6 : 10
 if index_bed <=8
     frames_bed(:,:,index_bed) = frames_bed(:,:,index_bed-1) * frames_bed(:,:,index_bed);
@@ -41,7 +46,7 @@ else
     frames_bed(:,:,index_bed) = frames_bed(:,:,7) * frames_bed(:,:,index_bed);
 end
 end
-% find bed drawer frames 8 in total
+% find bed drawer frames 8 which comes from link 11 to 18 in the table urdf
 num_bed_adapter = 0;
 for index_bed = 11 : 18
     num_bed_adapter = num_bed_adapter + 1;

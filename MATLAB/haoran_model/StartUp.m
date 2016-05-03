@@ -1,5 +1,13 @@
 %% StartUp
 % This code is the startup code to run kinematic analysis in this folder.
+% If there is no extra change on any robot model or patient model, just run
+% the following commands to load the path.
+% clc
+% clear all
+% close all
+% addpath([pwd, '/../3rdparty/robotics-toolbox-matlab']);
+% addpath(genpath([pwd, '/lib']));
+% addpath(genpath([pwd, '/data']));
 %% initialization
 clc
 clear all

@@ -22,7 +22,7 @@ function varargout = Arm_Setup_UI(varargin)
 
 % Edit the above text to modify the response to help Arm_Setup_UI
 
-% Last Modified by GUIDE v2.5 24-Mar-2016 17:18:03
+% Last Modified by GUIDE v2.5 08-Apr-2016 09:05:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,9 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+% set(handles.arm1_drawer,'Value',2);
+% set(handles.arm2_drawer,'Value',1);
+% set(handles.arm3_drawer,'Value',5);
 
 % UIWAIT makes Arm_Setup_UI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -78,49 +81,60 @@ function set_robot_Callback(hObject, eventdata, handles)
 % hObject    handle to set_robot (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
-load('URDF_info.mat')
-load('VertexData_origin.mat')
-load('VertexData_Hernia_Body.mat');
-load('Arm_version_1.0.mat');
-init_Hernia_setup;
-Arm_color = get_arm_color(Arm_class);
+scale_deg_to_rad = pi/180;
+q_setup = get(handles.uitable_jnt, 'data');
+q_setup([1:7 9:11],1:3) = q_setup([1:7 9:11],1:3) * scale_deg_to_rad;
+load('urdf_info.mat')
+load('vertex_arm_origin.mat')
+load('vertex_hernia_patient_body.mat');
+load('arm_version_1.0.mat');
+load('coupling_matrix.mat');
+load('vertex_bed.mat');
+load('vertex_bed_adapter.mat');
+InitHerniaSetup;
+arm_color = GetRobotColor(robot_kinematics);
 axes(handles.disp_fig)
+
+q_bed_adapter = [str2double(get(handles.drawer11,'String'))*scale_deg_to_rad str2double(get(handles.drawer12,'String')) 0;str2double(get(handles.drawer21,'String'))*scale_deg_to_rad str2double(get(handles.drawer22,'String')) 0;str2double(get(handles.drawer31,'String'))*scale_deg_to_rad str2double(get(handles.drawer32,'String')) 0]';
+index_bed_adapter = [get(handles.arm1_drawer,'Value') get(handles.arm2_drawer,'Value') get(handles.arm3_drawer,'Value')];
 cla
 hold on
 axis equal
 view(3)
 view(str2double(get(handles.az_fig,'String')),str2double(get(handles.el_fig,'String')));
 if get(handles.check_Frames,'Value') == 1
-    draw_coordinate_system([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
+    DrawCoordinateSystem([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],R_Base1,Base1,'rgb','b1')
+    DrawCoordinateSystem([0.02 0.02 0.02],rotation_trocar1,translation_trocar1,'rgb','t1')
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],R_Base2,Base2,'rgb','b2')
+    DrawCoordinateSystem([0.02 0.02 0.02],rotation_trocar2,translation_trocar2,'rgb','t2')
     hold on
-    draw_coordinate_system([0.1 0.1 0.1],R_Base3,Base3,'rgb','b3')
-    hold on
-    draw_coordinate_system([0.02 0.02 0.02],R_Trocar1,Trocar1,'rgb','t1')
-    hold on
-    draw_coordinate_system([0.02 0.02 0.02],R_Trocar2,Trocar2,'rgb','t2')
-    hold on
-    draw_coordinate_system([0.02 0.02 0.02],R_Trocar3,Trocar3,'rgb','t3')
+    DrawCoordinateSystem([0.02 0.02 0.02],rotation_trocar3,translation_trocar3,'rgb','t3')
     hold on
 end
 if get(handles.check_Body,'Value') == 1
-    VertexData_hernia_tran = transformSTL(VertexData_Hernia_Body,R_Hernia_Body,Hernia_Body);
+    vertex_hernia_patient_transformed = transformSTL(vertex_hernia_patient_body,rotation_hernia_patient,translation_hernia_patient);
     rgba = [0 0 1 0.1];
-    plotSTL_gui(VertexData_hernia_tran,rgba,handles.disp_fig)
+    PlotStl(vertex_hernia_patient_transformed,rgba,handles.disp_fig)
     hold on
 end
-for index = 1:3
-    q_rcm = convert2rcm(q_setup(:,index));
-    Frames = Arm_class.calc_FK(q_rcm,base_T_setup(:,:,index));
-    Draw_Robot_Arm_gui(Frames,VertexData_origin,Arm_color,handles.disp_fig);
-    index_jnt_limit = 1;
+for index_robot = 1:3
+    frames_bed_adapter = CalculateBedAdapterFK( q_bed_adapter(:,index_robot),frames_bed_adapter_base(:,:,index_bed_adapter(index_robot)));
+    DrawBedAdapter(frames_bed_adapter,vertex_bed_adapter,[1 0 0 1],handles.disp_fig)
+    hold on
+    transformation_base(:,:,index_robot) = frames_bed_adapter(:,:,end);
+    if get(handles.check_Frames,'Value') == 1
+        DrawCoordinateSystem([0.1 0.1 0.1],frames_bed_adapter(1:3,1:3,end),frames_bed_adapter(1:3,4,end),'rgb',strcat('b',num2str(index_robot)))
+        hold on
+    end
+    q_rcm = ConvertToRcm(q_setup(:,index_robot),coupling_matrix);
+    frames = robot_kinematics.CalculateFK(q_rcm,transformation_base(:,:,index_robot));
+    DrawRobotGUI(frames,vertex_arm_origin,arm_color,handles.disp_fig);
 end
-plot3(Hernia(1),Hernia(2),Hernia(3),'Marker','o','MarkerSize',10)
-axis([-0.45 0.6 -0.5 0.8 -0.2 0.65])
+plot3(translation_hernia(1),translation_hernia(2),translation_hernia(3),'Marker','o','MarkerSize',10)
+DrawBed(vertex_bed,[0.0 0.7 0.0 1],handles.disp_fig)
+hold on
+axis([-1.2 1 -0.8 0.8 -0.2 2.8])
 light('Position',[1 3 2]);
 light('Position',[-3 -1 -3]);
 drawnow;
@@ -132,19 +146,26 @@ function get_jnt_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % handles.jnt_file_name.String
 load(handles.jnt_file_name.String);
-load('jnt_limit_active.mat');
+load('joint_limit_active.mat');
+q_setup(:,1:3) = q_init_setup(:,1:3);
+q_setup([1:7  9:11],1:3) = q_setup([1:7  9:11],1:3) * 180 / pi;
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
-        jnt_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
+        joint_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,1:3) = q_init_setup * 180 / pi;
-q_setup(:,4:6) = jnt_percentage * 100;
-size_q = size(q_setup);
+
+q_setup(:,4:6) = joint_percentage * 100;
 set(handles.uitable_jnt,'data',q_setup);
-
-
-
+set(handles.arm1_drawer,'Value',selected_bed_adapter(1));
+set(handles.arm2_drawer,'Value',selected_bed_adapter(2));
+set(handles.arm3_drawer,'Value',selected_bed_adapter(3));
+set(handles.drawer11,'String',num2str(q_bed_adapter(1,1) * 180 / pi));
+set(handles.drawer12,'String',num2str(q_bed_adapter(2,1)));
+set(handles.drawer21,'String',num2str(q_bed_adapter(1,2) * 180 / pi));
+set(handles.drawer22,'String',num2str(q_bed_adapter(2,2)));
+set(handles.drawer31,'String',num2str(q_bed_adapter(1,3) * 180 / pi));
+set(handles.drawer32,'String',num2str(q_bed_adapter(2,3)));
 
 function jnt_file_name_Callback(hObject, eventdata, handles)
 % hObject    handle to jnt_file_name (see GCBO)
@@ -174,13 +195,22 @@ function reset_jnt_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 q_init_setup = zeros(11,3);
-load('jnt_limit_active.mat')
+load('joint_limit_active.mat')
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
-        jnt_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
+        joint_percentage(i,index) = (q_init_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,4:6) = jnt_percentage * 100;
+q_setup(:,4:6) = joint_percentage * 100;
+set(handles.arm1_drawer,'Value',1);
+set(handles.arm2_drawer,'Value',1);
+set(handles.arm3_drawer,'Value',1);
+set(handles.drawer11,'String',num2str(0));
+set(handles.drawer12,'String',num2str(0));
+set(handles.drawer21,'String',num2str(0));
+set(handles.drawer22,'String',num2str(0));
+set(handles.drawer31,'String',num2str(0));
+set(handles.drawer32,'String',num2str(0));
 set(handles.uitable_jnt,'data',q_setup);
 
 
@@ -212,14 +242,16 @@ function uitable_jnt_CellEditCallback(hObject, eventdata, handles)
 %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
-q_setup = get(handles.uitable_jnt, 'data') * pi / 180;
-load('jnt_limit_active.mat')
+q_setup = get(handles.uitable_jnt, 'data');
+q_setup([1:7 9:11],1:3) = q_setup([1:7 9:11],1:3) * pi / 180;
+load('joint_limit_active.mat')
 for index = 1:3
     for i = 1 :  length(jnt_limit_active)
-        jnt_percentage(i,index) = (q_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
+        joint_percentage(i,index) = (q_setup(i,index) - jnt_limit_active(1,i)) / (jnt_limit_active(2,i) - jnt_limit_active(1,i));
     end
 end
-q_setup(:,4:6) = jnt_percentage * 100;
+q_setup(:,4:6) = joint_percentage * 100;
+q_setup([1:7 9:11],1:3) = q_setup([1:7 9:11],1:3) * 180 / pi;
 set(handles.uitable_jnt,'data',q_setup);
 
 
@@ -286,6 +318,249 @@ function el_fig_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function el_fig_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to el_fig (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in arm1_drawer.
+function arm1_drawer_Callback(hObject, eventdata, handles)
+% hObject    handle to arm1_drawer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns arm1_drawer contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from arm1_drawer
+
+
+% --- Executes during object creation, after setting all properties.
+function arm1_drawer_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to arm1_drawer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in arm2_drawer.
+function arm2_drawer_Callback(hObject, eventdata, handles)
+% hObject    handle to arm2_drawer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns arm2_drawer contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from arm2_drawer
+
+
+% --- Executes during object creation, after setting all properties.
+function arm2_drawer_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to arm2_drawer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in arm3_drawer.
+function arm3_drawer_Callback(hObject, eventdata, handles)
+% hObject    handle to arm3_drawer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns arm3_drawer contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from arm3_drawer
+
+
+% --- Executes during object creation, after setting all properties.
+function arm3_drawer_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to arm3_drawer (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function drawer11_Callback(hObject, eventdata, handles)
+% hObject    handle to drawer11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of drawer11 as text
+%        str2double(get(hObject,'String')) returns contents of drawer11 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function drawer11_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to drawer11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function drawer12_Callback(hObject, eventdata, handles)
+% hObject    handle to drawer12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of drawer12 as text
+%        str2double(get(hObject,'String')) returns contents of drawer12 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function drawer12_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to drawer12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function drawer21_Callback(hObject, eventdata, handles)
+% hObject    handle to drawer21 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of drawer21 as text
+%        str2double(get(hObject,'String')) returns contents of drawer21 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function drawer21_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to drawer21 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function drawer22_Callback(hObject, eventdata, handles)
+% hObject    handle to drawer22 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of drawer22 as text
+%        str2double(get(hObject,'String')) returns contents of drawer22 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function drawer22_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to drawer22 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function drawer31_Callback(hObject, eventdata, handles)
+% hObject    handle to drawer31 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of drawer31 as text
+%        str2double(get(hObject,'String')) returns contents of drawer31 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function drawer31_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to drawer31 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function drawer32_Callback(hObject, eventdata, handles)
+% hObject    handle to drawer32 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of drawer32 as text
+%        str2double(get(hObject,'String')) returns contents of drawer32 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function drawer32_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to drawer32 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in save_jnt.
+function save_jnt_Callback(hObject, eventdata, handles)
+% hObject    handle to save_jnt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+scale_deg_to_rad =  pi / 180;
+q_setup = get(handles.uitable_jnt, 'data');
+q_setup([1:7 9:11],1:3) = q_setup([1:7 9:11],1:3) * scale_deg_to_rad;
+q_init_setup = q_setup(:,1:3);
+q_bed_adapter = [str2double(get(handles.drawer11,'String'))*scale_deg_to_rad str2double(get(handles.drawer12,'String')) 0;str2double(get(handles.drawer21,'String'))*scale_deg_to_rad str2double(get(handles.drawer22,'String')) 0;str2double(get(handles.drawer31,'String'))*scale_deg_to_rad str2double(get(handles.drawer32,'String')) 0]';
+selected_bed_adapter = [get(handles.arm1_drawer,'Value') get(handles.arm2_drawer,'Value') get(handles.arm3_drawer,'Value')];
+save(strcat('data/',handles.save_file_name.String),'q_init_setup','q_bed_adapter','selected_bed_adapter');
+
+
+function save_file_name_Callback(hObject, eventdata, handles)
+% hObject    handle to save_file_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of save_file_name as text
+%        str2double(get(hObject,'String')) returns contents of save_file_name as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function save_file_name_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to save_file_name (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

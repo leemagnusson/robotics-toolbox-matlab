@@ -1,5 +1,11 @@
 %% Generate tool path
-% Load the log and register the tool path into camera frame.
+% Load the log "hernia.log" and register the tool path into camera frame.
+% the log will be loaded to generate quaternions for poses in all four
+% arms. the first and third arms are left and right arms. The poses are
+% registered into the camera frame provided by the second arm. The tool
+% path with the time log is saved into "hernia_tool_path.mat". The log is
+% available on google drive at
+% https://drive.google.com/drive/u/0/folders/0B3-rJB5tIf07RTFFTU1UcFE5LWs
 %%
 clc
 clear all
