@@ -1,0 +1,32 @@
+Mass properties of tool holder
+     Configuration: Default
+     Coordinate system: COORD - tool
+
+Mass (user-overridden) = 1000.000000 grams
+
+Volume = 530709.422663 cubic millimeters
+
+Surface area = 55988.822271  square millimeters
+
+Center of mass: ( millimeters )
+	X = -14.172894
+	Y = 0.000000
+	Z = 453.550194
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.028601,  0.000000,  0.999591)   	Px = 694800.799371
+	 Iy = ( 0.999591,  0.000000,  0.028601)   	Py = 5920495.155544
+	 Iz = ( 0.000000,  1.000000,  0.000000)   	Pz = 6171005.167544
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 5916220.333425	Lxy = 0.000000	Lxz = -149400.936135
+	Lyx = 0.000000	Lyy = 6171005.167544	Lyz = 0.000000
+	Lzx = -149400.936135	Lzy = 0.000000	Lzz = 699075.621490
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 211623998.393560	Ixy = -0.000006	Ixz = -6577519.691602
+	Iyx = -0.000006	Iyy = 212079654.148187	Iyz = 0.000195
+	Izx = -6577519.691602	Izy = 0.000195	Izz = 899946.541997

@@ -1,0 +1,32 @@
+Mass properties of J8_tool carriage block
+     Configuration: Default
+     Coordinate system: COORD - tool carriage
+
+Mass (user-overridden) = 411.000000 grams
+
+Volume = 238029.477220 cubic millimeters
+
+Surface area = 52449.909951  square millimeters
+
+Center of mass: ( millimeters )
+	X = -39.206475
+	Y = -1.155992
+	Z = 174.231739
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.166079,  0.006263,  0.986093)   	Px = 201639.898872
+	 Iy = (-0.984924, -0.050127, -0.165563)   	Py = 4957000.674514
+	 Iz = ( 0.048393, -0.998723,  0.014494)   	Pz = 5054804.576292
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 4826066.823793	Lxy = -219.624184	Lxz = -778848.862700
+	Lyx = -219.624184	Lyy = 5054368.438778	Lyz = 30785.991764
+	Lzx = -778848.862700	Lzy = 30785.991764	Lzz = 333009.887106
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 17303219.332448	Ixy = 18407.869805	Ixz = -3586394.957002
+	Iyx = 18407.869805	Iyy = 18162739.429983	Iyz = -51993.718641
+	Izx = -3586394.957002	Izy = -51993.718641	Izz = 965326.822544

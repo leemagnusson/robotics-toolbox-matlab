@@ -1,11 +1,18 @@
 
 %[rpm,brakeV,TmeasuredNm,busiA,busvVatdrive,motorphasephasevoltageVrms,iqA] ...
 %    = import_motor_test2('test_data/motor test test data - 70-10 v2.csv');
-[rpm,brakeV,iqA,TmeasuredNm,busiA,busvVatdrive] = import_motor_test('test_data/motor test test data - 70-10.csv',4,42);
 
-r = .47*3/4+.16; 
-L = 470e-6;
-kt_est = .1213;
+% For 70-10
+%[rpm,brakeV,iqA,TmeasuredNm,busiA,busvVatdrive] = import_motor_test('test_data/motor test test data - 70-10.csv',4,42);
+% r = .47*3/4+.16; 
+% L = 800e-6;
+% kt_est = .1213;
+
+% For 50-14
+[rpm,brakeV,iqA,TmeasuredNm,busiA,busvVatdrive] = import_motor_test('test_data/motor test test data - 50-14.csv',4,40);
+r = .80*3/4+.16
+L = 820e-6
+kt_est = .098
 
 npoles = 10;
 n = length(rpm);
@@ -62,7 +69,7 @@ W = diag([max(b3)*ones(n,1);max(b2)*ones(n,1)]);
 A = [zeros(n,size(A3,2)-2),A2;
      A3,zeros(n,size(A2,2)-2)];
 b = [b2;b3];
-x = (W*A)\(W*b);
+x = (W*A)\(W*b)
 
 vg = linspace(0,400,100);
 iqg = linspace(0,5,110);
@@ -97,6 +104,9 @@ Ploss_motor_gr = x(6) + x(5)*iqgr + x(4)*iqgr.^2 + x(2)*vgr + x(3)*vgr.^2;
 figure(6); clf; hold on;
 plot3(v,iqA,Pin-Pout_mech,'.');
 surf(vgr,iqgr,Ploss_motor_gr);
+xlabel('v (rad/s)')
+ylabel('iq')
+zlabel('Pmeasured');
 
 
 % convert line-line calc phase amplitude

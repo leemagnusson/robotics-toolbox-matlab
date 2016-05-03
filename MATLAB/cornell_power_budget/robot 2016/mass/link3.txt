@@ -1,0 +1,34 @@
+Mass properties of J4_elbow
+     Configuration: Default
+     Coordinate system: COORD - J4 elbow
+
+Density = 0.00 grams per cubic millimeter
+
+Mass (user-overridden) = 1289.00 grams
+
+Volume = 637344.46 cubic millimeters
+
+Surface area = 97794.60  square millimeters
+
+Center of mass: ( millimeters )
+	X = -18.07
+	Y = 0.00
+	Z = 91.45
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.58,  0.00,  0.82)   	Px = 1615630.74
+	 Iy = ( 0.00,  1.00,  0.00)   	Py = 5083886.09
+	 Iz = (-0.82,  0.00,  0.58)   	Pz = 5399860.95
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 4129331.33	Lxy = -3.29	Lxz = 1787101.30
+	Lyx = -3.29	Lyy = 5083886.09	Lyz = 2.31
+	Lzx = 1787101.30	Lzy = 2.31	Lzz = 2886160.36
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 14909624.70	Ixy = -5.18	Ixz = -343474.29
+	Iyx = -5.18	Iyy = 16285258.20	Iyz = 11.89
+	Izx = -343474.29	Izy = 11.89	Izz = 3307239.10

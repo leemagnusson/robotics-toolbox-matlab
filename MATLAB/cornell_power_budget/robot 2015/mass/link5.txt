@@ -1,0 +1,32 @@
+Mass properties of arm1_spherical_base_link
+     Configuration: Default
+     Coordinate system: Coordinate System1
+
+Mass (user-overridden) = 700.00 grams
+
+Volume = 303569.10 cubic millimeters
+
+Surface area = 36232.80  square millimeters
+
+Center of mass: ( millimeters )
+	X = 0.00
+	Y = -6.19
+	Z = -77.04
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = ( 0.00,  0.23, -0.97)   	Px = 245736.11
+	 Iy = ( 0.00, -0.97, -0.23)   	Py = 1370811.74
+	 Iz = (-1.00,  0.00,  0.00)   	Pz = 1401134.01
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 1401134.01	Lxy = -0.07	Lxz = -2.90
+	Lyx = -0.07	Lyy = 1311664.70	Lyz = -251090.65
+	Lzx = -2.90	Lzy = -251090.65	Lzz = 304883.15
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 5582621.42	Ixy = 0.06	Ixz = -1.22
+	Iyx = 0.06	Iyy = 5466297.46	Iyz = 82932.18
+	Izx = -1.22	Izy = 82932.18	Izz = 331737.81

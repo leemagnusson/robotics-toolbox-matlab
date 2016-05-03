@@ -1,0 +1,32 @@
+Mass properties of J1_arm base block
+     Configuration: Default
+     Coordinate system: COORD - J1 arm base
+
+Mass (user-overridden) = 1886.000000 grams
+
+Volume = 1047973.497742 cubic millimeters
+
+Surface area = 75678.784806  square millimeters
+
+Center of mass: ( millimeters )
+	X = -34.391258
+	Y = -34.393254
+	Z = 3.168832
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.722823, -0.689733, -0.042380)   	Px = 1805169.185111
+	 Iy = ( 0.690427, -0.718260, -0.086102)   	Py = 8584327.200297
+	 Iz = ( 0.028948, -0.091497,  0.995385)   	Pz = 8682021.105490
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 5042485.970031	Lxy = 3380038.639763	Lxz = 204850.783778
+	Lyx = 3380038.639763	Lyy = 5360085.754860	Lyz = 207056.627064
+	Lzx = 204850.783778	Lzy = 207056.627064	Lzz = 8668945.766007
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 7292365.874851	Ixy = 5610850.860180	Ixz = -685.714776
+	Iyx = 5610850.860180	Iyy = 7609706.819563	Iyz = 1508.204011
+	Izx = -685.714776	Izy = 1508.204011	Izz = 13130570.214350

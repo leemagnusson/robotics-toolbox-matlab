@@ -1,0 +1,32 @@
+Mass properties of J7_pitch joint block
+     Configuration: Default
+     Coordinate system: COORD - J7 pitch joint
+
+Mass (user-overridden) = 875.000000 grams
+
+Volume = 214724.003353 cubic millimeters
+
+Surface area = 29221.617818  square millimeters
+
+Center of mass: ( millimeters )
+	X = 209.070268
+	Y = -43.420812
+	Z = -58.657697
+
+Principal axes of inertia and principal moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass.
+	 Ix = (-0.625305, -0.398348,  0.671053)   	Px = 409643.495578
+	 Iy = ( 0.526476,  0.419398,  0.739546)   	Py = 970258.651834
+	 Iz = (-0.576035,  0.815735, -0.052531)   	Pz = 1085005.397619
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 789129.161173	Lxy = 193561.685848	Lxz = -238713.678032
+	Lyx = 193561.685848	Lyy = 957654.922178	Lyz = -144942.360913
+	Lzx = -238713.678032	Lzy = -144942.360913	Lzz = 718123.461680
+
+Moments of inertia: ( grams *  square millimeters )
+Taken at the output coordinate system.
+	Ixx = 5449459.945068	Ixy = -7749689.043859	Ixz = -10969346.488001
+	Iyx = -7749689.043859	Iyy = 42214869.316064	Iyz = 2083651.871907
+	Izx = -10969346.488001	Izy = 2083651.871907	Izz = 40614399.209965
