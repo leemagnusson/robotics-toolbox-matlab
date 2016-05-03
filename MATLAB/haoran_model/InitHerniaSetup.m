@@ -1,5 +1,9 @@
 %% Hernia measurement
-% hernia setup from the measurement of CAD
+% The hernia setup comes from the measurement of CAD model setup in a
+% previous version of procedure setup. The number could be found in the
+% excel file that document all the procedure setup numbers for trocar
+% position, target position, table adapter number and etc. 
+% https://docs.google.com/spreadsheets/d/18y37sFmPL6D-Hkzzqx7nnfmUNRatjIf0-TXWWM5oK2k/edit?ts=5716e4ab#gid=0
 %%
 scale_mm_to_m = 1/1000; % 1000mm/1m
 scale_deg_to_rad = pi/180;
@@ -7,9 +11,10 @@ translation_setup = [0;0;0]*scale_mm_to_m;
 rotation_setup = RotationAxisAngle([1;0;0],pi/2);
 
 translation_hernia = rotation_setup * [34.9827;1499.0355;0]*scale_mm_to_m+translation_setup;
-rotation_hernia_patient = rotation_setup * RotationAxisAngle([0;1;0],pi);
-% Hernia_Body = R_setup * [-15.8173;1143.4355;0]/scale + setup_offset + [0.45;-0.35;-0.07];
-translation_hernia_patient = rotation_setup * [-15.8173;1143.4355;0]*scale_mm_to_m + translation_setup;
+% rotation_hernia_patient = rotation_setup * RotationAxisAngle([0;1;0],pi);
+rotation_hernia_patient = rotation_setup;
+% translation_hernia_patient = rotation_setup * [-15.8173;1143.4355;0]*scale_mm_to_m + translation_setup;
+translation_hernia_patient = translation_setup;
 
 translation_trocar1 = rotation_setup * [63.1933;1389.8945;-186.0630]*scale_mm_to_m+translation_setup;
 translation_trocar2 = rotation_setup * [-3.4349;1388.7323;-193.9687]*scale_mm_to_m+translation_setup;

@@ -1,6 +1,12 @@
 function frames_bed_adapter = CalculateBedAdapterFK( q_bed_adapter,transformation_bed_adapter_base)
 % frames_bed_adapter = CalculateBedAdapterFK( q_bed_adapter,transformation_bed_adapter_base)
 % this function calculate the bed adapter FK
+% q_bed_adapter: 3 by 1 vector. [rotaion; translation; dummy joints(0)]
+% transformation_bed_adapter_base: 4 by 4 homogeneous transformation of the
+% base of the table adapter attached to the table.
+
+% load the homogeneous transformation of the base of the table adapter
+% attached to the table.
 load('/../../data/bed_adapter_info.mat');
 
 if nargin ~=0

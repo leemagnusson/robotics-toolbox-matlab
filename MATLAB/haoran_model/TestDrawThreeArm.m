@@ -1,7 +1,5 @@
-%% Test the robot
-% Plot the robot at different joint input
-% can draw coordinate system
-% by Haoran Yu 3/16/2016
+%% Test three robot arms with hernia setup
+% 
 %%
 clc
 clear all

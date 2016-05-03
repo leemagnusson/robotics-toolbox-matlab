@@ -24,7 +24,7 @@ for j=1:1
 %     rcm_rank = rank(J_rcm)
 %     car_rank = rank(J_car)
 %     all_rank = rank(J_all)
-    DrawRobot(frames,vertex_arm_origin,arm_color,[],0.2);
+    DrawRobot(frames,vertex_arm_origin,arm_color,[14],0.2);
     axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
     light('Position',[1 3 2]);
     light('Position',[-3 -1 -3]);
