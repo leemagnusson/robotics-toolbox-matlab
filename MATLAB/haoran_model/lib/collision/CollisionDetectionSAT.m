@@ -1,7 +1,7 @@
 function collision = CollisionDetectionSAT (box1,box2)
 % this funtion uses the separating axis algorithm(SAT) to detect the
 % collision betwen two boxes
-% box1 and box2 inputs are 8 by 3 corner points format
+% box1 and box2 inputs are 8 by 3 box corner points format
 % collision = CollisionDetectionSAT (box1,box2)
 % collision: true if colliding between two boxes
 % -------------------------------------------------------

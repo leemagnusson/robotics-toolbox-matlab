@@ -1,8 +1,8 @@
 %% RotationToQuaternion: Rotation matrix to quaternion
 % quaternion=RotationToQuaternion(rotation)
 % This function converts a rotation matrix R into a normalized quaternion
-% The rotation matrix R is 3 X 3
-% The quaternion = [qx, qy, qz, qw]
+% rotation: The rotation matrix is 3 X 3
+% quaternion: The quaternion = [qx, qy, qz, qw]
 
 function quaternion=RotationToQuaternion(rotation)
 trace = rotation(1,1) + rotation(2,2) + rotation(3,3);

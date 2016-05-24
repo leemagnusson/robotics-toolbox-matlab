@@ -1,8 +1,8 @@
 %% Rotation matrix axis angle
 % calculates the rotation matrix from rotation axis and rotation angle
 % rotation = RotationAxisAngle(axis,angle)
-% rotation is 3 X 3 rotation matrix
-% axis is the rotation axis: 3 by 1 or 1 by 3
+% rotation: 3 X 3 rotation matrix
+% axis: the rotation axis, 3 by 1 or 1 by 3
 % angle: rotation angle in radians.
 %%
 function rotation = RotationAxisAngle(axis,angle)

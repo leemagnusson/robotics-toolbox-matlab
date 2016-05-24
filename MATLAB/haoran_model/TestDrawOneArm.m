@@ -1,31 +1,36 @@
 %% Test the robot
-% Plot the robot at different joint input
-% can draw coordinate system
-% by Haoran Yu 3/16/2016
+% This code gives the user flexibility to test the robotics library. It
+% serves as a reference code for other scripts.
+% The features include:
+% 1. setup the robot_object
+% 2. test FK
+% 3. Calculate jacobian
+% 4. Calculate joint torque
+% 5. Draw robot and coordinate system.
 %%
 clc
 clear all
 close all
-load('arm_version_1.0.mat')
-load('vertex_arm_origin.mat')
+load('arm_version_1.5.mat')
+load('vertex_arm_origin_1.5.mat')
 load('coupling_matrix.mat')
-arm_color = GetRobotColor(robot_kinematics);
-transformation_base=eye(4);
+load('index_joints.mat')
+robot_object.transformation_base_=eye(4);
 figure(1)
 hold on
-view(62,28)
+view(-90,0)
 axis equal
-for j=1:1
+grid on
+grid minor
+for j=1
     cla
-    q=[0,0,0,0,0,0,0,0,0,pi/2,pi/2]';
-    q_rcm = ConvertToRcm(q,coupling_matrix);
-    frames = robot_kinematics.CalculateFK(q_rcm,transformation_base);
-    [jacobian_rcm,jacobian_cartesian,jacobian_all] = CalculateJacobianAll(frames);
-%     rcm_rank = rank(J_rcm)
-%     car_rank = rank(J_car)
-%     all_rank = rank(J_all)
-    DrawRobot(frames,vertex_arm_origin,arm_color,[14],0.2);
-    axis([ -0.8 0.8 -1.2 0.3 -0.3 0.9])
+    q=[0,0,0,0,0,0,0,0,0,0,0]';
+    robot_object.CalculateFK(q);
+    [jacobian_spherical,jacobian_cartesian,jacobian_all] = robot_object.CalculateJacobianAll;
+    robot_object.DrawRobot(vertex_arm_origin,[7:14], 0.15);
+    DrawCoordinateSystem([0.15 0.15 0.15],eye(3),[0;0;0],'rgb','t')
+    robot_object.InverseDynamics([0;0;9.81],zeros(11,1),zeros(11,1),'gravity');
+    axis([ -0.3 0.3 -1 0.3 -0.4 0.9])
     light('Position',[1 3 2]);
     light('Position',[-3 -1 -3]);
     drawnow;

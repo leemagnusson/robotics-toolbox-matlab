@@ -1,5 +1,12 @@
 %% Find the closest point between to point clouds
-% see title
+% [point1,point2,distance] = FindClosestPoint(point_clouds1,point_clouds2)
+% Input:
+% point_clouds1 and point_clouds2: two separate point clouds with format 3
+% by n matrix
+% output: 
+% point1 and point2: two closest points from each input point cloud
+% respectively with 3 by 1 format
+% distance: distance between point1 and point2
 %%
 
 function [point1,point2,distance] = FindClosestPoint(point_clouds1,point_clouds2)
