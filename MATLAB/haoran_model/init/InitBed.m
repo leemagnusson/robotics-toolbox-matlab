@@ -1,13 +1,16 @@
 %% Input URDF for bed and bed adapter
-% This code loads the current version of table and table adapter from the
+% This code loads the current version of table (skytron) and table adapter from the
 % urdf input in folder '2015_drawer_urdf_3a/'. The hard code numbers are
 % not being modified so far because the bed and bed adapter urdf need to be
 % modified to match the setup for modular robot design.
+% TODO:
+% This code should be modified to a class when the table adapter and table
+% urdf are updated and finalized.
 %%
 
-name_urdf_bed_folder = '2015_drawer_urdf_3a/';
-urdf_bed=URDF(strcat(name_urdf_bed_folder,'robots/drawers.urdf'));
-urdf_bed_adapter=URDF(strcat(name_urdf_bed_folder,'robots/2015_drawer_urdf_3a.urdf'));
+name_urdf_bed_folder = '../2015_drawer_urdf_3a/';
+urdf_bed=URDFParser(strcat(name_urdf_bed_folder,'robots/drawers.urdf'));
+urdf_bed_adapter=URDFParser(strcat(name_urdf_bed_folder,'robots/2015_drawer_urdf_3a.urdf'));
 urdf_link_bed = urdf_bed.links;
 urdf_joint_bed = urdf_bed.joints;
 urdf_link_bed_adapter = urdf_bed_adapter.links;
@@ -20,7 +23,9 @@ for index_bed = 1 : length(urdf_joint_bed)
 end
 
 frames_bed(:,:,1) = eye(4);
-% find bed link up until head link
+% find bed link up until head link. Only joint 2 to 10 are chosen as table
+% joints. all the rest of them are duplicated joints representing the table
+% adapter urdf. The table adapter urdf is chosen from a separate file 'drawers.urdf'
 for index_bed = 2:10
     rotation = RotationAxisAngle([0;0;1],rpy_bed(3,index_bed-1)) * RotationAxisAngle([0;1;0],rpy_bed(2,index_bed-1)) * RotationAxisAngle([1;0;0],rpy_bed(1,index_bed-1));
     translation = xyz_bed(:,index_bed-1);
@@ -60,7 +65,7 @@ end
 
 % This part of code is for modifying the existing table adapter to the new
 % table adapter dimensions
-% transformation_bed_base = frames_bed(:,:,2);
+transformation_bed_base = frames_bed(:,:,2);
 % frames_bed_adapter_base(1:3,4,1) = [0.2082;0.2111;frames_bed_adapter_base(3,4,1)+ 0.0234];
 % frames_bed_adapter_base(1:3,4,2) = [0.2082;-0.2111;frames_bed_adapter_base(3,4,2)+ 0.0234];
 % frames_bed_adapter_base(1:3,4,3) = [0.2082-0.25;0.2111;frames_bed_adapter_base(3,4,3)+ 0.0234];
@@ -92,9 +97,9 @@ for index_bed_adapter = 1 : length(urdf_joint_bed_adapter)
     axis_bed_adapter(:,index_bed_adapter) = urdf_joint_bed_adapter{index_bed_adapter}.axis.xyz';
 end
 
-save('data/vertex_bed.mat','vertex_bed','transformation_bed_base');
-save('data/vertex_bed_adapter_new.mat','vertex_bed_adapter','frames_bed_adapter_base');
-save('data/bed_adapter_info.mat','xyz_bed_adapter','rpy_bed_adapter','axis_bed_adapter')
+% save('data/vertex_bed.mat','vertex_bed','transformation_bed_base');
+% save('data/vertex_bed_adapter_new.mat','vertex_bed_adapter','frames_bed_adapter_base');
+% save('data/bed_adapter_info.mat','xyz_bed_adapter','rpy_bed_adapter','axis_bed_adapter')
 
 figure(1)
 view(3)

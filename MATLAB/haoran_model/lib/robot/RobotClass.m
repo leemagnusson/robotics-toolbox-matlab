@@ -497,6 +497,7 @@ classdef RobotClass < handle
                     p_err = p_t - p_cur;
                     rotation_err = rotation_t * rotation_cur';
                     theta_err = acos((rotation_err(1,1)+rotation_err(2,2)+rotation_err(3,3)-1)/2);
+                    iteration_steps = 0;
                     while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && iteration_steps<=1000)
                         iteration_steps = iteration_steps + 1;
                         robot_object.CalculateFK(q_ref);
@@ -515,6 +516,7 @@ classdef RobotClass < handle
                     robot_object.CalculateFK(q_ref);
                     p_cur = robot_object.frames_(1:3,4,index_eef);
                     p_err = p_t - p_cur;
+                    iteration_steps = 0;
                     while (((norm(p_err) > eps_translation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
                         robot_object.CalculateFK(q_ref);
@@ -536,6 +538,7 @@ classdef RobotClass < handle
                     p_err = p_t - p_cur;
                     rotation_err = rotation_t * rotation_cur';
                     theta_err = acos((rotation_err(1,1)+rotation_err(2,2)+rotation_err(3,3)-1)/2);
+                    iteration_steps = 0;
                     while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
                         robot_object.CalculateFK(q_ref);
@@ -552,6 +555,7 @@ classdef RobotClass < handle
                     robot_object.CalculateFK(q_ref);
                     p_cur = robot_object.frames_(1:3,4,index_rcm);
                     p_err = p_t - p_cur;
+                    iteration_steps = 0;
                     while (((norm(p_err) > eps_translation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
                         robot_object.CalculateFK(q_ref);
@@ -568,6 +572,7 @@ classdef RobotClass < handle
                     robot_object.CalculateFK(q_ref);
                     p_cur = robot_object.frames_(1:3,4,index_rcm);
                     p_err = p_t - p_cur;
+                    iteration_steps = 0;
                     while (((norm(p_err) > eps_translation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
                         robot_object.CalculateFK(q_ref);
