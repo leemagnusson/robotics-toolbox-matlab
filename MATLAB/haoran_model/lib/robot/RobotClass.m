@@ -66,6 +66,9 @@ classdef RobotClass < handle
         frames_in_parent_ % frames defined in local frame for all links after FK
         joint_torque_ % 11 by 1 joint torque
         transformation_base_ % 4 by 4 homogeneous transformation of the base
+        robot_link_hgtransform_handle_ % handle to robot link stl model
+        frame_vertex_ % vertex to draw 3d coordinate system
+        robot_frame_hgtransform_handle_ % handle to coordinate system of links
     end
     
     methods
@@ -135,6 +138,10 @@ classdef RobotClass < handle
                     end
                 end
                 robot_object.transformation_base_ = eye(4);
+                % intialize the hgtransform handle
+                robot_object.robot_link_hgtransform_handle_ = zeros(length(urdf_link_input), 1);
+                robot_object.frame_vertex_ = load('frame_3d.mat');
+                robot_object.robot_frame_hgtransform_handle_ = zeros(length(urdf_link_input), 3);
             else
                 error('Wrong input argument! Check "help RobotClass" for more information');
             end
@@ -584,28 +591,74 @@ classdef RobotClass < handle
             end
         end
         
-        function DrawRobot(robot_object,vertex_arm_origin,plot_frame,axis_length)
-            % Draw one arm of the robot
+        function DrawRobot(robot_object, vertex_arm_origin, frame_to_display, frame_scale, alpha_value)
+            % Draw one arm of the robot using hgtransform to speed up stl
+            % rendering.
             % robot_object.DrawRobot(vertex_arm_origin,plot_frame,axis_length)
             % This function draws one arm of the robot
             % needs at least 1 argument: vertex_arm_origin
             % 2nd and 3rd arguments are frame names and axis length
             % plot_frame = [1 2 3]; % draw joint frame 0 1 and 2
             % axis_length = 0.1; % frame axis length 0.1
+            
             if nargin > 1
+                if(isempty(robot_object.robot_link_hgtransform_handle_))
+                    robot_object.robot_link_hgtransform_handle_ = zeros(length(robot_object.frames_), 1);
+                    robot_object.frame_vertex_ = load('frame_3d.mat');
+                    robot_object.robot_frame_hgtransform_handle_ = zeros(length(robot_object.frames_), 3);
+                end
+                % default to hiding the reference frames
+                if(~exist('frame_to_display', 'var'))
+                    frame_to_display = [];
+                end
                 for i = 1:length(robot_object.frames_)
                     rotation = robot_object.frames_(1:3,1:3,i);
                     translation = robot_object.frames_(1:3,4,i);
-                    if isempty(vertex_arm_origin{1,i}) == 0
-                        vertex_arm_transformed = transformSTL(vertex_arm_origin(:,i),rotation,translation);
-                        rgba = robot_object.color_(:,i);
-                        PlotStl(vertex_arm_transformed,rgba)
-                        hold on
+                    
+                    % check to display frames
+                    if(isempty(robot_object.robot_frame_hgtransform_handle_(i, :)) || ~all(robot_object.robot_frame_hgtransform_handle_(i, :)))
+                        % create handle for frame display
+                        robot_object.robot_frame_hgtransform_handle_(i, :) = hgtransform('Matrix', robot_object.frames_(:, :, i));
+                        
+                        % check to display the coordinate systems
+                        if(nargin > 3)
+                            if(~exist('frame_scale', 'var'))
+                                frame_scale = 0.6; % default frame scale
+                            end
+                            if (~isempty(find(frame_to_display== i, 1)))
+                                PlotStl(robot_object.frame_vertex_.arrow_vertex_x', ...
+                                    [1,0,0,1], robot_object.robot_frame_hgtransform_handle_(i, 1), frame_scale);
+                                PlotStl(robot_object.frame_vertex_.arrow_vertex_y', ...
+                                    [0,1,0,1], robot_object.robot_frame_hgtransform_handle_(i, 2), frame_scale);
+                                PlotStl(robot_object.frame_vertex_.arrow_vertex_z', ...
+                                    [0,0,1,1], robot_object.robot_frame_hgtransform_handle_(i, 3), frame_scale);
+                            end
+                        end
+                    else
+                        % check to update the coordinate systems
+                        if nargin > 3
+                            transform_frame = robot_object.frames_(:, :, i);
+                            if (~isempty(find(frame_to_display == i, 1)))
+                                set(robot_object.robot_frame_hgtransform_handle_(i, :), 'Matrix', transform_frame);
+                            end
+                        end
                     end
-                    if nargin > 2
-                        if ismember(i,plot_frame)
-                            DrawCoordinateSystem([axis_length axis_length axis_length],rotation,translation,'rgb',num2str(i-1))
-                            hold on
+                    % check to display links
+                    if isempty(vertex_arm_origin{1,i}) == 0
+                        if(~robot_object.robot_link_hgtransform_handle_(i))
+                            rgba(:,i) = robot_object.color_(:,i);
+                            if(~exist('alpha_value', 'var'))
+                                alpha_value = 1;
+                            end
+                            rgba(4,i) = alpha_value;
+                            % create hgtransform and axis handles
+                            robot_object.robot_link_hgtransform_handle_(i) = hgtransform('Matrix', robot_object.frames_(:, :, i));
+                            PlotStl(vertex_arm_origin(:, i), rgba(:,i), robot_object.robot_link_hgtransform_handle_(i));
+                        else
+                            transform_link = robot_object.frames_(:, :, i);
+                            if(robot_object.robot_link_hgtransform_handle_(i) ~= 0)
+                                set(robot_object.robot_link_hgtransform_handle_(i), 'Matrix', transform_link);
+                            end
                         end
                     end
                 end

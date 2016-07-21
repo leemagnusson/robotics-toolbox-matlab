@@ -26,17 +26,20 @@ rotation_err = rotation_t * rotation_eef';
 theta_err = acos((rotation_err(1,1)+rotation_err(2,2)+rotation_err(3,3)-1)/2);
 %% resolved rates
 figure(1)
-hold on
+%hold on
 view(49,16)
 camzoom(5)
 axis equal
+light('Position',[1 3 2]);
+light('Position',[-3 -1 -3]);
+
 index_movie = 0;
 % iteration_steps is set to 1000 because this library is not for real-time
 % control. For real-time control the iteration_steps should be re-defined.
 iteration_steps = 0;
+
 while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && iteration_steps <=1000)
-    iteration_steps = iteration_steps + 1;
-    cla
+    iteration_steps = iteration_steps + 1;    
     robot_object.CalculateFK(q);
     p_eef = robot_object.frames_(1:3,4,14);
     rotation_eef = robot_object.frames_(1:3,1:3,14);
@@ -49,14 +52,18 @@ while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && i
     q_dot_all = [0;0;0;0;0;q_dot];
     % update q
     q = q + q_dot_all *dt;
-    robot_object.DrawRobot(vertex_arm_origin,[14],0.1)
-    hold on
-    DrawCoordinateSystem([0.1 0.1 0.1],rotation_t,p_t,'rgb','t')
-    hold on
-    axis([-0.8 0.8 -1.2 0.3 -0.3 0.9])
-    light('Position',[1 3 2]);
-    light('Position',[-3 -1 -3]);
+    %% update plot robot with frames
+    % set flags for displaying individual frames, this serves as an example
+    frame_to_display = [9, 10, 11, 12, 14];    
+    % set link alpha value
+    link_alpha_value = 0.5;
+    % set frame scale factor
+    frame_scale = 0.6;
+    %draw robot and frames
+    robot_object.DrawRobot(vertex_arm_origin, frame_to_display, frame_scale, link_alpha_value);
+    axis([-0.8 0.8 -1.2 0.3 -0.3 0.9]) 
     drawnow;
+    %%
     index_movie = index_movie + 1;
     movie_frames(index_movie) = getframe(gcf);
 end
