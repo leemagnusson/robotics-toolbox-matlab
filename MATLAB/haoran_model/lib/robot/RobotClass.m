@@ -89,6 +89,7 @@ classdef RobotClass < handle
         joint_torque_ % 11 by 1 joint torque
         transformation_base_ % 4 by 4 homogeneous transformation of the base
         robot_link_hgtransform_handle_ % handle to robot link stl model
+        link_patch_handles_ % handles to link patch plot
         frame_vertex_ % vertex to draw 3d coordinate system
         robot_frame_hgtransform_handle_ % handle to coordinate system of links
     end
@@ -174,6 +175,7 @@ classdef RobotClass < handle
                 robot_object.transformation_base_ = eye(4);
                 % intialize the hgtransform handle
                 robot_object.robot_link_hgtransform_handle_ = zeros(length(urdf_link_input), 1);
+                robot_object.link_patch_handles_ = zeros(length(urdf_link_input), 1);
                 robot_object.frame_vertex_ = load('frame_3d.mat');
                 robot_object.robot_frame_hgtransform_handle_ = zeros(length(urdf_link_input), 3);
                 % create default modified dh table
@@ -242,8 +244,9 @@ classdef RobotClass < handle
                 end
                 robot_object.joint_value_ = q;
             catch
-                robot_object.frames_in_parent_ = zeros(4,4,length(robot_object.name_));
-                robot_object.frames_ = zeros(4,4,length(robot_object.name_));
+                warning('Calculate FK failed, set all frames to identity matrix.');
+                robot_object.frames_in_parent_ = repmat(eye(4,4), [1 , 1 ,length(robot_object.name_)]);
+                robot_object.frames_ = repmat(eye(4,4), [1 , 1 ,length(robot_object.name_)]);
             end
         end
         
@@ -778,7 +781,8 @@ classdef RobotClass < handle
                             rgba(4,i) = alpha_value;
                             % create hgtransform and axis handles
                             robot_object.robot_link_hgtransform_handle_(i) = hgtransform('Matrix', robot_object.frames_(:, :, i));
-                            PlotStl(vertex_arm_origin(:, i), rgba(:,i), robot_object.robot_link_hgtransform_handle_(i));
+                            robot_object.link_patch_handles_(i) = ...
+                                PlotStl(vertex_arm_origin(:, i), rgba(:,i), robot_object.robot_link_hgtransform_handle_(i));
                         else
                             transform_link = robot_object.frames_(:, :, i);
                             if(robot_object.robot_link_hgtransform_handle_(i) ~= 0)
