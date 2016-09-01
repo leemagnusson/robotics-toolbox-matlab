@@ -1,0 +1,958 @@
+<robot
+  name="V2_Arm_URDF">
+
+  <link
+    name="V2_base_link">
+    <inertial>
+      <origin
+        xyz="0.03524 -0.02456 -0.00065"
+        rpy="0 0 0" />
+      <mass
+        value="2.44454" />
+      <inertia
+        ixx="0.00648"
+        ixy="-0.00362"
+        ixz="0.00009"
+        iyy="0.00808"
+        iyz="-0.00007"
+        izz="0.01233" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<link
+    name="V2_shoulder_pitch_link">
+    <inertial>
+      <origin
+        xyz="-0.01907 -0.08769 -3e-005"
+        rpy="0 0 0" />
+      <mass
+        value="1.1442" />
+      <inertia
+        ixx="0.0021"
+        ixy="0.0001"
+        ixz="0"
+        iyy="0.00127"
+        iyz="0"
+        izz="0.00175" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_shoulder_pitch_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.6 0.72549 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_shoulder_pitch_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_shoulder_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 -2.617993877991494" />
+    <parent
+      link="V2_base_link" />
+    <child
+      link="V2_shoulder_pitch_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-0.7809" upper="2.2385" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_shoulder_roll_link">
+    <inertial>
+      <origin
+        xyz="0.01458 -0.00413 -0.02516"
+        rpy="0 0 0" />
+      <mass
+        value="1.11006" />
+      <inertia
+        ixx="0.00402"
+        ixy="-0.00002"
+        ixz="0.00040"
+        iyy="0.00409"
+        iyz="-0.00012"
+        izz="0.00088" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_shoulder_roll_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.75686 0.38431 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_shoulder_roll_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_shoulder_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0.03000 -0.34986 0"
+      rpy="-1.570796326794897 0 3.141592653589793" />
+    <parent
+      link="V2_shoulder_pitch_link" />
+    <child
+      link="V2_shoulder_roll_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_elbow_link">
+    <inertial>
+      <origin
+        xyz="0.02563 -0.07981 -0.00218"
+        rpy="0 0 0" />
+      <mass
+        value="1.24239" />
+      <inertia
+        ixx="0.00305"
+        ixy="-0.00044"
+        ixz="0.00007"
+        iyy="0.00164"
+        iyz="-0.00018"
+        izz="0.00268" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_elbow_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.61569 1 0.55294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_elbow_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_elbow_joint"
+    type="revolute">
+    <origin
+      xyz="0.04000 0 0"
+      rpy="1.570796326794897 -1.570796326794897 0" />
+    <parent
+      link="V2_shoulder_roll_link" />
+    <child
+      link="V2_elbow_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.4649" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_forearm_link">
+    <inertial>
+      <origin
+        xyz="0.00245 -0.00208 -0.06052"
+        rpy="0 0 0" />
+      <mass
+        value="0.76927" />
+      <inertia
+        ixx="0.00777"
+        ixy="0.00000"
+        ixz="0.00010"
+        iyy="0.00771"
+        iyz="-0.00010"
+        izz="0.00045" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_forearm_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.76471 0.64706 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_forearm_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_forearm_joint"
+    type="revolute">
+    <origin
+      xyz="0.05000 -0.40000 0"
+      rpy="1.570796326794897 0 0" />
+    <parent
+      link="V2_elbow_link" />
+    <child
+      link="V2_forearm_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_spherical_base_link">
+    <inertial>
+      <origin
+        xyz="-0.00003 -0.08083 -0.00729"
+        rpy="0 0 0" />
+      <mass
+        value="0.58375" />
+      <inertia
+        ixx="0.00079"
+        ixy="0.00000"
+        ixz="0.00000"
+        iyy="0.00029"
+        iyz="-0.00019"
+        izz="0.00071" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_spherical_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_spherical_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_spherical_base_joint"
+    type="revolute">
+    <origin
+      xyz="-0.05000 0 0"
+      rpy="-1.570796326794897 1.047197551196598 -3.141592653589793" />
+    <parent
+      link="V2_forearm_link" />
+    <child
+      link="V2_spherical_base_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.4820" upper="1.2368" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_spherical_roll_link">
+    <inertial>
+      <origin
+        xyz="0.04089 0.02025 -0.00405"
+        rpy="0 0 0" />
+      <mass
+        value="0.62222" />
+      <inertia
+        ixx="0.00072"
+        ixy="0.00007"
+        ixz="0.00019"
+        iyy="0.00069"
+        iyz="0.00017"
+        izz="0.00048" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_spherical_roll_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_spherical_roll_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_spherical_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.19264 0"
+      rpy="1.570796326794897 0.187797427514590 0" />
+    <parent
+      link="V2_spherical_base_link" />
+    <child
+      link="V2_spherical_roll_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-4.71239" upper="4.71239" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_pitch_a_link">
+    <inertial>
+      <origin
+        xyz="0.06112 0.00001 -0.06884"
+        rpy="0 0 0" />
+      <mass
+        value="0.25074" />
+      <inertia
+        ixx="0.00005"
+        ixy="0.00000"
+        ixz="-0.00001"
+        iyy="0.00058"
+        iyz="0.00000"
+        izz="0.00061" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_pitch_a_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5 0 0.5 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_pitch_a_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_pitch_a_joint"
+    type="revolute">
+    <origin
+      xyz="0.06300 0 0"
+      rpy="-1.968005595726763 0.252223013547240 3.037281498626475" />
+    <parent
+      link="V2_spherical_roll_link" />
+    <child
+      link="V2_pitch_a_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.0236" upper="1.4198" velocity="1.0"/>
+  </joint>
+
+  <link
+    name="V2_pitch_b_link">
+    <inertial>
+      <origin
+        xyz="0.10055 0.00000 -0.02885"
+        rpy="0 0 0" />
+      <mass
+        value="0.32909" />
+      <inertia
+        ixx="0.00008"
+        ixy="0.00000"
+        ixz="-0.00003"
+        iyy="0.00199"
+        iyz="0.00000"
+        izz="0.00204" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_pitch_b_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_pitch_b_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+ <joint
+    name="V2_pitch_b_joint"
+    type="revolute">
+    <origin
+      xyz="0.11430 0 -0.06977"
+      rpy="0 0 -1.564109097765881" />
+    <parent
+      link="V2_pitch_a_link" />
+    <child
+      link="V2_pitch_b_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.4198" upper="1.0236" velocity="1.0"/>
+  </joint>
+
+  <link
+    name="V2_pitch_c_link">
+    <inertial>
+      <origin
+        xyz="-0.01117 0.09924 0.01528"
+        rpy="0 0 0" />
+      <mass
+        value="0.80641" />
+      <inertia
+        ixx="0.01036"
+        ixy="-0.00132"
+        ixz="-0.00020"
+        iyy="0.00085"
+        iyz="0.00160"
+        izz="0.01031" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_pitch_c_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_pitch_c_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="V2_pitch_c_joint"
+    type="revolute">
+    <origin
+      xyz="0.22860 0 0"
+      rpy="0 0 -0.344668842414317" />
+    <parent
+      link="V2_pitch_b_link" />
+    <child
+      link="V2_pitch_c_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.0236" upper="1.4198" velocity="1.0"/>
+  </joint>
+
+  <link
+    name="V2_tool_translate_link">
+    <inertial>
+      <origin
+        xyz="-0.01533 0.00049 -0.24139"
+        rpy="0 0 0" />
+      <mass
+        value="0.780" />
+      <inertia
+        ixx="0.00070"
+        ixy="0.00000"
+        ixz="0.00001"
+        iyy="0.00088"
+        iyz="-0.00001"
+        izz="0.00052" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_tool_translate_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.50196 0.50196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_tool_translate_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+ <joint
+    name="V2_tool_translate_joint"
+    type="prismatic">
+    <origin
+      xyz="0.03790 0 0"
+      rpy="1.745329251994330 0 0" />
+    <parent
+      link="V2_pitch_c_link" />
+    <child
+      link="V2_tool_translate_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-0.081825" upper="0.178175" velocity="1.0"/>
+  </joint>
+
+ <link
+    name="V2_tool_rotate_link">
+    <inertial>
+      <origin
+        xyz="0 0 -0.3658427"
+        rpy="0 0 0" />
+      <mass
+        value="0.05" />
+      <inertia
+        ixx="0.0008676"
+        ixy="0"
+        ixz="0"
+        iyy="0.0008676"
+        iyz="0"
+        izz="2.6e-006" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_tool_rotate_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_tool_rotate_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_tool_rotate_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.18910"
+      rpy="0 0 0" />
+    <parent
+      link="V2_tool_translate_link" />
+    <child
+      link="V2_tool_rotate_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-7.85398" upper="7.85398" velocity="1.0"/>
+  </joint>
+
+ <link
+    name="V2_wrist_link">
+    <inertial>
+      <origin
+        xyz="0.0054201 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.005" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="2e-007"
+        iyz="0"
+        izz="1e-007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_wrist_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_wrist_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_wrist_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.570796326794897 -1.570796326794897 0" />
+    <parent
+      link="V2_tool_rotate_link" />
+    <child
+      link="V2_wrist_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_distal_wrist_link">
+</link>
+
+<joint
+    name="V2_distal_wrist_joint"
+    type="revolute">
+    <origin
+      xyz="0.012333 0 0"
+      rpy="1.570796326794897 0 0" />
+    <parent
+      link="V2_wrist_link" />
+    <child
+      link="V2_distal_wrist_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+</joint>
+
+<link
+    name="V2_jaw_a_link">
+    <inertial>
+      <origin
+        xyz="0.0073012 -0.0004332 -0.0015031"
+        rpy="0 0 0" />
+      <mass
+        value="0.005" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="4e-007"
+        iyz="0"
+        izz="4e-007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_jaw_a_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_jaw_a_link.STL" />
+      </geometry>
+    </collision>
+</link>
+
+<joint
+    name="V2_jaw_a_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="V2_distal_wrist_link" />
+    <child
+      link="V2_jaw_a_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V2_jaw_b_link">  
+    <inertial>
+      <origin
+        xyz="0.0073012 0.0004332 0.0015031"
+        rpy="0 0 0" />
+      <mass
+        value="0.005" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="4e-007"
+        iyz="0"
+        izz="4e-007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_jaw_b_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_jaw_b_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_jaw_b_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="V2_distal_wrist_link" />
+    <child
+      link="V2_jaw_b_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+/* ATI force-torque sensor: 
+
+<link
+    name="V2_ATI_sensor_link">  
+    <inertial>
+      <origin
+        xyz="0.00082860 0 -0.01099715"
+        rpy="0 0 0" />
+      <mass
+        value="0.063" />
+      <inertia
+        ixx="0.00000474"
+        ixy="0.0000000"
+        ixz="-0.00000032"
+        iyy="0.00000597"
+        iyz="-0.00000002"
+        izz="0.00000595" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_ATI_sensor_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_ATI_sensor_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_ATI_sensor_joint"
+    type="fixed">
+    <origin
+      xyz="-0.03255 -0.00435 -0.04611"
+      rpy="-3.0370 0 1.70380" />
+    <parent
+      link="V2_spherical_roll_link" />
+    <child
+      link="V2_ATI_sensor_link" />
+  </joint>
+
+/* Remote Center of Motion (RCM) link
+
+<link
+    name="V2_RCM_link">  
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.000004"
+        ixy="0.0000000"
+        ixz="0.0000000"
+        iyy="0.00000004"
+        iyz="0.00000000"
+        izz="0.00000004" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_RCM_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://V2_Arm_URDF/meshes/V2_RCM_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V2_RCM_joint"
+    type="fixed">
+    <origin
+      xyz="0.03790 -0.10783 -0.01901"
+      rpy="1.7570 0.38397 0.065465" />
+    <parent
+      link="V2_pitch_c_link" />
+    <child
+      link="V2_RCM_link" />
+  </joint>
+
+</robot>

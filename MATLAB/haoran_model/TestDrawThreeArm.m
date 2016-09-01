@@ -33,7 +33,7 @@ for index_bed_adapter = [2 1 5]
     frames_bed_adapter = CalculateBedAdapterFK(q_bed_adapter(:,num_bed_adapter),frames_bed_adapter_base(:,:,index_bed_adapter));
     DrawBedAdapter(frames_bed_adapter,vertex_bed_adapter,[1 0 0 1])
     hold on
-    q = q_init_setup(:,num_bed_adapter);
+    q = [q_init_setup(:,num_bed_adapter);0;0];
     robot_object.transformation_base_ = frames_bed_adapter(:,:,end);
     robot_object.CalculateFK(q);
     robot_object.DrawRobot(vertex_arm_origin)

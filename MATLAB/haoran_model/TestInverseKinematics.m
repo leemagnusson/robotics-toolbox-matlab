@@ -13,9 +13,9 @@ load('arm_version_1.0.mat')
 load('coupling_matrix.mat')
 % init resolved rates
 InitIKParameters;
-q_init = [0,0,0,0,0,0,0,0,0,pi/3,pi/3]';
+q_init = [0,0,0,0,0,0,0,0,0,pi/3,pi/3,0,0]';
 q = q_init;
-robot_object.transformation_base_ = eye(4);
+robot_object.transformation_base_ = eye(4); % [RotationAxisAngle([1;0;0],pi/2) * RotationAxisAngle([0;1;0],pi/2) zeros(3,1);0 0 0 1];
 robot_object.CalculateFK(q);
 p_eef = robot_object.frames_(1:3,4,14); % eef position
 rotation_eef = robot_object.frames_(1:3,1:3,14); % eef orientation
@@ -49,7 +49,7 @@ while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && i
     [jacobian_spherical,jacobian_cartesian,jacobian_all] = robot_object.CalculateJacobianAll;
     jacobian = jacobian_spherical;
     q_dot = pinv(jacobian)*twist_eef;
-    q_dot_all = [0;0;0;0;0;q_dot];
+    q_dot_all = [0;0;0;0;0;q_dot;0;0];
     % update q
     q = q + q_dot_all *dt;
     %% update plot robot with frames

@@ -103,7 +103,7 @@ classdef RobotClass < handle
                     else
                         % detect fixed links and set link type andd active
                         % joint axis
-                        if strcmp(urdf_joint_input{joint_number_index}.type, 'fixed') || ~isempty(strfind(urdf_joint_input{joint_number_index}.name,'jaw'))
+                        if strcmp(urdf_joint_input{joint_number_index}.type, 'fixed') % || ~isempty(strfind(urdf_joint_input{joint_number_index}.name,'jaw'))
                             robot_object.joint_type_{index_link} = 'fixed';
                             robot_object.joint_axis_(:,index_link) = [0;0;1];
                         else
@@ -162,8 +162,6 @@ classdef RobotClass < handle
             try
                 q_rcm = robot_object.coupling_matrix_*q;
                 for index_arm = 1:length(robot_object.name_)
-                    % set parent and joint number from the mat file
-                    joint_index = robot_object.parent_(index_arm);
                     % Define homogeneous transformation
                     if index_arm==1
                         % base link
@@ -177,7 +175,7 @@ classdef RobotClass < handle
                         if strcmp(robot_object.joint_type_{index_arm}, 'fixed')
                             joint_value = 0;
                         else
-                            joint_value = q_rcm(joint_index);
+                            joint_value = q_rcm(index_arm-1);
                         end
                         % homogeneous transformation for revolute and
                         % prismatic joints
@@ -220,8 +218,8 @@ classdef RobotClass < handle
             % joint_torque = robot_object.InverseDynamics(gravity_constant,q_dot,q_double_dot,mode)
             % joint_torque: 11 by 1 active joint torque
             try
-                q_rcm_dot = robot_object.coupling_matrix_ * q_dot;
-                q_rcm_double_dot = robot_object.coupling_matrix_ * q_double_dot;
+                q_rcm_dot = robot_object.coupling_matrix_(1:13,1:11) * q_dot;
+                q_rcm_double_dot = robot_object.coupling_matrix_(1:13,1:11) * q_double_dot;
                 num_active_joints = length(q_rcm_dot);
                 mass = robot_object.mass_(2:num_active_joints+1);
                 center_of_mass = robot_object.center_of_mass_(:,2:num_active_joints+1);
@@ -319,7 +317,7 @@ classdef RobotClass < handle
                             torque_rcm(i) = dot(joint_moment_in_own(:,i),z_in_own(:,i));
                         end
                     end
-                    robot_object.joint_torque_ = -1 * robot_object.coupling_matrix_' * torque_rcm;
+                    robot_object.joint_torque_ = -1 * robot_object.coupling_matrix_(1:13,1:11)' * torque_rcm;
                     joint_torque = robot_object.joint_torque_;
                 end
             catch
@@ -365,7 +363,7 @@ classdef RobotClass < handle
                 end
                 
                 % overall jacobian
-                jacobian_all = jacobian_temp * robot_object.coupling_matrix_;
+                jacobian_all = jacobian_temp * robot_object.coupling_matrix_(1:13,1:11);
                 jacobian_cartesian = jacobian_all(:,1:5);
                 jacobian_spherical = jacobian_all(:,6:11);
             catch
