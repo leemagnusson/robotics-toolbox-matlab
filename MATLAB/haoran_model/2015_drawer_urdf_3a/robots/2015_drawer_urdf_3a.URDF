@@ -145,7 +145,7 @@
     type="revolute">
     <origin
       xyz="-0.192576 0.0063436 0.11251"
-      rpy="0 0 1.571" />
+      rpy="1.571 0 0" />
     <parent
       link="Translation_link" />
     <child

@@ -428,7 +428,7 @@
     </collision>
   </link>
   <joint name="drawer0_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer0_translation_link"/>
     <child link="drawer0_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -541,7 +541,7 @@
     </collision>
   </link>
   <joint name="drawer1_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer1_translation_link"/>
     <child link="drawer1_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -654,7 +654,7 @@
     </collision>
   </link>
   <joint name="drawer2_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer2_translation_link"/>
     <child link="drawer2_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -767,7 +767,7 @@
     </collision>
   </link>
   <joint name="drawer3_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer3_translation_link"/>
     <child link="drawer3_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -880,7 +880,7 @@
     </collision>
   </link>
   <joint name="drawer4_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer4_translation_link"/>
     <child link="drawer4_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -993,7 +993,7 @@
     </collision>
   </link>
   <joint name="drawer5_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer5_translation_link"/>
     <child link="drawer5_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -1106,7 +1106,7 @@
     </collision>
   </link>
   <joint name="drawer6_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer6_translation_link"/>
     <child link="drawer6_dummy_link"/>
     <axis xyz="0 1 0"/>
@@ -1219,7 +1219,7 @@
     </collision>
   </link>
   <joint name="drawer7_dummy_joint" type="fixed">
-    <origin rpy="0 0 1.571" xyz="-0.192576 0.0063436 0.11251"/>
+    <origin rpy="1.571 0 0" xyz="-0.192576 0.0063436 0.11251"/>
     <parent link="drawer7_translation_link"/>
     <child link="drawer7_dummy_link"/>
     <axis xyz="0 1 0"/>
