@@ -43,7 +43,29 @@
 %%
 
 classdef RobotClass < handle
-    
+    properties(Constant)
+        M2MM = 1.0e3;
+        EPSILON = 1.0e-6;
+        SMALL_EPSILON = 1.0e-9;
+        TINY_EPSILON = 1.0e-15;
+        DH_FIELDNAMES = {'link_twist', 'link_length', 'link_offset', 'joint_offset'};
+        DH_PARAMS = {...
+            {0.0,               0.0,      0.0,     -27 / 180 * pi},... % shoulder pitch
+            {pi/2,              0.07765,  0.28958,  pi },...% shoulder roll
+            {pi/2,              0.0,      0.0,      24 / 180* pi},...% elbow pitch
+            {pi/2,              0.11647,  0.43447,  0.0}, ... % elbow roll
+            {pi/2,              0.0,     -0.00202,  -123 / 180 * pi}, ... % spherical base
+            {pi/2,              0.0,      0.19333, -10.68 / 180 * pi},... % spherical roll
+            {110.41 / 180 * pi, 0.04753,  0.0,      195.60 / 180 * pi},...% spherical pitch a
+            {0.0,               0.11430, -0.06419, -93.60 / 180 * pi},... % spherical pitch b
+            {0.0,               0.22860,  0.0,     -15.76 / 180 * pi},... % sperical pitch c
+            {100 / 180 * pi,    0.03790,  0.0,      0.0},... % tool translate
+            {0.0,               0.0,      0.18910,  0.0},... % tool roll
+            {pi/2,              0.0,      0.0,      pi/2},...% tool priximal wrist
+            {pi/2,              0.01233,  0.0,      0.0},... % tool distal wrist(gripper a)
+            {0.0,               0.0,      0.0,      0.0},... % tool distal wrist(gripper b)
+            };
+    end
     properties (Access = private)
         parent_ % parent link/joint pair
         rpy_ % roll pitch yaw angles
@@ -69,6 +91,18 @@ classdef RobotClass < handle
         robot_link_hgtransform_handle_ % handle to robot link stl model
         frame_vertex_ % vertex to draw 3d coordinate system
         robot_frame_hgtransform_handle_ % handle to coordinate system of links
+    end
+    
+    properties
+        % modified DH parameters for a robot
+        % for each joint, the dh_parameters_modified_ is a strut with following fields
+        % a - link length
+        % alpha - link twist
+        % d - link offset
+        % theta - joint angle
+        % for detail descriptions, see Introduction to Robotics, John Craig,
+        % 3rd, pg. 64-66
+        dh_parameters_modified_;
     end
     
     methods
@@ -142,6 +176,12 @@ classdef RobotClass < handle
                 robot_object.robot_link_hgtransform_handle_ = zeros(length(urdf_link_input), 1);
                 robot_object.frame_vertex_ = load('frame_3d.mat');
                 robot_object.robot_frame_hgtransform_handle_ = zeros(length(urdf_link_input), 3);
+                % create default modified dh table
+                dh_parameters_modified = cell(length(RobotClass.DH_PARAMS), 1);
+                for i = 1: length(RobotClass.DH_PARAMS)
+                    dh_parameters_modified{i} = cell2struct(RobotClass.DH_PARAMS{i}, RobotClass.DH_FIELDNAMES, 2);
+                end
+                robot_object.dh_parameters_modified_ = dh_parameters_modified;
             else
                 error('Wrong input argument! Check "help RobotClass" for more information');
             end
@@ -204,6 +244,88 @@ classdef RobotClass < handle
             catch
                 robot_object.frames_in_parent_ = zeros(4,4,length(robot_object.name_));
                 robot_object.frames_ = zeros(4,4,length(robot_object.name_));
+            end
+        end
+        
+        % function to calculate forward kinematics with modified DH parameters
+        function CalculateFKDHModified(robot_object,q)
+            % FUNCTION CalculateFK_DHModifiedK(robot_object, q) calculates
+            % the FK of the robot from modified DH parameters
+            % Outputs:
+            % Even though no ouputs specified, the function modifies the
+            % frames of the robot_object, specifically:
+            % robot_object.frames_: return 4 by 4 by n frames for all the
+            % links defined in the world frame
+            % robot_object.frames_in_parent_: return 4 by 4 by n frames
+            % for all the links defined in the parent frame
+            % Inputs:
+            % q: 11 by 1 joint values, the 11 are independent joint values
+            % the total number of joint values is the length of q_rcm,
+            % which is determined by the coupling matrix
+            
+            try
+                non_fixed_joint_cnt = 1;
+                q_rcm = robot_object.coupling_matrix_*q;
+                for index_arm = 1:length(robot_object.name_)
+                    % set parent and joint number from the mat file
+                    joint_index = robot_object.parent_(index_arm);
+                    % Define homogeneous transformation
+                    if index_arm == 1
+                        % base link
+                        robot_object.frames_(:,:,index_arm) = ...
+                            robot_object.transformation_base_;
+                    else
+                        % active joint value
+                        if strcmp(robot_object.joint_type_{index_arm}, 'fixed')
+                            joint_value = 0.0;
+                            % joint translation and fixed frame roll pitch yaw
+                            frame_translation = robot_object.xyz_(:,index_arm);
+                            frame_rotation_euler = robot_object.rpy_(:,index_arm);
+                            joint_axis = robot_object.joint_axis_(:,index_arm);
+                            frame_rotation_matrix = RotationAxisAngle([0;0;1],frame_rotation_euler(3))*...
+                                RotationAxisAngle([0;1;0],frame_rotation_euler(2))*...
+                                RotationAxisAngle([1;0;0],frame_rotation_euler(1));
+                            frame_displacement = joint_axis * joint_value;
+                            robot_object.frames_(:,:,index_arm) =...
+                                [frame_rotation_matrix frame_translation + frame_rotation_matrix * frame_displacement; 0 0 0 1];
+                        else
+                            joint_value = q_rcm(joint_index);
+                            link_length = robot_object.dh_parameters_modified_{non_fixed_joint_cnt}.link_length;
+                            link_twist = robot_object.dh_parameters_modified_{non_fixed_joint_cnt}.link_twist;
+                            link_offset = robot_object.dh_parameters_modified_{non_fixed_joint_cnt}.link_offset;
+                            joint_offset = robot_object.dh_parameters_modified_{non_fixed_joint_cnt}.joint_offset;
+                            
+                            % homogeneous transformation for revolute and
+                            % prismatic joints
+                            if strcmp(robot_object.joint_type_{index_arm}, 'prismatic')
+                                robot_object.frames_(:,:,index_arm) = ...
+                                    RobotClass.CalculateTransformationMatrixToParent(...
+                                    link_length, link_twist, ...
+                                    link_offset + joint_value, joint_offset);
+                            else
+                                robot_object.frames_(:,:,index_arm) =...
+                                    RobotClass.CalculateTransformationMatrixToParent(...
+                                    link_length, link_twist, link_offset, ...
+                                    joint_offset + joint_value);
+                            end
+                            %increment the non-fxied joint index
+                            non_fixed_joint_cnt = non_fixed_joint_cnt + 1;
+                        end
+                    end
+                end
+                robot_object.frames_in_parent_ = robot_object.frames_;
+                % Transform the homonegeous matrices to world frame
+                for index_arm = 2:length(robot_object.name_)
+                    robot_object.frames_(:,:,index_arm) = ...
+                        robot_object.frames_(:,:,robot_object.parent_(index_arm)) ...
+                        * robot_object.frames_in_parent_(:,:,index_arm);
+                end
+                robot_object.joint_value_ = q;
+            catch
+                % should never get here
+                warning('Forward Kinematics Fails, set all frames to identity matrix')
+                robot_object.frames_in_parent_ = ones(4,4,length(robot_object.name_));
+                robot_object.frames_ = ones(4,4,length(robot_object.name_));
             end
         end
         
@@ -731,9 +853,146 @@ classdef RobotClass < handle
                 end
             else
                 msgbox('wrong input number!')
-            end
-            
+            end            
         end
         
+        %
+        % set methods for modified dh parameters
+        %
+        function set.dh_parameters_modified_(robot_object, dhp_in)
+            % Check the dh input first
+            % dhp_in should have an array of struct, the number of struct
+            % is n, which is the dof of the arm, and each struct should
+            % have four fields
+            dof = length(robot_object.name_); %#ok<MCSUP>
+            if(isempty(dhp_in))
+                error('DH parameter struct is empty');
+            end
+            
+            if(~isstruct(dhp_in{1}))
+                error(['DH parameters expected structs with four fields:',...
+                    'link_length, link_twist, link_offset, joint_offset']);
+            end
+            
+            if ~isempty(setdiff(fieldnames(dhp_in{1}), ...
+                    {'link_length', 'link_twist', 'link_offset', 'joint_offset'}))
+                error(['DH parameter size/fileds does not match, ', ...
+                    'expected struct of %d with fileds:',...
+                    'link_length, link_twist, link_offset, joint_offset'],...
+                    dof);
+            else
+                for i = 1 : length(dhp_in)
+                    robot_object.dh_parameters_modified_{i}.link_twist = ...
+                        dhp_in{i}.link_twist;
+                    robot_object.dh_parameters_modified_{i}.link_length = ...
+                        dhp_in{i}.link_length;
+                    robot_object.dh_parameters_modified_{i}.link_offset = ...
+                        dhp_in{i}.link_offset;
+                    robot_object.dh_parameters_modified_{i}.joint_offset = ...
+                        dhp_in{i}.joint_offset;
+                end
+            end
+        end
+        
+        %
+        % calculate xyz and roll(x), pitch(y) and yaw(z) in fixed frame for urdf
+        %
+        function [xyz, rpy_fixed] = ...
+                CalculateXYZAndFixedFrameEulerAnglesFromDH(robot_object)
+            % check if the dhp is empty
+            if isempty(robot_object.dh_parameters_modified_)
+                error('Uninitilaized DH parameters');
+            end
+            
+            % get dof
+            dof = length(robot_object.dh_parameters_modified_);
+            
+            % initialize the xyz and rpy_fixed matrix
+            xyz = zeros(dof, 3);
+            rpy_fixed = zeros(dof, 3);
+            
+            % iterate to calculate xyz and euler angles for all the frames
+            % for urdf
+            for i = 1: dof
+                % extract the DH paramters for joint i
+                link_length = robot_object.dh_parameters_modified_{i}.link_length;
+                link_twist = robot_object.dh_parameters_modified_{i}.link_twist;
+                link_offset = robot_object.dh_parameters_modified_{i}.link_offset;
+                joint_offset = robot_object.dh_parameters_modified_{i}.joint_offset;
+                
+                % get the transformattion matrix to parent joint frame
+                Transformation_To_Parent = ...
+                    RobotClass.CalculateTransformationMatrixToParent(...
+                    link_length, link_twist, link_offset, joint_offset);
+                
+                % fill in the xyz matrix with the current joint
+                xyz(i, :) = Transformation_To_Parent(1:3, 4);
+                robot_object.xyz_(:, i + 1) = xyz(i, :);
+                
+                % calculate euler angles in fixed frame
+                rpy_fixed(i, :) = ...
+                    RobotClass.CalculateFixedFrameRPYFromRotationMatrix(...
+                    Transformation_To_Parent(1:3, 1:3));
+                robot_object.rpy_(:, i + 1) = rpy_fixed(i, :);
+            end
+         end
+    end
+    
+    %%% 
+    %static methods
+    methods (Static)
+        %
+        % function to calculate transformation matrix w.r.t the parent
+        % joint frame
+        %
+        function T = CalculateTransformationMatrixToParent(link_length, ...
+                link_twist, link_offset, joint_angle)
+            % create some local variables
+            ct = cos(joint_angle);
+            st = sin(joint_angle);
+            ca = cos(link_twist);
+            sa = sin(link_twist);
+            
+            % calculate the transformation matrix
+            % see Introduction to Robotics, John Craig, 3rd, pg.75
+            T = [ct,     -st,       0.0,  link_length;
+                st * ca,  ct * ca, -sa,  -sa * link_offset;
+                st * sa,  ct * sa,  ca,   ca * link_offset;
+                0.0,      0.0,      0.0,  1.0 ];
+        end
+        
+        % calculate euler angles(rpy) in fixed frame from a rotation matrix
+        % see Introduction to Robotics, John Craig, 3rd, pg. 42-43 
+        function rpy_fixed = ...
+                CalculateFixedFrameRPYFromRotationMatrix(rotation_matrix)
+            % create a local variable
+            r = rotation_matrix;
+            
+            % check if the rotation matrix is valid
+            % will need to consider precision?
+            if(abs(det(r) - 1.0) > eps)
+                error('Invalid rotation matrix');
+            end
+            
+            % check if there is a gimbal lock
+            if((r(1,1)^2 + r(2,1)^2) <= RobotClass.TINY_EPSILON)
+                % gimbal lock, assume roll to be zero
+                if(r(3, 1) < 0 )
+                    rpy_fixed(2) = pi/2;
+                    rpy_fixed(3) = 0.0;
+                    rpy_fixed(1) = atan2(r(1,2), r(2,2));
+                else
+                    rpy_fixed(2) = -pi/2;
+                    rpy_fixed(3) = 0.0;
+                    rpy_fixed(1) = -atan2(r(1,2), r(2,2));
+                end
+            else
+                % no gimbal lock
+                rpy_fixed(2) = atan2(-r(3, 1), sqrt(r(1, 1)^2 + r(2, 1)^2));
+                beta = rpy_fixed(2);
+                rpy_fixed(3) = atan2(r(2, 1) / cos(beta), r(1, 1)/ cos(beta));
+                rpy_fixed(1) = atan2(r(3, 2) / cos(beta), r(3, 3)/ cos(beta));
+            end
+        end
     end
 end
