@@ -528,97 +528,98 @@ switch startup_mode
         axis equal
         % set the sampling step for reading the point cloud on each link.
         % 18 link in total.
-        sample_steps_point_cloud=[100;30;100;30;100;30;30;1;1;1;1;5;100;100;100;100;100;100];
+%         sample_steps_point_cloud=[100;30;100;30;100;30;30;1;1;1;1;5;100;100;100;100;100;100];
         % save point cloud in cell
-        point_clouds_arm = cell(length(robot_object),1);
-        point_boundary_arm = cell(length(robot_object),1);
+%         point_clouds_arm = cell(length(robot_object),1);
+%         point_boundary_arm = cell(length(robot_object),1);
         down_sample_threshold = 0.02;
         % set base transformation
         robot_object.transformation_base_ = [RotationAxisAngle([1;0;0],pi/2) * RotationAxisAngle([0;1;0],pi/2) zeros(3,1);0 0 0 1];
         % initial joint value and convert to rcm joint value
         q_init = [0;0;0;0;0;0;0;0;0;0;0;0;0];
         robot_object.CalculateFK(q_init);
-        %% Generate point clouds
-        for index_arm = 1:length(robot_object.name_)
-            % check if stl exists and transform
-            if isempty(vertex_arm_origin{1,index_arm}) == 0
-                % save vertex data
-                faces = vertex_arm_origin{1,index_arm};
-                vertices = vertex_arm_origin{2,index_arm};
-                normals = vertex_arm_origin{3,index_arm};
-                % generate point clouds for ith link
-                num_point_clouds=0;
-                for index = 1 : sample_steps_point_cloud(index_arm) : length(faces)
-                    % use the center of f v n points
-                    num_point_clouds = num_point_clouds + 1;
-                    point_clouds_arm{index_arm,1}(:,num_point_clouds) = 1/3 * ([faces(1,index),vertices(1,index),normals(1,index)] + [faces(2,index),vertices(2,index),normals(2,index)] + [faces(3,index),vertices(3,index),normals(3,index)])';
-                end
-                % down sample the points on pitch links and translation link by
-                % setting the threshold on distance within the points
-                if ~isempty(regexp(robot_object.name_{index_arm},'pitch_a||pitch_b||pitch_c||translate','once'))
-                    num_point_clouds_original = length(point_clouds_arm{index_arm,1});
-                    for index1 = 1 : num_point_clouds_original
-                        for index2 = 1 : num_point_clouds_original
-                            if index1 ~= index2 && index1 <= length(point_clouds_arm{index_arm,1}) && index2 <= length(point_clouds_arm{index_arm,1})
-                                if norm(point_clouds_arm{index_arm,1}(:,index1)-point_clouds_arm{index_arm,1}(:,index2)) < down_sample_threshold
-                                    point_clouds_arm{index_arm,1}(:,index2) = [];
-                                end
-                            end
-                        end
-                    end
-                    if ~isempty(regexp(robot_object.name_{index_arm},'pitch_c','once'))
-                        % The numbers chosen here are manually acquired
-                        % from pitch-c link meshes. Essentially, we are
-                        % overwriting the results of automatically detected
-                        % boundary box.
-                        point_clouds_arm{index_arm,1}(:,1) = [0.05835;0.3425;0.03705];
-                        point_clouds_arm{index_arm,1}(:,2) = [0.05835;0.3332;0.08338];
-                        point_clouds_arm_temp{index_arm,1} = point_clouds_arm{index_arm,1};
-                        point_clouds_arm{index_arm,1} = [];
-                        num_point_clouds = 1;
-                        for index_c = 1 : length(point_clouds_arm_temp{index_arm,1})
-                            if point_clouds_arm_temp{index_arm,1}(2,index_c)<=0.03
-                                % 0.03m is chosen here to sample down the
-                                % point clouds size. This means the density
-                                % of the point clouds is 0.03m separation.
-                                point_clouds_arm{index_arm,1}(:,num_point_clouds) = point_clouds_arm_temp{index_arm,1}(:,index_c);
-                                num_point_clouds = num_point_clouds + 1;
-                            end
-                        end
-                    end
-                end
-                if ~isempty(point_clouds_arm{index_arm,1})
-                    [rotmat,point_boundary_arm{index_arm,1},volume,surface,edgelength] = minboundbox(point_clouds_arm{index_arm,1}(1,:),point_clouds_arm{index_arm,1}(2,:),point_clouds_arm{index_arm,1}(3,:),'e');
-                end
-            end
-        end
-        
-        %% plot point clouds and arm
-        for index_arm = 1:length(robot_object.name_)
-            rotation = robot_object.frames_(1:3,1:3,index_arm);
-            translation = robot_object.frames_(1:3,4,index_arm);
-            if isempty(vertex_arm_origin{1,index_arm}) == 0
-                % transform vertex data
-                vertex_arm_transformed(:,index_arm) = transformSTL(vertex_arm_origin(:,index_arm),rotation,translation);
-                arm_color = robot_object.color_(:,index_arm);
-                for index = 1 : length(point_clouds_arm{index_arm,1})
-                    % transform point clouds
-                    point_clouds_arm_transformed = rotation * point_clouds_arm{index_arm}(:,index) + translation;
-                    plot3(point_clouds_arm_transformed(1),point_clouds_arm_transformed(2),point_clouds_arm_transformed(3),'Marker','o')
-                    hold on
-                end
-                for index = 1 : length(point_boundary_arm{index_arm,1})
-                    % transform point boundary corners
-                    point_boundary_transformed{index_arm,1}(index,:) = (rotation * point_boundary_arm{index_arm}(index,:)' + translation)';
-                end
-                plotminbox(point_boundary_transformed{index_arm,1});
-                hold on
-                PlotStl(vertex_arm_transformed(:,index_arm),arm_color);
-                hold on
-            end
-        end
-        axis([ -0.8 0.8 -1.2 1 -0.3 0.9])
-        drawnow;
+% Commented out due to the long loading time.
+%         %% Generate point clouds
+%         for index_arm = 1:length(robot_object.name_)
+%             % check if stl exists and transform
+%             if isempty(vertex_arm_origin{1,index_arm}) == 0
+%                 % save vertex data
+%                 faces = vertex_arm_origin{1,index_arm};
+%                 vertices = vertex_arm_origin{2,index_arm};
+%                 normals = vertex_arm_origin{3,index_arm};
+%                 % generate point clouds for ith link
+%                 num_point_clouds=0;
+%                 for index = 1 : sample_steps_point_cloud(index_arm) : length(faces)
+%                     % use the center of f v n points
+%                     num_point_clouds = num_point_clouds + 1;
+%                     point_clouds_arm{index_arm,1}(:,num_point_clouds) = 1/3 * ([faces(1,index),vertices(1,index),normals(1,index)] + [faces(2,index),vertices(2,index),normals(2,index)] + [faces(3,index),vertices(3,index),normals(3,index)])';
+%                 end
+%                 % down sample the points on pitch links and translation link by
+%                 % setting the threshold on distance within the points
+%                 if ~isempty(regexp(robot_object.name_{index_arm},'pitch_a||pitch_b||pitch_c||translate','once'))
+%                     num_point_clouds_original = length(point_clouds_arm{index_arm,1});
+%                     for index1 = 1 : num_point_clouds_original
+%                         for index2 = 1 : num_point_clouds_original
+%                             if index1 ~= index2 && index1 <= length(point_clouds_arm{index_arm,1}) && index2 <= length(point_clouds_arm{index_arm,1})
+%                                 if norm(point_clouds_arm{index_arm,1}(:,index1)-point_clouds_arm{index_arm,1}(:,index2)) < down_sample_threshold
+%                                     point_clouds_arm{index_arm,1}(:,index2) = [];
+%                                 end
+%                             end
+%                         end
+%                     end
+%                     if ~isempty(regexp(robot_object.name_{index_arm},'pitch_c','once'))
+%                         % The numbers chosen here are manually acquired
+%                         % from pitch-c link meshes. Essentially, we are
+%                         % overwriting the results of automatically detected
+%                         % boundary box.
+%                         point_clouds_arm{index_arm,1}(:,1) = [0.05835;0.3425;0.03705];
+%                         point_clouds_arm{index_arm,1}(:,2) = [0.05835;0.3332;0.08338];
+%                         point_clouds_arm_temp{index_arm,1} = point_clouds_arm{index_arm,1};
+%                         point_clouds_arm{index_arm,1} = [];
+%                         num_point_clouds = 1;
+%                         for index_c = 1 : length(point_clouds_arm_temp{index_arm,1})
+%                             if point_clouds_arm_temp{index_arm,1}(2,index_c)<=0.03
+%                                 % 0.03m is chosen here to sample down the
+%                                 % point clouds size. This means the density
+%                                 % of the point clouds is 0.03m separation.
+%                                 point_clouds_arm{index_arm,1}(:,num_point_clouds) = point_clouds_arm_temp{index_arm,1}(:,index_c);
+%                                 num_point_clouds = num_point_clouds + 1;
+%                             end
+%                         end
+%                     end
+%                 end
+%                 if ~isempty(point_clouds_arm{index_arm,1})
+%                     [rotmat,point_boundary_arm{index_arm,1},volume,surface,edgelength] = minboundbox(point_clouds_arm{index_arm,1}(1,:),point_clouds_arm{index_arm,1}(2,:),point_clouds_arm{index_arm,1}(3,:),'e');
+%                 end
+%             end
+%         end
+%         
+%         %% plot point clouds and arm
+%         for index_arm = 1:length(robot_object.name_)
+%             rotation = robot_object.frames_(1:3,1:3,index_arm);
+%             translation = robot_object.frames_(1:3,4,index_arm);
+%             if isempty(vertex_arm_origin{1,index_arm}) == 0
+%                 % transform vertex data
+%                 vertex_arm_transformed(:,index_arm) = transformSTL(vertex_arm_origin(:,index_arm),rotation,translation);
+%                 arm_color = robot_object.color_(:,index_arm);
+%                 for index = 1 : length(point_clouds_arm{index_arm,1})
+%                     % transform point clouds
+%                     point_clouds_arm_transformed = rotation * point_clouds_arm{index_arm}(:,index) + translation;
+%                     plot3(point_clouds_arm_transformed(1),point_clouds_arm_transformed(2),point_clouds_arm_transformed(3),'Marker','o')
+%                     hold on
+%                 end
+%                 for index = 1 : length(point_boundary_arm{index_arm,1})
+%                     % transform point boundary corners
+%                     point_boundary_transformed{index_arm,1}(index,:) = (rotation * point_boundary_arm{index_arm}(index,:)' + translation)';
+%                 end
+%                 plotminbox(point_boundary_transformed{index_arm,1});
+%                 hold on
+%                 PlotStl(vertex_arm_transformed(:,index_arm),arm_color);
+%                 hold on
+%             end
+%         end
+%         axis([ -0.8 0.8 -1.2 1 -0.3 0.9])
+%         drawnow;
         
         % Change do_save to 1 if user want to regenerate the data files. This
         % process is usually for new URDFs and new Mesh files.
@@ -627,8 +628,8 @@ switch startup_mode
             save('data/arm_version_2.0.mat','robot_object') % save the arm kinematics class that contains the arm kinematic information
             save('data/vertex_arm_origin_2.0.mat','vertex_arm_origin'); % save the vertex data of the arm for plot
             save('data/vertex_patient_body.mat','vertex_patient_body'); % save the vertex data of the hernia body for plot
-            save ('data/point_clouds_arm_2.0.mat','point_clouds_arm'); % save the point clouds of the arm
-            save ('data/point_boundary_arm_2.0.mat','point_boundary_arm'); % save the bounding box of the arm
+            % save ('data/point_clouds_arm_2.0.mat','point_clouds_arm'); % save the point clouds of the arm
+            % save ('data/point_boundary_arm_2.0.mat','point_boundary_arm'); % save the bounding box of the arm
         end
         
     otherwise

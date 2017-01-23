@@ -12,7 +12,7 @@ How to get the code from gerrit:
 
 git clone ssh://Haoran8879@gerrit.verbsurgicaleng.com:29418/rouxeny/arm_analysis && scp -p -P 29418 Haoran8879@gerrit.verbsurgicaleng.com:hooks/commit-msg arm_analysis/.git/hooks/
 
-6/1/2016
+1/23/2016
 
 1. StartUp.m: this is a script that initiate the folder. The code use "URDF.m" from matlab robotics toolbox and convert URDF file into matlab urdf data format. This script also generate point clouds and boundary boxes for collision detection.
 
@@ -23,6 +23,8 @@ git clone ssh://Haoran8879@gerrit.verbsurgicaleng.com:29418/rouxeny/arm_analysis
    1 --- Load Ver 1.0 Arm
 
    1.5 --- Load Ver 1.5. Arm
+
+   2 --- Load Ver 2.0 Arm (TODO (Bharat): update to IDEO arm; currently we have the original V2.0 arm)
 
 2. Test files
 
@@ -63,8 +65,10 @@ git clone ssh://Haoran8879@gerrit.verbsurgicaleng.com:29418/rouxeny/arm_analysis
 
 11. Arm_version_1.5: Ver 1.5 Arm urdf and meshes
 
-12. workspace folder: meshes for macro workspace analysis
+12. Arm_version_2.0: Ver 2.0 Arm urdf and meshes
 
-13. export folder: scripts for loading the logs.
+13. workspace folder: meshes for macro workspace analysis
+
+14. export folder: scripts for loading the logs.
 
 	a. InitLogToolPath.m: init tool path from log files
