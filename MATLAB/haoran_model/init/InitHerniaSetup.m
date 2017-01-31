@@ -88,7 +88,7 @@ q_set = zeros(11,3);
 
 
 % Load hernia workspace model
-vertex_hernia_macro_workspace = stl2matlab('Ventral_Hernia_Workspace_Refined.STL');
+vertex_hernia_macro_workspace = stl2matlab('Ventral_Hernia_Workspace_Refined.stl');
 scale_mm_to_m = 1/1000;
 vertex_hernia_macro_workspace{1} = vertex_hernia_macro_workspace{1} * scale_mm_to_m;
 vertex_hernia_macro_workspace{2} = vertex_hernia_macro_workspace{2} * scale_mm_to_m;

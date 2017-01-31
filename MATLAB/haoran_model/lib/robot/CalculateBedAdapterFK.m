@@ -9,7 +9,7 @@ function frames_bed_adapter = CalculateBedAdapterFK( q_bed_adapter,transformatio
 % matrix is calculated from the bed urdf input and is saved in
 % 'bed_adapter_info.mat'.
 
-load('/../../data/bed_adapter_info.mat');
+load([fileparts(mfilename('fullpath')) '/../../data/bed_adapter_info.mat']);
 
 if nargin ~=0
     for i = 1:3

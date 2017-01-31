@@ -7,11 +7,11 @@
 clc
 clear all
 close all
-load('vertex_arm_origin_1.0.mat');
-load('point_boundary_arm_1.0.mat');
-load('arm_version_1.0.mat')
+load('vertex_arm_origin_1.5.mat');
+load('point_boundary_arm_1.5.mat');
+load('arm_version_1.5.mat')
 load('vertex_patient_body.mat');
-load('q_init_setup_hernia.mat');
+load('q_init_setup_hernia_1.5_testing.mat');
 load('index_joints.mat');
 load('vertex_bed.mat');
 % load('vertex_bed_adapter_new.mat');
@@ -22,9 +22,9 @@ figure(1)
 hold on
 view(62,28)
 axis equal
-DrawBed(vertex_bed,[0.0 0.7 0.0 1])
+DrawBed(vertex_bed,[0.0 0.7 0.0 1]);
 hold on
-DrawCoordinateSystem([0.1 0.1 0.1],transformation_bed_base(1:3,1:3),transformation_bed_base(1:3,4),'rgb','b')
+DrawCoordinateSystem([0.1 0.1 0.1],transformation_bed_base(1:3,1:3),transformation_bed_base(1:3,4),'rgb','b');
 hold on
 num_bed_adapter = 0;
 q_bed_adapter = [0 -0.02 0;-40*pi/180 -0.18 0;0 -0.02 0]';

@@ -8,7 +8,7 @@ if nargin == 3
         rotation = frames_bed_adapter(1:3,1:3,index_bed_adapter);
         d = frames_bed_adapter(1:3,4,index_bed_adapter);
         vertex_bed_adapter_transformed = transformSTL(vertex_bed_adapter(:,index_bed_adapter),rotation,d);
-        PlotStl(vertex_bed_adapter_transformed,bed_adapter_color)
+        PlotStl(vertex_bed_adapter_transformed,bed_adapter_color);
         hold on
     end
 elseif nargin == 4
@@ -16,7 +16,7 @@ elseif nargin == 4
         rotation = frames_bed_adapter(1:3,1:3,index_bed_adapter);
         d = frames_bed_adapter(1:3,4,index_bed_adapter);
         vertex_bed_adapter_transformed = transformSTL(vertex_bed_adapter(:,index_bed_adapter),rotation,d);
-        PlotStl(vertex_bed_adapter_transformed,bed_adapter_color,axes_handle)
+        PlotStl(vertex_bed_adapter_transformed,bed_adapter_color,axes_handle);
         hold on
     end
 else

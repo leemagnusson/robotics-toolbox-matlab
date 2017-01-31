@@ -16,16 +16,16 @@ clc
 clear all
 close all
 % robot paramter
-load('urdf_info_1.0.mat');
-load('arm_version_1.0.mat');
+load('urdf_info_1.5.mat');
+load('arm_version_1.5.mat');
 % vertex
-load('vertex_arm_origin_1.0.mat');
-load('point_boundary_arm_1.0.mat');
+load('vertex_arm_origin_1.5.mat');
+load('point_boundary_arm_1.5.mat');
 load('vertex_patient_body.mat');
 load('vertex_bed.mat');
 load('vertex_bed_adapter.mat');
 % robot setup
-load('q_init_setup_hernia.mat');
+load('q_init_setup_hernia_1.5_testing.mat');
 % tool path
 load('egg_sponge_user03_tool_path_raw_with_angle.mat');
 % others
@@ -37,13 +37,12 @@ InitHerniaSetup;
 % iterative inverse kinematics parameters
 InitIKParameters;
 % set simulation
-is_artificial = 1; % set to 1 to create artificial colliding simulation
+is_artificial = 0; % set to 1 to create artificial colliding simulation
 % figure parameters
 figure_handle = figure(1);
 set(figure_handle,'Position',[600 10 750 750])
 hold on
 axis equal
-view(3)
 view(0,65)
 % camzoom(5)
 % set index
@@ -54,11 +53,11 @@ index_start = 1;
 index_end = 20000;
 % index_start = 1;
 % index_end = 29992;
-sample_rate = 200; % change the sample rate for simulation
+sample_rate = 20; % change the sample rate for simulation
 do_plot = 1; % set to 1 if want to plot
 do_save = 1; % set to 1 if want to store joint values
 do_save_video = 1; % set to 1 if want to save video
-do_check_collision = 1; % set to 1 if want to check collision
+do_check_collision = 0; % set to 1 if want to check collision
 
 % selected_bed_adapter = [2 1 5];
 index_robot = 0;
@@ -79,9 +78,26 @@ robot_arms = {robot_object1;robot_object2;robot_object3;robot_object4};
 for index_robot = 1:3
     q(:,index_robot) = q_init_setup(:,index_robot);
     robot_arms{index_robot}.transformation_base_ = transformation_base(:,:,index_robot);
-    robot_arms{index_robot}.CalculateFK(q(:,index_robot));
+    robot_arms{index_robot}.CalculateFK([q(:,index_robot);0;0]);
     p_eef(:,index_robot) = robot_arms{index_robot}.frames_(1:3,4,index_eef);
     rotation_eef(:,:,index_robot) = robot_arms{index_robot}.frames_(1:3,1:3,index_eef);
+end
+
+if do_plot
+    DrawCoordinateSystem([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w');
+    vertex_patient_body_transformed = transformSTL(vertex_patient_body,rotation_patient,translation_patient);
+    rgba = [0 0 1 0.1];
+    PlotStl(vertex_patient_body_transformed,rgba);
+    frames_bed_adapter1 = CalculateBedAdapterFK(q_bed_adapter(:,1),frames_bed_adapter_base(:,:,selected_bed_adapter(1)));
+    frames_bed_adapter2 = CalculateBedAdapterFK(q_bed_adapter(:,2),frames_bed_adapter_base(:,:,selected_bed_adapter(2)));
+    frames_bed_adapter3 = CalculateBedAdapterFK(q_bed_adapter(:,3),frames_bed_adapter_base(:,:,selected_bed_adapter(3)));
+    DrawBed(vertex_bed,[0.0 0.7 0.0 1])
+    DrawBedAdapter(frames_bed_adapter1,vertex_bed_adapter,[1 0 0 1])
+    DrawBedAdapter(frames_bed_adapter2,vertex_bed_adapter,[1 0 0 1])
+    DrawBedAdapter(frames_bed_adapter3,vertex_bed_adapter,[1 0 0 1])
+    axis([-1.2 1 -0.8 0.8 -0.2 2.8])
+    light('Position',[1 3 2]);
+    light('Position',[-3 -1 -3]);
 end
 
 % setup bed adapter
@@ -113,7 +129,7 @@ for index_sample = index_start : sample_rate : index_end
     
     % transform point clouds boundary box
     for index_robot = 1:3
-        robot_arms{index_robot}.CalculateFK(q(:,index_robot));
+        robot_arms{index_robot}.CalculateFK([q(:,index_robot);0;0]);
         for i = 7:10
             rotation = robot_arms{index_robot}.frames_(1:3,1:3,i);
             translation = robot_arms{index_robot}.frames_(1:3,4,i);
@@ -159,28 +175,11 @@ for index_sample = index_start : sample_rate : index_end
     
     % plot robot
     if do_plot
-        cla
-        DrawCoordinateSystem([0.02 0.02 0.02],rotation_camera,translation_camera,'rgb','c')
-        hold on
-        DrawCoordinateSystem([0.1 0.1 0.1],eye(3),[0;0;0],'rgb','w')
-        hold on
-        robot_arms{1}.DrawRobot(vertex_arm_origin,[1],0.1)
-        hold on
+        robot_arms{1}.DrawRobot(vertex_arm_origin)
         robot_arms{2}.DrawRobot(vertex_arm_origin)
-        hold on
         robot_arms{3}.DrawRobot(vertex_arm_origin)
-        hold on
-        frames_bed_adapter1 = CalculateBedAdapterFK(q_bed_adapter(:,1),frames_bed_adapter_base(:,:,selected_bed_adapter(1)));
-        frames_bed_adapter2 = CalculateBedAdapterFK(q_bed_adapter(:,2),frames_bed_adapter_base(:,:,selected_bed_adapter(2)));
-        frames_bed_adapter3 = CalculateBedAdapterFK(q_bed_adapter(:,3),frames_bed_adapter_base(:,:,selected_bed_adapter(3)));
-        DrawBed(vertex_bed,[0.0 0.7 0.0 1])
-        hold on
-        DrawBedAdapter(frames_bed_adapter1,vertex_bed_adapter,[1 0 0 1])
-        hold on
-        DrawBedAdapter(frames_bed_adapter2,vertex_bed_adapter,[1 0 0 1])
-        hold on
-        DrawBedAdapter(frames_bed_adapter3,vertex_bed_adapter,[1 0 0 1])
-        hold on
+        drawnow;
+        
         
         if do_check_collision
             if collision12 || collision13 || collision23
@@ -189,14 +188,7 @@ for index_sample = index_start : sample_rate : index_end
                 title(['Collision12 =' num2str(collision12) ';   ' 'Collision13 =' num2str(collision13) ';   ' 'Collision23 =' num2str(collision23)],'Color','b')
             end
         end
-        vertex_patient_body_transformed = transformSTL(vertex_patient_body,rotation_patient,translation_patient);
-        rgba = [0 0 1 0.1];
-        PlotStl(vertex_patient_body_transformed,rgba);
-        hold on
-        axis([-1.2 1 -0.8 0.8 -0.2 2.8])
-        light('Position',[1 3 2]);
-        light('Position',[-3 -1 -3]);
-        drawnow;
+        
     end
     if do_save_video
         movie_frames(movie_index) = getframe(gcf);

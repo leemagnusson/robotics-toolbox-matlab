@@ -614,7 +614,7 @@ classdef RobotClass < handle
             iteration_steps = 0;
             switch ik_mode
                 case 'Spherical 6'
-                    robot_object.CalculateFK(q_ref);
+                    robot_object.CalculateFK([q_ref;0;0]);
                     p_cur = robot_object.frames_(1:3,4,index_eef);
                     rotation_cur = robot_object.frames_(1:3,1:3,index_eef);
                     p_err = p_t - p_cur;
@@ -623,7 +623,7 @@ classdef RobotClass < handle
                     iteration_steps = 0;
                     while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && iteration_steps<=1000)
                         iteration_steps = iteration_steps + 1;
-                        robot_object.CalculateFK(q_ref);
+                        robot_object.CalculateFK([q_ref;0;0]);
                         p_cur = robot_object.frames_(1:3,4,index_eef);
                         rotation_cur = robot_object.frames_(1:3,1:3,index_eef);
                         % compute twist
@@ -636,13 +636,13 @@ classdef RobotClass < handle
                         q_ref = q_ref + q_dot_all *dt;
                     end
                 case 'Spherical 3'
-                    robot_object.CalculateFK(q_ref);
+                    robot_object.CalculateFK([q_ref;0;0]);
                     p_cur = robot_object.frames_(1:3,4,index_eef);
                     p_err = p_t - p_cur;
                     iteration_steps = 0;
                     while (((norm(p_err) > eps_translation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
-                        robot_object.CalculateFK(q_ref);
+                        robot_object.CalculateFK([q_ref;0;0]);
                         p_cur = robot_object.frames_(1:3,4,index_eef);
                         rotation_cur = robot_object.frames_(1:3,1:3,index_eef);
                         % compute twist
@@ -655,7 +655,7 @@ classdef RobotClass < handle
                         q_ref = q_ref + q_dot_all *dt;
                     end
                 case 'Cartesian 6'
-                    robot_object.CalculateFK(q_ref);
+                    robot_object.CalculateFK([q_ref;0;0]);
                     p_cur = robot_object.frames_(1:3,4,index_rcm);
                     rotation_cur = robot_object.frames_(1:3,1:3,index_car);
                     p_err = p_t - p_cur;
@@ -664,7 +664,7 @@ classdef RobotClass < handle
                     iteration_steps = 0;
                     while (((norm(p_err) > eps_translation) || (abs(theta_err) > eps_rotation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
-                        robot_object.CalculateFK(q_ref);
+                        robot_object.CalculateFK([q_ref;0;0]);
                         p_cur = robot_object.frames_(1:3,4,index_rcm);
                         rotation_cur = robot_object.frames_(1:3,1:3,index_car);
                         [twist,p_err,theta_err] = ComputeTwist(p_t,p_cur,rotation_t,rotation_cur);
@@ -675,13 +675,13 @@ classdef RobotClass < handle
                     end
                     
                 case 'Cartesian 3'
-                    robot_object.CalculateFK(q_ref);
+                    robot_object.CalculateFK([q_ref;0;0]);
                     p_cur = robot_object.frames_(1:3,4,index_rcm);
                     p_err = p_t - p_cur;
                     iteration_steps = 0;
                     while (((norm(p_err) > eps_translation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
-                        robot_object.CalculateFK(q_ref);
+                        robot_object.CalculateFK([q_ref;0;0]);
                         p_cur = robot_object.frames_(1:3,4,index_rcm);
                         rotation_cur = robot_object.frames_(1:3,1:3,index_car);
                         [twist,p_err,theta_err] = ComputeTwist(p_t,p_cur,rotation_t,rotation_cur);
@@ -692,13 +692,13 @@ classdef RobotClass < handle
                     end
                     
                 case 'Repositioning eef pos'
-                    robot_object.CalculateFK(q_ref);
+                    robot_object.CalculateFK([q_ref;0;0]);
                     p_cur = robot_object.frames_(1:3,4,index_rcm);
                     p_err = p_t - p_cur;
                     iteration_steps = 0;
                     while (((norm(p_err) > eps_translation)) && iteraion_steps <= 1000)
                         iteration_steps = iteration_steps + 1;
-                        robot_object.CalculateFK(q_ref);
+                        robot_object.CalculateFK([q_ref;0;0]);
                         p_cur = robot_object.frames_(1:3,4,index_eef);
                         rotation_cur = robot_object.frames_(1:3,1:3,index_eef);
                         [twist,p_err,theta_err] = ComputeTwist(p_t,p_cur,rotation_t,rotation_cur);
