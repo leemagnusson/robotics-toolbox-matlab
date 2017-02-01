@@ -6,12 +6,13 @@
 % angle: rotation angle in radians.
 %%
 function rotation = RotationAxisAngle(axis,angle)
-if length(axis) == 3 && ismember(1,size(axis)) % make sure the axis is 3 by 1 or 1 by 3 vector
-    axis = axis ./ norm(axis);
-    s = angle*[0 -axis(3) axis(2);axis(3) 0 -axis(1);-axis(2) axis(1) 0];
-    rotation = expm(s);
+if numel(axis)==3 % make sure the axis is 3 by 1 or 1 by 3 vector
+    k = reshape(axis ./ norm(axis),3,1);
+    rotation = k*(1-cos(angle))*k' + ...
+        [cos(angle),      -k(3)*sin(angle),  k(2)*sin(angle);
+         k(3)*sin(angle),  cos(angle),      -k(1)*sin(angle);
+        -k(2)*sin(angle),  k(1)*sin(angle),  cos(angle)];
 else
     error('Wrong vector size');
 end
 return;
-
