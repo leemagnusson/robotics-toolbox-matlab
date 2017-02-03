@@ -157,7 +157,8 @@ classdef RobotClass < handle
                         end
                     end
                     % set stl file name
-                    robot_object.stl_name_{index_link} = strcat(urdf_link_input{index_link}.name,'.stl');
+                    % TODO: don't hardcode the suffix
+                    robot_object.stl_name_{index_link} = strcat(urdf_link_input{index_link}.name,'.STL');
                     % check and set inertial terms for dynamics
                     if ~isempty(urdf_link_input{index_link}.inertial)
                         robot_object.mass_(index_link) = urdf_link_input{index_link}.inertial.mass.value;
