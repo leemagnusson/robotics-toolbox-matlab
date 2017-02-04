@@ -1,0 +1,958 @@
+<robot
+  name="V1_5_1_Arm_URDF">
+<link
+    name="V1pt5_base_link">
+    <inertial>
+      <origin
+        xyz="0.0275259  -0.017927 -0.0012684"
+        rpy="0 0 0" />
+      <mass
+        value="2.633301" />
+      <inertia
+        ixx="0.0059739"
+        ixy="-0.0030226"
+        ixz="9.77e-005"
+        iyy="0.0079631"
+        iyz="-5.08e-005"
+        izz="0.0112674" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_base_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_base_link.STL" />
+      </geometry>
+    </collision>
+</link>
+<link
+    name="V1pt5_shoulder_pitch_link">
+    <inertial>
+      <origin
+        xyz="0.0656349 -0.1108778 -4.64e-005"
+        rpy="0 0 0" />
+      <mass
+        value="1.506902" />
+      <inertia
+        ixx="0.0041141"
+        ixy="-0.0013907"
+        ixz="3.19e-005"
+        iyy="0.0027067"
+        iyz="-6.21e-005"
+        izz="0.0042915" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_shoulder_pitch_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.6 0.72549 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_shoulder_pitch_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_shoulder_pitch_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 -4.712388980384690e-01" />
+    <parent
+      link="V1pt5_base_link" />
+    <child
+      link="V1pt5_shoulder_pitch_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-3.6477" upper="0.1396" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_shoulder_roll_link">
+    <inertial>
+      <origin
+        xyz="-2.13e-005 -0.0023636 -0.0082375"
+        rpy="0 0 0" />
+      <mass
+        value="1.155092" />
+      <inertia
+        ixx="0.0014734"
+        ixy="1.2e-006"
+        ixz="-1.4e-006"
+        iyy="0.0015081"
+        iyz="-1.76e-005"
+        izz="0.0007773" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_shoulder_roll_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="1 0.75686 0.38431 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_shoulder_roll_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_shoulder_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0.07765 -0.28958 0"
+      rpy="-1.570796326794897e+00 0 3.141592653589793e+00" />
+    <parent
+      link="V1pt5_shoulder_pitch_link" />
+    <child
+      link="V1pt5_shoulder_roll_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_elbow_link">
+    <inertial>
+      <origin
+        xyz="0.0943206 -0.1018226 0.0003332"
+        rpy="0 0 0" />
+      <mass
+        value="1.561656" />
+      <inertia
+        ixx="0.0045658"
+        ixy="-0.0026845"
+        ixz="3.41e-005"
+        iyy="0.0043638"
+        iyz="-4.5e-005"
+        izz="0.006597" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_elbow_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.61569 1 0.55294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_elbow_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_elbow_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.570796326794897e+00 -4.188790204786391e-01 0" />
+    <parent
+      link="V1pt5_shoulder_roll_link" />
+    <child
+      link="V1pt5_elbow_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-0.4189" upper="2.7227" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_forearm_link">
+    <inertial>
+      <origin
+        xyz="0.0153455 3.02e-005 -0.0572827"
+        rpy="0 0 0" />
+      <mass
+        value="0.7637992" />
+      <inertia
+        ixx="0.0061757"
+        ixy="1.52e-005"
+        ixz="-0.0006099"
+        iyy="0.0064258"
+        iyz="-9.3e-006"
+        izz="0.0007445" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_forearm_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.76471 0.64706 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_forearm_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_forearm_joint"
+    type="revolute">
+    <origin
+      xyz="0.11647 -0.43447 0"
+      rpy="1.570796326794897e+00 0 0" />
+    <parent
+      link="V1pt5_elbow_link" />
+    <child
+      link="V1pt5_forearm_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-2.3562" upper="2.3562" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_spherical_base_link">
+    <inertial>
+      <origin
+        xyz="-4.82e-005 -0.0807017  -0.0071142"
+        rpy="0 0 0" />
+      <mass
+        value="0.5933313" />
+      <inertia
+        ixx="0.0007919"
+        ixy="-1.2e-006"
+        ixz="3e-007"
+        iyy="0.0002955"
+        iyz="-0.0001852"
+        izz="0.0007149" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_spherical_base_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_spherical_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_spherical_base_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.00202 0"
+      rpy="-1.570796326794897e+00 9.948376736367679e-01 -3.141592653589793e+00" />
+    <parent
+      link="V1pt5_forearm_link" />
+    <child
+      link="V1pt5_spherical_base_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.1694" upper="1.9350" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_spherical_roll_link">
+    <inertial>
+      <origin
+        xyz="0.0420378 0.025212  -0.000844"
+        rpy="0 0 0" />
+      <mass
+        value="0.6623792" />
+      <inertia
+        ixx="0.0008164"
+        ixy="7.57e-005"
+        ixz="0.0001702"
+        iyy="0.0006801"
+        iyz="0.0002218"
+        izz="0.0005588" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_spherical_roll_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_spherical_roll_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_spherical_roll_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.19333 0"
+      rpy="1.570796326794897e+00 1.864011641129944e-01 0" />
+    <parent
+      link="V1pt5_spherical_base_link" />
+    <child
+      link="V1pt5_spherical_roll_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-4.7124" upper="4.7124" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_pitch_a_link">
+    <inertial>
+      <origin
+        xyz="0.0717622  0.0002904 -0.0730414"
+        rpy="0 0 0" />
+      <mass
+        value="0.2323052" />
+      <inertia
+        ixx="5.24e-005"
+        ixy="-5.2e-006"
+        ixz="-2.5e-006"
+        iyy="0.0004883"
+        iyz="0"
+        izz="0.0005148" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_pitch_a_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.5 0 0.5 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_pitch_a_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_pitch_a_joint"
+    type="revolute">
+    <origin
+      xyz="0.04753 0 0"
+      rpy="-1.939460031840872e+00 2.547849845907800e-01 3.044529884954777e+00" />
+    <parent
+      link="V1pt5_spherical_roll_link" />
+    <child
+      link="V1pt5_pitch_a_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.0154" upper="1.4069" velocity="1.0"/>
+  </joint>
+
+  <link
+    name="V1pt5_pitch_b_link">
+    <inertial>
+      <origin
+        xyz="0.1164384 0 -0.0287483"
+        rpy="0 0 0" />
+      <mass
+        value="0.376289" />
+      <inertia
+        ixx="8.3e-005"
+        ixy="0"
+        ixz="-2.66e-005"
+        iyy="0.0026659"
+        iyz="0"
+        izz="0.0027201" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_pitch_b_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_pitch_b_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+ <joint
+    name="V1_arm1_pitch_b_joint"
+    type="revolute">
+    <origin
+      xyz="0.11430 0 -0.06419"
+      rpy="0 0 -1.633628179866692e+00" />
+    <parent
+      link="V1pt5_pitch_a_link" />
+    <child
+      link="V1pt5_pitch_b_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.4069" upper="1.0154" velocity="1.0"/>
+  </joint>
+
+  <link
+    name="V1pt5_pitch_c_link">
+    <inertial>
+      <origin
+        xyz="-0.0113425 0.1005192 0.0160336"
+        rpy="0 0 0" />
+      <mass
+        value="0.7960246" />
+      <inertia
+        ixx="0.0102203"
+        ixy="-0.0013115"
+        ixz="-0.0001941"
+        iyy="0.0008154"
+        iyz="0.0015386"
+        izz="0.0102074" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_pitch_c_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_pitch_c_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="V1pt5_pitch_c_joint"
+    type="revolute">
+    <origin
+      xyz="0.22860 0 0"
+      rpy="0 0 -2.750638901143063e-01" />
+    <parent
+      link="V1pt5_pitch_b_link" />
+    <child
+      link="V1pt5_pitch_c_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.0154" upper="1.4069" velocity="1.0"/>
+  </joint>
+
+  <link
+    name="V1pt5_tool_translate_link">
+    <inertial>
+      <origin
+        xyz="-0.0153804 0.0004875 -0.2413195"
+        rpy="0 0 0" />
+      <mass
+        value="0.778" />
+      <inertia
+        ixx="0.0007018"
+        ixy="-4.8e-006"
+        ixz="1.43e-005"
+        iyy="0.0008807"
+        iyz="-1.07e-005"
+        izz="0.0005212" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_tool_translate_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="1 0.50196 0.50196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_tool_translate_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+ <joint
+    name="V1pt5_tool_translate_joint"
+    type="prismatic">
+    <origin
+      xyz="0.03790 0 0"
+      rpy="1.745329251994330e+00 0 0" />
+    <parent
+      link="V1pt5_pitch_c_link" />
+    <child
+      link="V1pt5_tool_translate_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-0.081825" upper="0.178175" velocity="1.0"/>
+  </joint>
+
+ <link
+    name="V1pt5_tool_rotate_link">
+    <inertial>
+      <origin
+        xyz="0 0 -0.3658427"
+        rpy="0 0 0" />
+      <mass
+        value="0.05" />
+      <inertia
+        ixx="0.0008676"
+        ixy="0"
+        ixz="0"
+        iyy="0.0008676"
+        iyz="0"
+        izz="2.6e-006" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_tool_rotate_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_tool_rotate_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_tool_rotate_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.18910"
+      rpy="0 0 0" />
+    <parent
+      link="V1pt5_tool_translate_link" />
+    <child
+      link="V1pt5_tool_rotate_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-7.8540" upper="7.8540" velocity="1.0"/>
+  </joint>
+
+ <link
+    name="V1pt5_proximal_wrist_link">
+    <inertial>
+      <origin
+        xyz="0.0054201 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.005" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="2e-007"
+        iyz="0"
+        izz="1e-007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_proximal_wrist_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_proximal_wrist_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_proximal_wrist_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.570796326794897e+00 -1.570796326794897e+00 0" />
+    <parent
+      link="V1pt5_tool_rotate_link" />
+    <child
+      link="V1pt5_proximal_wrist_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_distal_wrist_link">
+      <mass
+        value="0.001" />
+</link>
+
+<joint
+    name="V1pt5_distal_wrist_joint"
+    type="revolute">
+    <origin
+      xyz="0.012333 0 0"
+      rpy="1.570796326794897e+00 0 0" />
+    <parent
+      link="V1pt5_proximal_wrist_link" />
+    <child
+      link="V1pt5_distal_wrist_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+</joint>
+
+<link
+    name="V1pt5_jaw_a_link">
+    <inertial>
+      <origin
+        xyz="0.0073012 -0.0004332 -0.0015031"
+        rpy="0 0 0" />
+      <mass
+        value="0.005" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="4e-007"
+        iyz="0"
+        izz="4e-007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_jaw_a_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_jaw_a_link.STL" />
+      </geometry>
+    </collision>
+</link>
+
+<joint
+    name="V1pt5_jaw_a_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="V1pt5_distal_wrist_link" />
+    <child
+      link="V1pt5_jaw_a_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+<link
+    name="V1pt5_jaw_b_link">
+    <inertial>
+      <origin
+        xyz="0.0073012 0.0004332 0.0015031"
+        rpy="0 0 0" />
+      <mass
+        value="0.005" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="4e-007"
+        iyz="0"
+        izz="4e-007" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_jaw_b_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_jaw_b_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_jaw_b_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="V1pt5_distal_wrist_link" />
+    <child
+      link="V1pt5_jaw_b_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit effort="30" lower="-1.5708" upper="1.5708" velocity="1.0"/>
+  </joint>
+
+/* ATI force-torque sensor:
+
+<link
+    name="V1pt5_ATI_sensor_link">
+    <inertial>
+      <origin
+        xyz="0.00082860 0 -0.01099715"
+        rpy="0 0 0" />
+      <mass
+        value="0.063" />
+      <inertia
+        ixx="0.00000474"
+        ixy="0.0000000"
+        ixz="-0.00000032"
+        iyy="0.00000597"
+        iyz="-0.00000002"
+        izz="0.00000595" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_ATI_sensor_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_ATI_sensor_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_ATI_sensor_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0325471 -0.0043539 -0.0461103"
+      rpy="-3.037  0  1.7038" />
+    <parent
+      link="V1pt5_spherical_roll_link" />
+    <child
+      link="V1pt5_ATI_sensor_link" />
+  </joint>
+
+/* Remote Center of Motion (RCM) link
+
+<link
+    name="V1pt5_RCM_link">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.000004"
+        ixy="0.0000000"
+        ixz="0.0000000"
+        iyy="0.00000004"
+        iyz="0.00000000"
+        izz="0.00000004" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_RCM_link.STL" />
+      </geometry>
+      <material
+        name="generic">
+        <color
+          rgba="0.9098 0.44314 0.031373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/V1pt5_RCM_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<joint
+    name="V1pt5_RCM_joint"
+    type="fixed">
+    <origin
+      xyz="0.037902 -0.107833 -0.019014"
+      rpy="1.7572 0.35623 0.065659" />
+    <parent
+      link="V1pt5_pitch_c_link" />
+    <child
+      link="V1pt5_RCM_link" />
+  </joint>
+
+</robot>
