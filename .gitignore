@@ -22,3 +22,17 @@ desktop.ini
 ~*
 MATLAB/lee_model/*.log
 MATLAB/lee_model/**/*.log
+
+
+% Don't check in generated .mat files
+MATLAB/haoran_model/data/parsed_urdf/
+MATLAB/haoran_model/lib/robot/coupling_matrix.mat
+MATLAB/haoran_model/lib/robot/index_joints.mat
+MATLAB/haoran_model/lib/robot/parent_number.mat
+MATLAB/haoran_model/data/arm_version_*.mat
+MATLAB/haoran_model/data/index_joints.mat
+MATLAB/haoran_model/data/point_boundary_arm_*.mat
+MATLAB/haoran_model/data/point_clouds_arm_*.mat
+MATLAB/haoran_model/data/urdf_info_*.mat
+MATLAB/haoran_model/data/vertex_arm_origin_*.mat
+MATLAB/haoran_model/data/vertex_patient_body.mat
